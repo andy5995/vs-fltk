@@ -12,6 +12,7 @@
 - [x] Expose some sort of inverse for apply_prop, where selected fields can be read from a widget.
 - [ ] Add support for env variables to fully disable native code, internet access and to run headless.  
       Once profiles are ready this will be obsoleted, but for now I need for testing and to let people use it "safely"
+- [ ] Add pipelines for compilation on github/gitea
 
 # Supported environments
 

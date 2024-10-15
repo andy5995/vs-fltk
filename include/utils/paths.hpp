@@ -158,7 +158,7 @@ struct resolve_path{
 
     struct reason_t{
         enum t{
-            UNTESTED,           //For paths not implemented yet.
+            NOT_IMPLEMENTED,           //For paths not implemented yet.
             OK,
             NOT_FOUND,
             ROOT_REACHED,
@@ -168,7 +168,7 @@ struct resolve_path{
         };
 
         static inline constexpr const char* prefixes[] = {
-            "untested",
+            "not-implemented",
             "ok",    
             "not found", 
             "root reached",  
