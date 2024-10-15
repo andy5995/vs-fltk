@@ -1,0 +1,9 @@
+[wrap-git]
+url = https://github.com/orangeduck/Cello.git
+revision = head
+depth = 1
+patch_directory = cello
+method = meson
+
+[provide]
+cello = cello_dep

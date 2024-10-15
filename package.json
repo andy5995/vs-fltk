@@ -1,0 +1,14 @@
+{ 
+    "name": "vs",
+    "description": "Build system for `vs`, a sfc framework for native UI frontends",
+    "version": "0.1-alpha",
+    "license":"UNLICENSED",
+    "scripts":{
+        "codegen": "bun ./scripts/codegen/index.ts",
+        "meson-configure": "meson setup --reconfigure build/",
+        "vs": "meson compile -C build/ vs:executable && ./build/vs run ./examples/example-0.xml",
+        "meson-test": "meson test -C build/",
+        "meson-install": "meson install",
+        "meson-release": "bun ./scripts/gen-release.ts"
+    }
+}

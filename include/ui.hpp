@@ -1,0 +1,61 @@
+#pragma once
+
+#include <utils/paths.hpp>
+#include <ui-base.hpp>
+
+namespace vs{
+
+template<std::derived_from<Fl_Widget>T = Fl_Widget, int SubType = 0> 
+class ui : public ui_base {
+  private:
+    uint8_t storage[sizeof(T)];
+
+  public:
+    template<typename... Args>
+    ui(Args ...w){new(storage) T(w...);}
+    inline T& widget(){return ((T*)storage)[0];}
+    inline const T& widget()const{return ((T*)storage)[0];}
+
+    inline operator T&(){return widget();}
+
+    inline virtual ~ui(){delete &widget();}
+
+    //Each derived class can decide to override its own, and tail-call the one for the associated base class in the original Fl hierarchy.
+    static int _apply_prop(ui* ptr,const char* prop, const char* value);
+    static int _get_computed(ui* ptr,const char* prop, const char** value);
+
+    virtual int apply_prop(const char* prop, const char* value) override {return ui::_apply_prop(this,prop,value);}
+    virtual int get_computed(const char* prop, const char ** value) {return ui::_get_computed(this,prop,value);};
+
+    virtual frame_type_t default_frame_type() override {return frame_type_t::LEAF;}
+    virtual const char* class_name() override{return "vs-generic";};
+
+
+    //Used to get back to the ui object once you start navigating in the owned fl_*** instances
+    inline static ui& FL_TO_UI(const T& base){
+      auto offset = (size_t)&(((ui *)0)->storage) - (size_t)(ui *)0 ;
+      return *(ui*)((uint8_t*)&base - offset);
+    }
+};
+
+//#region Implementation of ui<T>
+
+//Root elements & special containers
+
+
+extern void app_debug();
+
+enum class severety_t{
+  INFO,
+  OK,
+  WARNING,
+  CONTINUE,
+  PANIC,
+  LOG,
+};
+
+extern void vs_log(severety_t severety, const ui_base* ctx, const char* str, ...);
+
+extern path_env_t global_path_env;
+
+}

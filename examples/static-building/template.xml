@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app xmlns:s="staticbuilder">
+    <w>
+        <a>sss<![CDATA[ sss!]]>
+            <![CDATA[ sss!]]>
+            <b>ee</b>ww</a>
+        <s:for-range tag="x" from="0" to="2">
+            <s:for-range tag="y" from="0" to="2">
+                <item>hello<s:eval>x</s:eval></item>
+                <porc>ciao<s:eval>y</s:eval></porc>
+            </s:for-range>
+        </s:for-range>
+    </w>
+    <s:for tag="window" in="/windows/">
+        <window s:value.src.label="{window}/name/">
+            <s:value src="{window}/label/" />
+            <s:for tag="button" in="$/buttons/">
+                <button s:value.src.label="$.text" />
+            </s:for>
+        </window>
+    </s:for>
+</app>

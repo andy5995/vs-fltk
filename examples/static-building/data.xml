@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<windows>
+    <item>
+        <name>Title A</name>
+        <label>
+            <button label="Hello world" />
+        </label>
+        <buttons>
+            <item text="Text 1" />
+            <item text="Text 2" />
+            <item text="Text 3" />
+        </buttons>
+    </item>
+</windows>
