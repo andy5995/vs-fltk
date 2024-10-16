@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <utils/paths.hpp>
 #include <ui-base.hpp>
 
@@ -19,7 +20,7 @@ class ui : public ui_base {
 
     inline operator T&(){return widget();}
 
-    inline virtual ~ui(){delete &widget();}
+    inline virtual ~ui(){widget().~T();}
 
     //Each derived class can decide to override its own, and tail-call the one for the associated base class in the original Fl hierarchy.
     static int _apply_prop(ui* ptr,const char* prop, const char* value);

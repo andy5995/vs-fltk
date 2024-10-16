@@ -288,6 +288,8 @@ class frame{
     //TODO helpers for mixin?
 
     virtual ~frame() {
+      //Not needed right now, as frames are destroyed alongside their owners from a list
+      return;
       //std::cout<<"Deleting "<<name<<";\n";
       prune();
       //Not very optimized, but it is only going to happen at the end so no worries.

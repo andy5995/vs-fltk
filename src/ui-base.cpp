@@ -1,3 +1,4 @@
+#include <iostream>
 #include <ostream>
 #include <sstream>
 #include <ui.hpp>
@@ -65,6 +66,7 @@ void ui_base::path(std::stringstream& dst, bool scoped)const{
 ui_base::~ui_base(){
   if(local_frame!=nullptr){
     delete local_frame;
+    local_frame=nullptr;
   }
 }
 

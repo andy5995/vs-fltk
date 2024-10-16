@@ -73,7 +73,7 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
   return 0;
 }
 
-ui_xml_tree::~ui_xml_tree(){delete root;}
+ui_xml_tree::~ui_xml_tree(){if(root!=nullptr)delete root;}
 
 int ui_xml_tree::build(){
 
@@ -87,7 +87,7 @@ int ui_xml_tree::build(){
   ui_base* base;
   const auto& type = xml_root.attribute("type").as_string("native");
   if(strcmp(type,"native")==0){
-    if(is_app)base = (ui_base*)new ui_root_app(frame_mode_t::DEFAULT);
+    if(is_app){base = (ui_base*)new ui_root_app(frame_mode_t::DEFAULT);}
     else base = caller_ui_node;//(ui_base*)new ui_root_component(frame_mode_t::DEFAULT);
   }
   else{
@@ -120,6 +120,8 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         }
         else{
           component_tree.build();
+          nodes.insert(nodes.end(),component_tree.nodes.begin(),component_tree.nodes.end());
+          component_tree.nodes.clear();
           return;
         }
       }
@@ -196,7 +198,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     }
     else if (strcmp(root.name(),"app")==0){
 
-      _build_base_widget_extended_attr(root, (ui<Fl_Widget> *)root_ui);
+      _build_base_widget_extended_attr(root, (ui_base *)root_ui);
     
       //TODO: Optimize copies
       smap<std::string> props;
@@ -294,6 +296,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     template <std::derived_from<ui_base> T>
     T *ui_xml_tree::build_base_widget(const pugi::xml_node &root, ui_base* root_ui) {
       auto *current = new T();
+      nodes.push_back(current);
       {
         const auto& tmp = root.attribute("name");
         if (!tmp.empty()) {current->set_name(tmp.as_string());}
@@ -307,7 +310,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         }
       }
 
-      _build_base_widget_extended_attr(root, (ui<Fl_Widget> *)current);
+      _build_base_widget_extended_attr(root, (ui_base *)current);
       
   
       if(strcmp(root.parent().name(),"app")==0){

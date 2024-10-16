@@ -17,6 +17,8 @@ struct ui_tree {
   std::map<std::string, std::string, std::less<>> props_from_above;
   std::map<std::string, ui<> *, std::less<>> slots_from_above;
 
+  std::vector<ui_base*> nodes;
+
   ui_script global_decl;
   ui_script global_def;
 
@@ -48,12 +50,14 @@ struct ui_tree {
   // Helpers to compute expressions into values that Fl_Widgets can use.
 
   static bool h_px(uint T, size_t *dst, const char *expr,
-                   const ui<Fl_Widget> *env);
+                   const ui_base *env);
   static bool h_colour(uint32_t *dst, const char *expr,
-                       const ui<Fl_Widget> *env);
+                       const ui_base *env);
 
   // virtual void load_from_path(const char* path, bool root);
   // virtual void load_from_cache(uuid_t uuid, bool root);
+
+  ~ui_tree();
 };
 
 

@@ -1,9 +1,10 @@
+#include <iostream>
 #include <ui-tree.hpp>
 
 namespace vs{
   
   //TODO: I need to check if number conversions failed or not too.
-  bool ui_tree::h_px(uint T, size_t* dst, const char* expr, const ui<Fl_Widget>* env){
+  bool ui_tree::h_px(uint T, size_t* dst, const char* expr, const ui_base* env){
     if (T==1){
       dst[0]=std::stoi(expr);
       return true;
@@ -17,7 +18,7 @@ namespace vs{
     return true;
   }
 
-  bool ui_tree::h_colour(uint32_t* dst, const char* expr,  const ui<Fl_Widget>* env){
+  bool ui_tree::h_colour(uint32_t* dst, const char* expr,  const ui_base* env){
     if(expr[0]=='#'){
       dst[0] = std::stoi(expr+1,nullptr,16)<<8;
     }
@@ -28,5 +29,11 @@ namespace vs{
     return true;
   }
 
+  ui_tree::~ui_tree(){
+    for(auto i : nodes){
+      std::cout<<"Delete "<<i->get_name()<<"\n";
+      delete i;
+    }
+  }
 
 }
