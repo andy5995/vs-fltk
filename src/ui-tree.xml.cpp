@@ -268,7 +268,13 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::DEFAULT) {
           const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
           if (strcmp(lang, "c") == 0) {
-            auto compiler = bindings::tcc_c_pipeline_single_xml(current, nullptr, root, true);
+            resolve_path resolver(policies,global_path_env,local);
+            //TODO: Because of tcc limitations these files must be local only. Check how to solve that.
+            //Also, since the root is checked, policies cannot be properly applied.
+            //auto link_with = doc.first_child().attribute("link-with").as_string(nullptr);
+            //auto link_with_path = resolver(link_with);
+            //std::cout<<"LINKING"<<link_with_path.second.location.c_str()<<"\n";
+            auto compiler = bindings::tcc_c_pipeline_single_xml(current, nullptr, root, nullptr, true);
             if(compiler!=nullptr)current->attach_unique_script(compiler);
             current->set_mode(frame_mode_t::NATIVE);
             continue;

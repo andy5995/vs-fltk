@@ -1,4 +1,5 @@
 #include "ui-frame.hpp"
+#include "ui.hpp"
 #include <cstddef>
 
 #include <pipelines/tcc-c.hpp>
@@ -12,7 +13,7 @@ void tcc_error_func_xml(const pugi::xml_node& env, const char * msg) {
     printf("\n\033[41;37;1m[TCC]\033[0m      : %s @ [\033[93;3m%s\033[0m]", msg,env.path().c_str());
 }
 
-std::shared_ptr<tcc> tcc_c_pipeline_single_xml(vs::ui_base* obj, vs::ui_base* component_root, const pugi::xml_node& node, bool is_runtime){
+std::shared_ptr<tcc> tcc_c_pipeline_single_xml(vs::ui_base* obj, vs::ui_base* component_root, const pugi::xml_node& node, const char *link_with, bool is_runtime){
     auto compiler = std::make_shared<tcc>();
 
     compiler->set_error_fn((void*)&node,(void(*)(void*,const char*))tcc_error_func_xml);
@@ -20,6 +21,14 @@ std::shared_ptr<tcc> tcc_c_pipeline_single_xml(vs::ui_base* obj, vs::ui_base* co
     compiler->set_out_type(tcc::memory);
     compiler->add_sysinclude_path("./subprojects/libtcc/include/");
     compiler->add_include_path("./bindings/native/include");
+
+    //TODO:
+    if(link_with!=nullptr){
+        compiler->add_lib_path("./examples/libapp");
+        std::cout<<compiler->add_file((std::string(link_with)+".h").c_str());
+        std::cout<<compiler->add_lib((std::string("app").c_str()));
+        std::cout<<"\n"<<(std::string(link_with)+".so").c_str()<<"\n";
+    }
 
     ///////////////////////
     //////Add symbols//////
@@ -108,6 +117,7 @@ std::shared_ptr<tcc> tcc_c_pipeline_single_xml(vs::ui_base* obj, vs::ui_base* co
     }ctx{.node_ui =obj, .node_xml =node};
 
     compiler->ls_sym(&ctx, +[](void* _ctx, const char* name, const void* value){
+        //vs_log(3, nullptr, name);
         callback_ctx_t* ctx = (callback_ctx_t*)_ctx;
         /*if(strncmp("on_", name, 3)==0){
         ui_xml_tree::log(severety_t::INFO, ctx->node_xml, "Registering symbol `%s`",name);

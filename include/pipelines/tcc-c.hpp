@@ -22,7 +22,7 @@ extern void tcc_error_func_xml(const pugi::xml_node& env, const char * msg);
  * @param is_runtime Handle the case of the script being inside the editor or in the actual runtime.
  * @return std::shared_ptr<tcc> 
  */
-extern std::shared_ptr<tcc> tcc_c_pipeline_single_xml(vs::ui_base* obj, vs::ui_base* component_root, const pugi::xml_node& node, bool is_runtime);
+extern std::shared_ptr<tcc> tcc_c_pipeline_single_xml(vs::ui_base* obj, vs::ui_base* component_root, const pugi::xml_node& node, const char *link_with, bool is_runtime);
 
 extern std::pair<std::shared_ptr<tcc>,std::shared_ptr<module_symbols>> tcc_c_pipeline_module_xml(const pugi::xml_node& node, bool is_runtime);
 }

@@ -57,6 +57,7 @@ class tcc{
     //Linking
     inline int set_out_type(out_type type){return tcc_set_output_type(ctx, type);}
     inline int add_lib_path(const char* path)noexcept{return tcc_add_library_path(ctx, path);}
+    inline int add_lib(const char* path)noexcept{return tcc_add_library(ctx, path);}
 
     inline int add_sym(const char* sym, const void* value)noexcept{return tcc_add_symbol(ctx, sym, value);}
     inline void* get_sym(const char* name)noexcept{return tcc_get_symbol(ctx, name);}
