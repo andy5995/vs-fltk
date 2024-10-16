@@ -1,14 +1,15 @@
 
 #include "FL/Enumerations.H"
 #include "version.hpp"
-#include <memory>
 #include <unistd.h>
 #include <pwd.h>
 
 #include <SQLiteCpp/Database.h>
 #include <quickjs.h>
-#include <curl/curl.h>
 #include <uv.h>
+#ifdef HAS_CURL
+#include <curl/curl.h>
+#endif
 
 #include <utils/env.hpp>
 
@@ -25,7 +26,6 @@ path_env_t mk_env(const char* arg0,const char* arg1){
   static char buffer[1024];
   if(getcwd(buffer,1023)==nullptr){throw "Unable to get CWD";}
 
-  
   { //Add a trailing /
     int i=0;
     for(;buffer[i]!=0 && i<1024-1;i++);
@@ -45,10 +45,11 @@ path_env_t mk_env(const char* arg0,const char* arg1){
   if ((homedir = getenv("HOME")) == NULL) {
       homedir = getpwuid(getuid())->pw_dir;
   }
+  std::string _homedir = homedir;
 
   //In theory homedir should have the `/` at the end, and the normalizer is not expecting this format with child having the trailing '/'. 
-  main_env.packages_path = {rpath_type_t::FS,resolve_path::normalizer(homedir,"/.vs-fltk/packages",true).second + "/"};
-  main_env.appdata_path = {rpath_type_t::FS,resolve_path::normalizer(homedir,"/.vs-fltk",true).second  + "/"};
+  main_env.packages_path = {rpath_type_t::FS,resolve_path::normalizer(_homedir.c_str(),"/.vs-fltk/packages",true).second + "/"};
+  main_env.appdata_path = {rpath_type_t::FS,resolve_path::normalizer(_homedir.c_str(),"/.vs-fltk",true).second  + "/"};
 
   //TODO: add random subpath
   main_env.tmp_path={rpath_type_t::FS,"/tmp/"};
@@ -103,7 +104,11 @@ void prepare_db(){
 
 versions_t get_versions(){
     versions_t tmp;
-    tmp.curl=curl_version();
+#   ifdef HAS_CURL
+        tmp.curl=curl_version();
+#   else
+        tmp.curl="Not installed";
+#   endif
     tmp.fltk=std::to_string(FL_API_VERSION);
     tmp.libuv=uv_version_string();
     //tmp.sqlite=sqlite3_libversion();

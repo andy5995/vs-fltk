@@ -5,7 +5,7 @@ namespace vs{
 std::pair<bool, std::string> resolve_path::normalizer(const char *parent, const char *child, bool allow_exit, bool base_dir){
     int parent_len=strlen(parent);
     int child_len=strlen(child);
-    char ret[parent_len+child_len];
+    char ret[parent_len+child_len+1];
     memcpy(ret,parent,parent_len);
     int ptr = parent_len;
     
@@ -42,7 +42,7 @@ std::pair<bool, std::string> resolve_path::normalizer(const char *parent, const 
             ptr++;
         }
     }
-    
+
     //TODO: Stress test for potential unsafety
     if(base_dir){
         for(;ret[ptr]!='/';ptr--);

@@ -4,7 +4,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
 #include <map>
 #include <optional>
 #include <thread>
@@ -70,11 +69,6 @@ struct uuid{
         return *this;
     }
 
-    //TODO: remove it
-    void debug() const{
-        std::cout<<"\n";
-        for(int i =0;i<8;i++)std::cout<<this->data[i]<<"-";
-    }
 };
 
 /*

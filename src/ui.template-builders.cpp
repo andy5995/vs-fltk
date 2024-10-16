@@ -12,7 +12,6 @@
 
 namespace vs{
 
-    template class ui<Fl_Widget>;
     template class ui<Fl_Group>;
     template class ui<Fl_Window>;
     template class ui<Fl_Button>;

@@ -33,20 +33,27 @@ void policies_t::inherit_from_env(){
     else if(strcmp(VS_SCRIPTS_POLICY,"safe")==0){embedded_scripts.safe();}
     else {vs_log(severety_t::WARNING,nullptr,"Unrecognized VS_SCRIPTS_POLICY `%s`, skipping",VS_SCRIPTS_POLICY);}
 
-    const char* VS_NATIVE_COMPONENTS_POLICY = getenv("VS_SCRIPTS_POLICY");
+    const char* VS_NATIVE_COMPONENTS_POLICY = getenv("VS_NATIVE_COMPONENTS_POLICY");
     if(VS_NATIVE_COMPONENTS_POLICY==nullptr) {normal();}
     else if(strcmp(VS_NATIVE_COMPONENTS_POLICY,"all")==0){allow_native_components=true;}
     else if(strcmp(VS_NATIVE_COMPONENTS_POLICY,"none")==0){allow_native_components=false;}
     else {vs_log(severety_t::WARNING,nullptr,"Unrecognized VS_NATIVE_COMPONENTS_POLICY `%s`, skipping",VS_NATIVE_COMPONENTS_POLICY);}
 
+    const char* VS_HEADLESS = getenv("VS_HEADLESS");
+    if(VS_HEADLESS==nullptr) {headless=false;}
+    else if(strcmp(VS_NATIVE_COMPONENTS_POLICY,"true")==0){headless=true;}
+    else if(strcmp(VS_NATIVE_COMPONENTS_POLICY,"false")==0){headless=false;}
+    else {vs_log(severety_t::WARNING,nullptr,"Unrecognized VS_HEADLESS `%s`, skipping",VS_HEADLESS);}
+
     const char* VS_LOG_LEVEL = getenv("VS_LOG_LEVEL");
     if(VS_LOG_LEVEL==nullptr) {normal();}
-    else if(strcmp(VS_LOG_LEVEL,"silent")==0){verbosity=0;}
-    else if(strcmp(VS_LOG_LEVEL,"basic")==0){verbosity=3;}
-    else if(strcmp(VS_LOG_LEVEL,"verbose")==0){verbosity=7;}
+    else if(strcmp(VS_LOG_LEVEL,"basic")==0){verbosity=0;}
+    else if(strcmp(VS_LOG_LEVEL,"silent")==0){verbosity=1;}
+    else if(strcmp(VS_LOG_LEVEL,"verbose")==0){verbosity=2;}
+    else if(strcmp(VS_LOG_LEVEL,"debug")==0){verbosity=3;}
     else {vs_log(severety_t::WARNING,nullptr,"Unrecognized VS_LOG_LEVEL `%s`, skipping",VS_LOG_LEVEL);}
 
-    //The rest are not considered as ENV variables have a limited granularity
+    //The rest are not considered as ENV variables have a limited granularity compared to XML profiles
 }
 
 void policies_t::inherit_from_xml(const pugi::xml_node& root){

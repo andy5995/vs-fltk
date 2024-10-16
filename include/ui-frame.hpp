@@ -4,6 +4,7 @@
 
 #include <FL/Fl_Widget.H>
 
+#include <string>
 #include <utils/strings.hpp>
 
 namespace vs{
@@ -46,7 +47,7 @@ enum class frame_type_t{
   CONTAINER,        //Any bottom up request will stop here.
   SLOT,             //Any top down request will stop here.
   LEAF,             //No children stored in here (but symbols are fine). Go to parent.
-  NODE
+  NODE,             //A namespace without constraints on moving in and out
 };
 enum class frame_access_t{
   PUBLIC,           //Symbols can be searched bottom up & top down.
@@ -222,7 +223,9 @@ class frame{
     int call_dispatcher(const char* key, const char* value);
 
     frame(const char* name, frame_mode_t mode, ui_base* ui_node, frame* parent, frame_type_t type, frame_access_t access){
-      this->name=name;
+      static int counter = 0;
+      if(name==nullptr)this->name=std::string("%__")+std::to_string(counter++);
+      else this->name=name;
       this->mode=mode;
       this->ui_node=ui_node;
       this->type=type;
@@ -285,9 +288,14 @@ class frame{
     //TODO helpers for mixin?
 
     virtual ~frame() {
+      //std::cout<<"Deleting "<<name<<";\n";
       prune();
       //Not very optimized, but it is only going to happen at the end so no worries.
-      for(;children.size()!=0;){auto i = children.begin();delete i->second;}
+      for(;children.size()!=0;){
+        auto i = children.begin();
+        //std::cout<<"Deleting child "<<i->second->name<<";\n";
+        delete i->second;
+      }
     }
 };
 

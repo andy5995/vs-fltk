@@ -28,7 +28,7 @@
 
 namespace vs{
 
-void ui_xml_tree::log(severety_t severety, const void* _ctx, const char* str, ...){
+void ui_xml_tree::log(int severety, const void* _ctx, const char* str, ...){
     static const char* severity_table[] = {
     "\033[34;1m[INFO]\033[0m     : ",
     "\033[32;1m[OK]\033[0m       : ",
@@ -66,7 +66,6 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
   //TODO: Move this to cache later on, but for now just dump the result into a buffer
 
   auto buffer = fs_fetch_to_new(computed_path.second,pugi::get_memory_allocation_function());
-  
   pugi::xml_parse_result result =  doc.load_buffer_inplace_own(buffer.first, buffer.second); // doc.load_file(file);
   if (!result){
       return 1;
@@ -97,6 +96,7 @@ int ui_xml_tree::build(){
   }
 
   _build(doc.child(is_app?"app":"component"),is_app?base:caller_ui_node);
+  
   //base->widget().end();
   //base->widget().show();
   if(is_app)root=base;
@@ -106,61 +106,8 @@ int ui_xml_tree::build(){
 
 void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     //std::cout<<root.name()<<root.text()<<root.value()<<'\n';
-    //NAMESPACE
-    
-    if(strcmp(root.name(),"namespace")==0){
-      const auto&  type = root.attribute("type").as_string("default");
-      const auto&  name = root.attribute("name");
-      if(name.empty()){
-        log(severety_t::WARNING,root,"Namespaces should always have a name. Consider using a different frame type");
-      }
-
-       if(strcmp(type,"default")==0){
-        //Build a special native container.
-        auto *container = (new ui_namespace(name.as_string(""), frame_mode_t::DEFAULT));
-        auto& tmp = container->widget();
-        root_ui = container;
-        mode = frame_mode_t::DEFAULT;
-        _build_base_widget_extended_attr(root, (ui<Fl_Widget> *)container);
-
-        for(auto& i : root.children()){_build(i,root_ui);}
-        tmp.end();
-        return;
-      } else if(strcmp(type,"native")==0){
-        //Build a special native container.
-        auto *container = (new ui_namespace(name.as_string(""), frame_mode_t::NATIVE));
-        auto& tmp = container->widget();
-        root_ui = container;
-        mode = frame_mode_t::NATIVE;
-        _build_base_widget_extended_attr(root, (ui<Fl_Widget> *)container);
-
-        for(auto& i : root.children()){_build(i,root_ui);}
-        tmp.end();
-        return;
-      } else if(strcmp(type,"quickjs")==0){
-        //Build a special native container.
-        auto *container = (new ui_namespace(name.as_string(""), frame_mode_t::QUICKJS));
-        auto& tmp = container->widget();
-        root_ui = container;
-        mode = frame_mode_t::QUICKJS;
-        _build_base_widget_extended_attr(root, (ui<Fl_Widget> *)container);
-
-        for(auto& i : root.children()){_build(i,root_ui);}
-        tmp.end();
-        return;
-      }else if(strcmp(type,"wasm")==0){
-        log(severety_t::CONTINUE,root,"Unsupported frame type %s",type);
-        return;
-      }else if(strcmp(type,"ext")==0){
-        log(severety_t::CONTINUE,root,"Unsupported frame type %s",type);
-        return;
-      }else{
-        log(severety_t::CONTINUE,root,"Unsupported frame type %s",type);
-        return;
-      }
-    }
     //USE
-    else if(strcmp(root.name(),"use")==0){
+    if(strcmp(root.name(),"use")==0){
       const auto& src =root.attribute("src");
       if(src.empty()){
         log(severety_t::CONTINUE,root,"<use/> must have a source");
@@ -237,6 +184,16 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
 
       return;
     }
+      //GROUP
+    else if(strcmp(root.name(),"namespace")==0){
+      auto tmp = build_base_widget<ui_namespace>(root);
+      tmp->set_access(frame_access_t::PUBLIC);
+      root_ui = tmp;
+      for(auto& i : root.children()){_build(i,root_ui);}
+      tmp->widget().end();
+
+      return;
+    }
     else if (strcmp(root.name(),"app")==0){
 
       _build_base_widget_extended_attr(root, (ui<Fl_Widget> *)root_ui);
@@ -281,7 +238,9 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
   }
 
   void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, ui_base* current) {
+    
     for (const auto &root : root.children()) {
+
       // MIXIN
       if (strcmp(root.name(), "mixin") == 0) {
         smap<std::string> tmp;
@@ -334,7 +293,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
 
     template <std::derived_from<ui_base> T>
     T *ui_xml_tree::build_base_widget(const pugi::xml_node &root, ui_base* root_ui) {
-      auto *current = new T(0, 0, 100, 100);
+      auto *current = new T();
       {
         const auto& tmp = root.attribute("name");
         if (!tmp.empty()) {current->set_name(tmp.as_string());}

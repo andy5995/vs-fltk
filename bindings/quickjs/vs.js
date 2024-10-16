@@ -1,15 +1,15 @@
 //TODO: Move out from quicjs-js.cpp into here! Without #embed it is not that easy :(.
-var $$ = (base, string) => {
-    let self = (base === undefined ? this.core.self : this.core.vs_resolve_name_path(base, string));
+var $$ = (string, base = this.core.self) => {
+    let self = (string === undefined ? base : this.core.resolve_name_path(base, string));
     return {
+
         __self: self,
-        $: (string) => this.core.vs_resolve_name_path(self, string),
-        prop: (key, value) => this.core.vs_apply_prop(self, key, value),
-        mixin: (value) => this.core.vs_apply_prop(self, "mixin", value),
-        call: (name, ...args) => this.core.vs_call(self, name, ...args),
-        //set
-        //get
-        log: (sev, string, ...args) => this.core.vs_log(sev, self, string, ...args)
+        $: (string) => $$(string, self),
+        prop: (key, value) => this.core.apply_prop(self, key, value),
+        computed: (key) => this.core.get_computed(self, key),
+        mixin: (value) => this.core.apply_prop(self, "mixin", value),
+        call: (name, ...args) => this.core.call(self, name, ...args),
+        log: (sev, string, ...args) => this.core.log(sev, self, string, ...args)
     }
 };
 

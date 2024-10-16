@@ -6,6 +6,8 @@
     "scripts":{
         "codegen": "bun ./scripts/codegen/index.ts",
         "meson-configure": "meson setup --reconfigure build/",
+        "meson-configure-clang": "meson setup --reconfigure build/ --native-file machine-files/clang.ini",
+        "meson-configure-zig": "meson setup --reconfigure build/ --native-file machine-files/zig.ini",
         "vs": "meson compile -C build/ vs:executable && ./build/vs run ./examples/example-0.xml",
         "meson-test": "meson test -C build/",
         "meson-install": "meson install",

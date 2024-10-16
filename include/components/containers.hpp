@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ui-frame.hpp"
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
@@ -49,9 +50,9 @@ class ui_root_component :public ui_base{
 
 class ui_namespace : public ui<Fl_Group>{
   public:
-    ui_namespace(const char* name, frame_mode_t MODE):ui<Fl_Group>(0, 0, 0, 0){
+    ui_namespace():ui<Fl_Group>(0, 0, 0, 0){
       this->widget().size(widget().parent()->w(), widget().parent()->h());
-      this->mk_frame(name,MODE);
+      this->mk_frame();
       this->set_access(frame_access_t::PUBLIC);
   }
 

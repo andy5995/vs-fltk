@@ -1,4 +1,3 @@
-#include <iostream>
 #include <ostream>
 #include <sstream>
 #include <ui.hpp>
@@ -19,15 +18,13 @@ namespace vs{
 
 inline void ui_base::mk_frame(const char* name, frame_mode_t mode){
   if(local_frame==nullptr){
-    auto tmp = (frame*)resolve_frame();
-    //mode!=frame_mode_t::DEFAULT?mode:tmp->mode
-    local_frame=new frame(name!=nullptr?name:"", mode , this, tmp, default_frame_type(), frame_access_t::PRIVATE);
+    auto tmp = (frame*)resolve_namespace();
+    local_frame=new frame(name, mode , this, tmp, default_frame_type(), frame_access_t::PRIVATE);
   }
 }
 
 void ui_base::set_name(const char* name){
   mk_frame();
-
   local_frame->rename(name);
 }
 
@@ -67,18 +64,29 @@ void ui_base::path(std::stringstream& dst, bool scoped)const{
 
 ui_base::~ui_base(){
   if(local_frame!=nullptr){
-    //for(auto& i: local_frame->children)delete 
     delete local_frame;
   }
 }
 
 
 frame* ui_base::resolve_frame() const{
-  Fl_Group* p = this->widget().parent();
+  Fl_Widget* p = this->widget().parent();
   while(p!=nullptr){
     ui_base& parent = *FL_TO_UI(*(Fl_Widget*)p); //TODO: Clean up this nasty type chain at some point plz.
-    if(parent.local_frame!=nullptr && parent.local_frame->get_type()!=frame_type_t::LEAF)return parent.local_frame;
+    if(parent.local_frame!=nullptr)return parent.local_frame;
     p=p->parent();
+  }
+  return nullptr;
+}
+
+frame* ui_base::resolve_namespace() const{
+  const Fl_Widget* p = this->widget().parent();
+  while(p!=nullptr){
+    ui_base& parent = *FL_TO_UI(*(Fl_Widget*)p); //TODO: Clean up this nasty type chain at some point plz.
+    if(parent.local_frame!=nullptr && (parent.local_frame->get_type()==frame_type_t::CONTAINER  || parent.local_frame->get_type()==frame_type_t::NODE  ||  parent.local_frame->get_type()==frame_type_t::SLOT_CONTAINER))return parent.local_frame;
+    //Top level windows are not attached to app via FL
+    else if(parent.local_frame!=nullptr && parent.local_frame->parent!=nullptr)p=&(parent.local_frame->parent->widget()->widget());
+    else p=p->parent();
   }
   return nullptr;
 }
@@ -243,7 +251,7 @@ void ui_base::refresh_style(const char* local_mixins){
   for (const auto &i : props) {
     int v = this->apply_prop(i.first.data(), i.second.data());
     if (v == 1) {
-      vs_log(severety_t::WARNING, this, "Unable to use property `%s` on ",
+      vs_log(severety_t::WARNING | severety_t::LVL_DEBUG , this, "Unable to use property `%s` on ",
           i.first.data());
     } else if (v == 2) {
       vs_log(severety_t::WARNING, this,

@@ -4,6 +4,7 @@
     <import src="file://./three-buttons.xml" as="ThreeButtons">
         <label>It does not exist</label>
     </import>
+    <mixin name="+button" box.h="100" box.w="100" />
 
 
     <script-global lang="c">
@@ -115,6 +116,7 @@
             </script>
             </button>
         </namespace>
+
         <button base="parent" box="0,40,80,30" on.callback="on_click_a" label="BTN2">
             <script lang="c">
             <![CDATA[ 

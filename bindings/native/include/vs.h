@@ -22,6 +22,10 @@ enum log_severity_t{
   LOG_CONTINUE,
   LOG_PANIC,
   LOG_LOG,
+  LOG_LVL_NORMAL = 0x00,
+  LOG_LVL_SILENT = 0x10,
+  LOG_LVL_VERBOSE = 0x20,
+  LOG_LVL_DEBUG = 0x40,
 };
 typedef enum log_severety_t log_severety_t;
 

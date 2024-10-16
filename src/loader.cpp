@@ -13,9 +13,12 @@ app_loader::app_loader(const char* path){
   }
 }
 int app_loader::run(){
-    return Fl::run();
+    auto t= Fl::run();
+    delete root;
+    root=nullptr;
+    return t;
 }
 
-    app_loader::~app_loader(){delete root;}
+    app_loader::~app_loader(){if(root!=nullptr)delete root;}
 
 }

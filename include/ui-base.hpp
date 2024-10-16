@@ -68,6 +68,8 @@ class ui_base{
 
     //Resolve the frame, always looking at the parent and not self.
     frame* resolve_frame()  const;
+    //Resolve the namespace, basically the first parent which is not "transparent".
+    frame* resolve_namespace() const;
     symbol_ret_t resolve_symbol(const char* str) const;
     const ui_base* resolve_name(const char * str) const;
     const ui_base* resolve_name_path(const char * str) const;

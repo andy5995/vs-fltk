@@ -56,7 +56,7 @@ static JSValue js_log(JSContext * ctx , JSValueConst this_val, int argc, JSValue
         JS_ToBigUint64(ctx, &node, argv[1]);
         str = JS_ToCString(ctx, argv[2]);
 
-        vs_log((severety_t)severety,(const ui_base*)node,str);
+        vs_log(severety,(const ui_base*)node,str);
 
         JS_FreeCString(ctx, str);
     }
@@ -165,17 +165,14 @@ static void init_c_hooks(JSContext* ctx, void* self, bool is_runtime) {
     }
 
 
-
-
     JS_SetPropertyStr(ctx, global_obj, "core", core_obj);
 
 
-    JSValue console_obj = JS_NewObject(ctx);
-
+    //JSValue console_obj = JS_NewObject(ctx);
     //JS_SetPropertyStr(ctx, console_obj, "log",JS_NewCFunction(ctx, js_print_to_console, "log", 1));
     //JS_SetPropertyStr(ctx, global_obj, "console", console_obj);
 
-    JS_FreeValue(ctx, global_obj);    
+    JS_FreeValue(ctx, global_obj);
 }   
 
 
@@ -194,6 +191,8 @@ extern std::shared_ptr<quickjs_t> qjs_js_pipeline_single_xml(vs::ui_base* obj, v
     //TODO: If using the cache I can duplicate from one already mostly defined.
     //std::shared_ptr<quickjs_t> _ctx = std::make_shared<quickjs_t>((JSRuntime*)(global_js_rt()));
     std::shared_ptr<quickjs_t> _ctx = std::shared_ptr<quickjs_t>( new quickjs_t((JSRuntime*)(global_js_rt())), +[](void* o){delete (quickjs_t*)o;});
+
+
     auto& ctx = *_ctx;
 
     if (!ctx) {
@@ -201,35 +200,13 @@ extern std::shared_ptr<quickjs_t> qjs_js_pipeline_single_xml(vs::ui_base* obj, v
         return nullptr;
     }
 
-    
     //Decide if I want to include stuff from the js stdlib
 
     init_c_hooks(ctx, obj, is_runtime);
 
-    const char* prefix ="\
-var $$ = (string, base = this.core.self) => {\
-    let self = (string === undefined ? base : this.core.resolve_name_path(base, string));\
-    return {\
-        __self: self,\
-        $: (string) => $$(string,self),\
-        prop: (key, value) => this.core.apply_prop(self, key, value),\
-        computed: (key) => this.core.get_computed(self, key),\
-        mixin: (value) => this.core.apply_prop(self, \"mixin\", value),\
-        call: (name, ...args) => this.core.call(self, name, ...args),\
-        log: (sev, string, ...args) => this.core.log(sev, self, string, ...args)\
-    }\
-};\
-\
-var $ = $$();\
-\
-var $cb = (fn) => { globalThis[`__EXPORT_CB__${fn.name}`] = fn; };\
-var $callback = $cb;\
-var $plotter = (fn) => { globalThis[`__EXPORT_DRW_${fn.name}`] = fn; };\
-var $getter = (fn) => { globalThis[`__EXPORT_GET_${fn.name}`] = fn; };\
-var $setter = (fn) => { globalThis[`__EXPORT_SET_${fn.name}`] = fn; };\
-var $fn = (fn) => { globalThis[`__EXPORT_UKN_${fn.name}`] = fn; };\
-\
-    ";
+    const char prefix[] = {
+#embed "../../bindings/quickjs/vs.js"       
+    };
 
     for (auto &i : node.children()) {
         const char* program =i.text().as_string("");

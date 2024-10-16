@@ -68,7 +68,7 @@ uv_dep = uv_proj.get_variable('libuv_dep')
 sqlitecpp_dep = dependency('sqlitecpp')
 
 #TODO handle the case in which libcurl does not exist. Missing is fine, just no https/http prefix for paths.
-curl = dependency('libcurl')
+curl = dependency('libcurl', required: false)
 
 include_dirs = include_directories(['./include'])
 

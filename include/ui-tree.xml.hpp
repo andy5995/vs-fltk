@@ -38,10 +38,10 @@ public:
     // Logging
 
     static inline FILE *log_device = stdout;
-    static void log(severety_t severety, const void *_ctx, const char *str, ...);
+    static void log(int severety, const void *_ctx, const char *str, ...);
 
     template <class... Args>
-    static inline void log(severety_t severety, const pugi::xml_node &ctx,
+    static inline void log(int  severety, const pugi::xml_node &ctx,
                             const char *str, Args... args) {
         log(severety, &ctx, str, args...);
     }

@@ -13,6 +13,7 @@ class ui : public ui_base {
   public:
     template<typename... Args>
     ui(Args ...w){new(storage) T(w...);}
+    ui(){new(storage) T(0,0,0,0);auto& ref= FL_TO_UI(*this);ref.widget().size(100,100);}
     inline T& widget(){return ((T*)storage)[0];}
     inline const T& widget()const{return ((T*)storage)[0];}
 
@@ -25,7 +26,7 @@ class ui : public ui_base {
     static int _get_computed(ui* ptr,const char* prop, const char** value);
 
     virtual int apply_prop(const char* prop, const char* value) override {return ui::_apply_prop(this,prop,value);}
-    virtual int get_computed(const char* prop, const char ** value) {return ui::_get_computed(this,prop,value);};
+    virtual int get_computed(const char* prop, const char ** value) override {return ui::_get_computed(this,prop,value);};
 
     virtual frame_type_t default_frame_type() override {return frame_type_t::LEAF;}
     virtual const char* class_name() override{return "vs-generic";};
@@ -45,16 +46,22 @@ class ui : public ui_base {
 
 extern void app_debug();
 
-enum class severety_t{
-  INFO,
-  OK,
-  WARNING,
-  CONTINUE,
-  PANIC,
-  LOG,
+struct severety_t{
+  enum lvl_t{
+    INFO,
+    OK,
+    WARNING,
+    CONTINUE,
+    PANIC,
+    LOG,
+    LVL_SILENT = 0x00,
+    LVL_NORMAL = 0x10,
+    LVL_VERBOSE = 0x20,
+    LVL_DEBUG = 0x40,
+  };
 };
 
-extern void vs_log(severety_t severety, const ui_base* ctx, const char* str, ...);
+extern void vs_log(int severety, const ui_base* ctx, const char* str, ...);
 
 extern path_env_t global_path_env;
 
