@@ -13,6 +13,9 @@
 #include <utils/env.hpp>
 
 namespace vs{
+
+policies_t global_policy;
+
 //To be set in the main of the application of before any ui_tree facility is used.
 path_env_t global_path_env;
 

@@ -8,9 +8,9 @@ namespace vs{
 
 struct policies_t{
     struct networking_t{
-        bool allow_http: 1;
-        bool allow_https: 1;
-        bool allow_gemini: 1;
+        int allow_http: 1;
+        int allow_https: 1;
+        int allow_gemini: 1;
 
         void all(){allow_gemini=true;allow_https=true;allow_http=true;}
         void none(){allow_gemini=false;allow_https=false;allow_http=false;}
@@ -22,9 +22,9 @@ struct policies_t{
     }networking;
 
     struct embedded_scripts_t{
-        bool allow_native:1;
-        bool allow_quickjs:1;
-        bool allow_wasm:1;
+        int allow_native:1;
+        int allow_quickjs:1;
+        int allow_wasm:1;
 
         void all(){allow_wasm=true;allow_quickjs=true;allow_native=true;}
         void none(){allow_wasm=false;allow_quickjs=false;allow_native=false;}
@@ -35,12 +35,14 @@ struct policies_t{
         void inherit(const embedded_scripts_t& parent){allow_wasm&=parent.allow_wasm;allow_quickjs&=parent.allow_quickjs;allow_native&=allow_native;}
     }embedded_scripts;
 
-    bool allow_native_components: 1;
-    bool allow_networking: 1;
-    bool allow_fs: 1;
-    bool allow_themes: 1;
-    bool allow_notify: 1;
-    bool allow_permanent_storage: 1;
+    int allow_native_components: 1;
+    int allow_networking: 1;
+    int allow_fs: 1;
+    int allow_themes: 1;
+    int allow_notify: 1;
+    int allow_permanent_storage: 1;
+
+    int verbosity:3;
     //allow_caching
 
     void all(){networking.all();embedded_scripts.all();allow_native_components=true;allow_networking=true;allow_fs=true;allow_themes=true;allow_notify=true;allow_permanent_storage=true;}
@@ -58,6 +60,7 @@ struct policies_t{
         allow_themes&=allow_themes;
         allow_notify&=allow_notify;
         allow_permanent_storage&=allow_permanent_storage;
+        verbosity=1;
     }
 
     policies_t(){all();}

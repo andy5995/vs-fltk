@@ -14,6 +14,8 @@
 namespace vs{
 
 
+extern policies_t global_policy;
+
 extern path_env_t global_path_env;
 
 path_env_t mk_env(const char* arg0, const char* arg1);
