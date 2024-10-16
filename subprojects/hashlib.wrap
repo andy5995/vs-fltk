@@ -3,6 +3,5 @@ url = https://github.com/KaruroChori/hash-library.git
 revision = head
 depth = 1
 method = meson
-patch_directory = hashlib
 [provide]
 hashlib = hashlib_dep

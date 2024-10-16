@@ -6,7 +6,6 @@
 #include <pwd.h>
 
 #include <SQLiteCpp/Database.h>
-#include <sqlite3.h>
 #include <quickjs.h>
 #include <curl/curl.h>
 #include <uv.h>

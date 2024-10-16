@@ -1,7 +1,7 @@
 project(
     'fltk-vb',
     ['c', 'cpp'],
-    default_options: ['c_std=c23', 'cpp_std=c++23'],
+    default_options: ['c_std=gnu23', 'cpp_std=c++23'],
 )
 
 cmake = import('cmake')
@@ -137,7 +137,7 @@ vs_fltk = shared_library(
     ],
     dependencies: vs_fltk_deps,
     include_directories: include_dirs,
-    override_options: ['c_std=c2x', 'cpp_std=gnu++23'],
+    override_options: ['c_std=gnu23', 'cpp_std=gnu++23'],
     cpp_args: vs_fltk_flags,
 )
 
@@ -162,7 +162,7 @@ executable(
         './src/app/updater.cpp',
     ],
     dependencies: [vs_fltk_dep, pugixml_dep],
-    override_options: ['c_std=c11', 'cpp_std=c++20'],
+    override_options: ['c_std=gnuc23', 'cpp_std=c++23'],
 )
 
 #subdir(['./examples/'])
