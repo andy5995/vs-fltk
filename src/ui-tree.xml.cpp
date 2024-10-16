@@ -295,8 +295,9 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
 
     template <std::derived_from<ui_base> T>
     T *ui_xml_tree::build_base_widget(const pugi::xml_node &root, ui_base* root_ui) {
-      auto *current = new T();
+      auto *current = new T(root_ui);
       nodes.push_back(current);
+
       {
         const auto& tmp = root.attribute("name");
         if (!tmp.empty()) {current->set_name(tmp.as_string());}

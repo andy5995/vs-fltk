@@ -68,19 +68,19 @@ void ui_callback_handler(Fl_Widget* _, void* _data){
 }
 
 #define $eq(b) else if(strcmp((prop),(b))==0)
-#define $start_prop($class_name) template<> int ui<$class_name>::_apply_prop(ui* that, const char* prop, const char* value){\
+#define $start_prop($class_name) template<> int $class_name::_apply_prop(ui* that, const char* prop, const char* value){\ 
   auto& w = that->widget();\
   bool ok = true;
-#define $end_prop($base_name) if(!ok) return 2; else return ui<$base_name>::_apply_prop((ui<$base_name>*)that,prop,value);}
+#define $end_prop($base_name) if(!ok) return 2; else return $base_name::_apply_prop(($base_name*)that,prop,value);}
 #define $end_prop_b() else{ return 2; } return ok?0:1; }
 
-#define $start_computed($class_name) template<> int ui<$class_name>::_get_computed(ui* that, const char* prop, const char** value){\
+#define $start_computed($class_name) template<> int $class_name::_get_computed(ui* that, const char* prop, const char** value){\
   auto& w = that->widget();\
   bool ok = true;
-#define $end_computed($base_name) if(!ok) return 2; else return ui<$base_name>::_get_computed((ui<$base_name>*)that,prop,value);}
+#define $end_computed($base_name) if(!ok) return 2; else return $base_name::_get_computed(($base_name*)that,prop,value);}
 #define $end_computed_b() else{ return 2; } return ok?0:1; }
 
-$start_prop(Fl_Widget){
+$start_prop(ui<Fl_Widget>){
     if(false){}
     //Global exclusions, to be handled by something else.
     $eq("name"){}
@@ -196,36 +196,36 @@ $start_prop(Fl_Widget){
     const auto& attr_needKeyboard = obj.attribute("need-keyboard");
   */
 
-$start_prop(Fl_Button){
+$start_prop(ui<Fl_Button>){
   if(false){}
   //To handle
   $eq("test"){w.copy_label("TESTO!");}
 
-  $end_prop(Fl_Widget);
+  $end_prop(ui<Fl_Widget>);
 }
 
-$start_prop(Fl_Window){
-  $end_prop(Fl_Widget);
+$start_prop(ui<Fl_Window>){
+  $end_prop(ui<Fl_Widget>);
 }
 
-$start_prop(Fl_Group){
-  $end_prop(Fl_Widget);
+$start_prop(ui<Fl_Group>){
+  $end_prop(ui<Fl_Widget>);
 }
 
-$start_prop(Fl_Toggle_Button){
-  $end_prop(Fl_Button);
+$start_prop(ui<Fl_Toggle_Button>){
+  $end_prop(ui<Fl_Button>);
 }
 
-$start_prop(Fl_Input){
-  $end_prop(Fl_Button);
+$start_prop(ui<Fl_Input>){
+  $end_prop(ui<Fl_Button>);
 }
 
-$start_prop(Fl_Box){
-  $end_prop(Fl_Widget);
+$start_prop(ui<Fl_Box>){
+  $end_prop(ui<Fl_Widget>);
 }
 
-$start_prop(Fl_Markdown){
-  $end_prop(Fl_Widget);
+$start_prop(ui<Fl_Markdown>){
+  $end_prop(ui<Fl_Widget>);
 }
 
 
@@ -247,37 +247,37 @@ int ui_viewport::_apply_prop(ui_viewport* that, const char* prop, const char* va
 
 ////////////////////////////////////////////
 
-$start_computed(Fl_Widget){
+$start_computed(ui<Fl_Widget>){
     if(false){}
     $end_computed_b();
 }
 
-$start_computed(Fl_Button){
-  $end_computed(Fl_Widget);
+$start_computed(ui<Fl_Button>){
+  $end_computed(ui<Fl_Widget>);
 }
 
-$start_computed(Fl_Window){
-  $end_computed(Fl_Widget);
+$start_computed(ui<Fl_Window>){
+  $end_computed(ui<Fl_Widget>);
 }
 
-$start_computed(Fl_Group){
-  $end_computed(Fl_Widget);
+$start_computed(ui<Fl_Group>){
+  $end_computed(ui<Fl_Widget>);
 }
 
-$start_computed(Fl_Toggle_Button){
-  $end_computed(Fl_Button);
+$start_computed(ui<Fl_Toggle_Button>){
+  $end_computed(ui<Fl_Button>);
 }
 
-$start_computed(Fl_Input){
-  $end_computed(Fl_Button);
+$start_computed(ui<Fl_Input>){
+  $end_computed(ui<Fl_Widget>);
 }
 
-$start_computed(Fl_Box){
-  $end_computed(Fl_Widget);
+$start_computed(ui<Fl_Box>){
+  $end_computed(ui<Fl_Widget>);
 }
 
-$start_computed(Fl_Markdown){
-  $end_computed(Fl_Widget);
+$start_computed(ui<Fl_Markdown>){
+  $end_computed(ui<Fl_Widget>);
 }
 
 #if __has_include("./ui.get_computed.autogen.cpp")

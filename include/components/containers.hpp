@@ -12,11 +12,8 @@ namespace vs{
 
 class ui_root_app :public ui_base{
   protected:
-    //Hack to ensure widget()->parent() does not fail. Not super safe in C++, but good enough for me.
-    void* fake_parent = nullptr;
-
   public:
-    ui_root_app(frame_mode_t MODE):ui_base(){
+    ui_root_app(frame_mode_t MODE):ui_base(nullptr){
       //Cannot use mk_frame as it requires recursion and the widget property to operate.
       local_frame=new frame("%root", MODE, this, nullptr, default_frame_type(), frame_access_t::PUBLIC);
   }
@@ -30,12 +27,8 @@ class ui_root_app :public ui_base{
 
 class ui_root_component :public ui_base{
   protected:
-    //Hack to ensure widget()->parent() does not fail. Not super safe in C++, but good enough for me.
-    void* fake_parent = nullptr;
-
-
   public:
-    ui_root_component(frame_mode_t MODE):ui_base(){
+    ui_root_component(frame_mode_t MODE):ui_base(nullptr){
         //Cannot use mk_frame as it requires recursion and the widget property to operate.
         local_frame=new frame("%component", MODE, this, nullptr, default_frame_type(), frame_access_t::PUBLIC);
     }
@@ -50,7 +43,7 @@ class ui_root_component :public ui_base{
 
 class ui_namespace : public ui<Fl_Group>{
   public:
-    ui_namespace():ui<Fl_Group>(0, 0, 0, 0){
+    ui_namespace(ui_base* p):ui<Fl_Group>(p,0, 0, 0, 0){
       this->widget().size(widget().parent()->w(), widget().parent()->h());
       this->mk_frame();
       this->set_access(frame_access_t::PUBLIC);
@@ -71,7 +64,7 @@ class ui_viewport : public ui<Fl_Window>{
 
   public:
     template<typename... Args>
-    ui_viewport(Args ...w):ui<Fl_Window>(w...){mk_frame();}
+    ui_viewport(ui_base* p,Args ...w):ui<Fl_Window>(p,w...){mk_frame();}
     virtual frame_type_t default_frame_type() override {return frame_type_t::SLOT_CONTAINER;}
     virtual const char* class_name() override{return "viewport";}
 

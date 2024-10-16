@@ -1,5 +1,6 @@
 #pragma once
 
+#include "FL/Fl.H"
 #include <iostream>
 #include <utils/paths.hpp>
 #include <ui-base.hpp>
@@ -9,18 +10,17 @@ namespace vs{
 template<std::derived_from<Fl_Widget>T = Fl_Widget, int SubType = 0> 
 class ui : public ui_base {
   private:
-    uint8_t storage[sizeof(T)];
 
   public:
+    ui(ui_base* p):ui_base(p){_widget = new T(0,0,0,0);widget().size(100,100);}
     template<typename... Args>
-    ui(Args ...w){new(storage) T(w...);}
-    ui(){new(storage) T(0,0,0,0);auto& ref= FL_TO_UI(*this);ref.widget().size(100,100);}
-    inline T& widget(){return ((T*)storage)[0];}
-    inline const T& widget()const{return ((T*)storage)[0];}
+    ui(ui_base* p, Args ...w):ui_base(p){_widget = new T(w...);}
+    inline T& widget(){return *(T*)_widget;}
+    inline const T& widget()const{return *(T*)_widget;}
 
     inline operator T&(){return widget();}
 
-    inline virtual ~ui(){widget().~T();}
+    inline virtual ~ui(){Fl::delete_widget(_widget);}
 
     //Each derived class can decide to override its own, and tail-call the one for the associated base class in the original Fl hierarchy.
     static int _apply_prop(ui* ptr,const char* prop, const char* value);
@@ -31,13 +31,6 @@ class ui : public ui_base {
 
     virtual frame_type_t default_frame_type() override {return frame_type_t::LEAF;}
     virtual const char* class_name() override{return "vs-generic";};
-
-
-    //Used to get back to the ui object once you start navigating in the owned fl_*** instances
-    inline static ui& FL_TO_UI(const T& base){
-      auto offset = (size_t)&(((ui *)0)->storage) - (size_t)(ui *)0 ;
-      return *(ui*)((uint8_t*)&base - offset);
-    }
 };
 
 //#region Implementation of ui<T>

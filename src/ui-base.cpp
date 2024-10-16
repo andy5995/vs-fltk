@@ -62,6 +62,9 @@ void ui_base::path(std::stringstream& dst, bool scoped)const{
     if(scoped)dst<<"#";
     else dst<<"@";
 }
+ui_base::ui_base(ui_base* p){
+  parent = p;
+}
 
 ui_base::~ui_base(){
   if(local_frame!=nullptr){
@@ -72,23 +75,19 @@ ui_base::~ui_base(){
 
 
 frame* ui_base::resolve_frame() const{
-  Fl_Widget* p = this->widget().parent();
+  ui_base* p = this->parent;
   while(p!=nullptr){
-    ui_base& parent = *FL_TO_UI(*(Fl_Widget*)p); //TODO: Clean up this nasty type chain at some point plz.
-    if(parent.local_frame!=nullptr)return parent.local_frame;
-    p=p->parent();
+    if(p->local_frame!=nullptr)return p->local_frame;
+    p=p->parent;
   }
   return nullptr;
 }
 
 frame* ui_base::resolve_namespace() const{
-  const Fl_Widget* p = this->widget().parent();
+  ui_base* p = this->parent;
   while(p!=nullptr){
-    ui_base& parent = *FL_TO_UI(*(Fl_Widget*)p); //TODO: Clean up this nasty type chain at some point plz.
-    if(parent.local_frame!=nullptr && (parent.local_frame->get_type()==frame_type_t::CONTAINER  || parent.local_frame->get_type()==frame_type_t::NODE  ||  parent.local_frame->get_type()==frame_type_t::SLOT_CONTAINER))return parent.local_frame;
-    //Top level windows are not attached to app via FL
-    else if(parent.local_frame!=nullptr && parent.local_frame->parent!=nullptr)p=&(parent.local_frame->parent->widget()->widget());
-    else p=p->parent();
+    if(p->local_frame!=nullptr && (p->local_frame->get_type()==frame_type_t::CONTAINER  || p->local_frame->get_type()==frame_type_t::NODE  ||  p->local_frame->get_type()==frame_type_t::SLOT_CONTAINER))return p->local_frame;
+    p=p->parent;
   }
   return nullptr;
 }

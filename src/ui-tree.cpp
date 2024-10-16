@@ -34,6 +34,7 @@ namespace vs{
       std::cout<<"Delete "<<i->get_name()<<"\n";
       delete i;
     }
+    Fl::wait();
   }
 
 }

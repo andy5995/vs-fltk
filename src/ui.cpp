@@ -21,7 +21,8 @@ void vs_log(int severety, const ui_base* ctx, const char* str, ...){
 
   };
 
-  if((severety&0xf0)>>8 < global_policy.verbosity )return;
+  //TODO check why it fails in C an JS.
+  //if((severety&0xf0)>>8 > global_policy.verbosity )return;
   
   std::string rstr = std::string("\n")+std::string(sevtable[((int)severety&0xf)%6]) + std::string(str);  
   va_list args;

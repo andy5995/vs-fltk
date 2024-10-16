@@ -7,7 +7,8 @@ namespace vs{
 class ui_base{
     protected:
         frame* local_frame = nullptr;
-        uint8_t _injection_point[0];
+        ui_base* parent;
+        Fl_Widget* _widget;
 
     public:
     const frame* get_local_frame(){return local_frame;}
@@ -44,8 +45,8 @@ class ui_base{
     //Generate a mixin map based on a list of mixins
     smap<std::string> compile_mixins(const char* mixins_list) const;
 
-    inline Fl_Widget& widget(){return ((Fl_Widget*)_injection_point)[0];}
-    inline const Fl_Widget& widget()const{return ((Fl_Widget*)_injection_point)[0];}
+    inline Fl_Widget& widget(){return *_widget;}
+    inline const Fl_Widget& widget()const{return *_widget;}
 
     //TODO: these constraints should be relaxed to support more general reparenting.
     //However this is not planned right now, and reparent_frame is just a fix to the problem of app not being a widget.
@@ -56,13 +57,10 @@ class ui_base{
       }
     }
 
-
+    ui_base(ui_base* p);
     virtual ~ui_base();
+    virtual void for_deletion(){}
 
-    static ui_base* FL_TO_UI(const Fl_Widget& base){
-      auto offset = (size_t)&(((ui_base *)0)->_injection_point) - (size_t)(ui_base *)0 ;
-      return (ui_base*)((uint8_t*)&base - offset);
-    }
 
     void path(std::stringstream& dst, bool scoped = true) const;
 
