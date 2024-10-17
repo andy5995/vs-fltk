@@ -65,7 +65,9 @@ uv_proj = subproject('libuv')
 uv_dep = uv_proj.get_variable('libuv_dep')
 
 #TODO convert to internald dep
-sqlitecpp_dep = dependency('sqlitecpp')
+sqlitecpp_dep = subproject('sqlitecpp').get_variable('sqlitecpp_dep')
+
+sqlite_dep = subproject('sqlite3').get_variable('sqlite3_dep')
 
 #TODO handle the case in which libcurl does not exist. Missing is fine, just no https/http prefix for paths.
 curl = dependency('libcurl', required: false)
@@ -83,6 +85,7 @@ vs_fltk_deps = [
     treesitter_dep,
     libtcc_dep,
     quickjs_dep,
+    sqlite_dep,
     sqlitecpp_dep,
     uv_dep,
     hashlib_dep,
@@ -96,6 +99,8 @@ if curl.found()
     vs_fltk_flags += '-DHAS_CURL'
 else
 endif
+
+subdir('./src/components/autogen')
 
 vs_fltk = shared_library(
     'vs-fltk',
@@ -117,6 +122,8 @@ vs_fltk = shared_library(
         './src/components/markdown.cpp',
         './src/components/data.cpp',
         './src/components/editor.cpp',
+
+        autogen_components,
 
         './src/ui-frame.cpp',
         './src/ui.cpp',

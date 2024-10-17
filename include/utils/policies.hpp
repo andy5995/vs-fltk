@@ -27,42 +27,46 @@ struct policies_t{
         unsigned int allow_quickjs:1;
         unsigned int allow_wasm:1;
 
-        void all(){allow_wasm=true;allow_quickjs=true;allow_native=true;}
-        void none(){allow_wasm=false;allow_quickjs=false;allow_native=false;}
-        void trusted(){allow_wasm=true;allow_quickjs=true;allow_native=true;}
-        void normal(){allow_wasm=true;allow_quickjs=true;allow_native=false;}
-        void safe(){allow_wasm=true;allow_quickjs=true;allow_native=false;}
+        unsigned int allow_networking: 1;
+        unsigned int allow_fs: 1;
+        unsigned int allow_permanent_storage: 1;
 
-        void inherit(const embedded_scripts_t& parent){allow_wasm&=parent.allow_wasm;allow_quickjs&=parent.allow_quickjs;allow_native&=parent.allow_native;}
-    }embedded_scripts;
+        void all(){allow_wasm=true;allow_quickjs=true;allow_native=true;allow_networking=true;allow_fs=true;allow_permanent_storage=true;}
+        void none(){allow_wasm=false;allow_quickjs=false;allow_native=false;allow_networking=false;allow_fs=false;allow_permanent_storage=false;}
+        void trusted(){allow_wasm=true;allow_quickjs=true;allow_native=true;allow_networking=false;allow_fs=false;allow_permanent_storage=true;}
+        void normal(){allow_wasm=true;allow_quickjs=true;allow_native=false;allow_networking=false;allow_fs=false;allow_permanent_storage=true;}
+        void safe(){allow_wasm=true;allow_quickjs=true;allow_native=false;allow_networking=false;allow_fs=false;allow_permanent_storage=false;}
+
+        void inherit(const embedded_scripts_t& parent){
+            allow_wasm&=parent.allow_wasm;allow_quickjs&=parent.allow_quickjs;
+            allow_native&=parent.allow_native;allow_networking&=parent.allow_networking;
+            allow_fs&=parent.allow_fs;allow_permanent_storage&=parent.allow_permanent_storage;
+        }
+    }scripts;
 
     unsigned int allow_native_components: 1;
-    unsigned int allow_networking: 1;
-    unsigned int allow_fs: 1;
     unsigned int allow_themes: 1;
     unsigned int allow_notify: 1;
-    unsigned int allow_permanent_storage: 1;
+    unsigned int allow_caching: 1;
 
     unsigned int verbosity:2;
     unsigned int headless:1;
-    //allow_caching
 
 
-    void all(){networking.all();embedded_scripts.all();allow_native_components=true;allow_networking=true;allow_fs=true;allow_themes=true;allow_notify=true;allow_permanent_storage=true;headless=false;verbosity=1;}
-    void none(){networking.none();embedded_scripts.none();allow_native_components=false;allow_networking=false;allow_fs=false;allow_themes=false;allow_notify=false;allow_permanent_storage=false;headless=false;verbosity=1;}
-    void trusted(){networking.trusted();embedded_scripts.trusted();allow_native_components=true;allow_networking=false;allow_fs=false;allow_themes=true;allow_notify=true;allow_permanent_storage=true;headless=false;verbosity=1;}
-    void normal(){networking.normal();embedded_scripts.normal();allow_native_components=true;allow_networking=false;allow_fs=false;allow_themes=true;allow_notify=true;allow_permanent_storage=true;headless=false;verbosity=1;}
-    void safe(){networking.safe();embedded_scripts.safe();allow_native_components=false;allow_networking=false;allow_fs=false;allow_themes=false;allow_notify=true;allow_permanent_storage=false;headless=false;verbosity=1;}
+    void all(){networking.all();scripts.all();allow_native_components=true;allow_themes=true;allow_notify=true;allow_caching=true;headless=false;verbosity=1;}
+    void none(){networking.none();scripts.none();allow_native_components=false;allow_themes=false;allow_notify=false;allow_caching=false;headless=false;verbosity=1;}
+    void trusted(){networking.trusted();scripts.trusted();allow_native_components=true;allow_themes=true;allow_notify=true;allow_caching=true;headless=false;verbosity=1;}
+    void normal(){networking.normal();scripts.normal();allow_native_components=true;allow_themes=true;allow_notify=true;allow_caching=true;headless=false;verbosity=1;}
+    void safe(){networking.safe();scripts.safe();allow_native_components=false;allow_themes=false;allow_notify=true;allow_caching=true;headless=false;verbosity=1;}
 
     void inherit(const policies_t& parent){
         networking.inherit(parent.networking);
-        embedded_scripts.inherit(parent.embedded_scripts);
+        scripts.inherit(parent.scripts);
         allow_native_components&=parent.allow_native_components;
-        allow_networking&=parent.allow_networking;
-        allow_fs&=parent.allow_fs;
+        
         allow_themes&=parent.allow_themes;
         allow_notify&=parent.allow_notify;
-        allow_permanent_storage&=parent.allow_permanent_storage;
+        allow_caching&=parent.allow_caching;
 
         verbosity=parent.verbosity;
         if(parent.headless)headless=true;

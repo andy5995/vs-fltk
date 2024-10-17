@@ -1,2 +1,2 @@
 #!/bin/sh
-cc -shared -fPIC -o libapp.so libapp.cpp -ldl
+cc -shared -fPIC -o libapp.so app.cpp -ldl

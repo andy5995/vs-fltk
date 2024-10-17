@@ -24,10 +24,10 @@ std::shared_ptr<tcc> tcc_c_pipeline_single_xml(vs::ui_base* obj, vs::ui_base* co
 
     //TODO:
     if(link_with!=nullptr){
-        compiler->add_lib_path("./examples/libapp");
-        std::cout<<compiler->add_file((std::string(link_with)+".h").c_str());
-        std::cout<<compiler->add_lib((std::string("app").c_str()));
-        std::cout<<"\n"<<(std::string(link_with)+".so").c_str()<<"\n";
+        //compiler->add_lib_path("./examples/libapp");
+        //std::cout<<compiler->add_file((std::string(link_with)+".h").c_str());
+        //std::cout<<compiler->add_lib((std::string("app").c_str()));
+        //std::cout<<"\n"<<(std::string(link_with)+".so").c_str()<<"\n";
     }
 
     ///////////////////////

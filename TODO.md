@@ -5,6 +5,7 @@
 - [x] Add properties on containers to set their type/mode whatever
 - [x] Add some documentation plz
 - [x] Extend support for more virtual paths (all but those based on sqlite)
+- [ ] Add namespaces for vs elements and fltk elements
 - [ ] Add support for more widgets to make this thing usable
 - [ ] Add support of loading of so/dylib/dll modules
 - [x] Split align property

@@ -1,0 +1,13 @@
+{
+    "description": "Blabla bla",
+    "type": "leaf",
+    "extends": "ui<Fl_Text>",
+    "props_tail": "fl:widget",
+    "computed_tail": "fl:widget",
+    "props": {
+        "somethig": ["string", "...", ["alias-a","alias-b"]]
+    },
+    "computed": {
+        "computed-a": ["color", "...", []]
+    }
+}

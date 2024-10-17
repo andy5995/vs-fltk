@@ -1,7 +1,6 @@
 #pragma once
 
 #include "FL/Fl.H"
-#include <iostream>
 #include <utils/paths.hpp>
 #include <ui-base.hpp>
 

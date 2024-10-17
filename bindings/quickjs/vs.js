@@ -13,6 +13,19 @@ var $$ = (string, base = this.core.self) => {
     }
 };
 
+const LOG = {
+    INFO: 0,
+    OK: 1,
+    WARNING: 2,
+    CONTINUE: 3,
+    PANIC: 4,
+    LOG: 5,
+    LVL_SILENT: 0x00,
+    LVL_NORMAL: 0x10,
+    LVL_VERBOSE: 0x20,
+    LVL_DEBUG: 0x40,
+};
+
 var $ = $$();
 
 var $cb = (fn) => { globalThis[`__EXPORT_CB__${fn.name}`] = fn; };

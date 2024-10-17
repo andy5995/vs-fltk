@@ -32,6 +32,12 @@
                 $$prop($("..."),"ciao","mondo");
                 return;
             }
+            
+            void inic(){}
+            $cb(inic);
+
+            void inic2(){}
+            $cb(inic2);
             ]]>
             </script>
         </button>

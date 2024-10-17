@@ -2,9 +2,9 @@
 You will need a proper Linux environment, with a modern C++ toolchain installed. In addition to that, this repo makes use of:
 - [meson](https://mesonbuild.com/) as its main build system
 - [bun](https://bun.sh/) as the ts/js runtime to support some codegen and the more complex releasing pipelines. I hate bash, and this is what replaces it.
-- [libcurl] unless you are trying to compile a release without.
+- [libcurl] unless you are trying to compile a release without it.
 
-At the moment only Linux is supported, regardless or CPU architecture. Possibly some more UNIX-like systems.  
+At the moment only Linux is supported, probably on any of the major CPU architecture. Possibly some more UNIX-like systems.  
 This is just temporary limitation, as all dependencies are portable, but my own code is not.
 
 ## Building process

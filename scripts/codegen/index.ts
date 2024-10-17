@@ -5,4 +5,5 @@ await Bun.write("./include/version.hpp",
 inline const char* vs_version(){return "${pkg.version}";}
 `)
 
-import "./gen-components"
+//import "./gen-components"
+import "./gen-components.standalone"

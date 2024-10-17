@@ -29,11 +29,11 @@ policies_t policies_t::from_env(){
 
     const char* VS_SCRIPTS_POLICY = getenv("VS_SCRIPTS_POLICY");
     if(VS_SCRIPTS_POLICY==nullptr) {}
-    else if(strcmp(VS_SCRIPTS_POLICY,"all")==0){ret.embedded_scripts.all();}
-    else if(strcmp(VS_SCRIPTS_POLICY,"none")==0){ret.embedded_scripts.none();}
-    else if(strcmp(VS_SCRIPTS_POLICY,"trusted")==0){ret.embedded_scripts.trusted();}
-    else if(strcmp(VS_SCRIPTS_POLICY,"normal")==0){ret.embedded_scripts.normal();}
-    else if(strcmp(VS_SCRIPTS_POLICY,"safe")==0){ret.embedded_scripts.safe();}
+    else if(strcmp(VS_SCRIPTS_POLICY,"all")==0){ret.scripts.all();}
+    else if(strcmp(VS_SCRIPTS_POLICY,"none")==0){ret.scripts.none();}
+    else if(strcmp(VS_SCRIPTS_POLICY,"trusted")==0){ret.scripts.trusted();}
+    else if(strcmp(VS_SCRIPTS_POLICY,"normal")==0){ret.scripts.normal();}
+    else if(strcmp(VS_SCRIPTS_POLICY,"safe")==0){ret.scripts.safe();}
     else {vs_log(severety_t::WARNING,nullptr,"Unrecognized VS_SCRIPTS_POLICY `%s`, skipping",VS_SCRIPTS_POLICY);}
 
     const char* VS_NATIVE_COMPONENTS_POLICY = getenv("VS_NATIVE_COMPONENTS_POLICY");
@@ -61,7 +61,46 @@ policies_t policies_t::from_env(){
 }
 
 void policies_t::inherit_from_xml(const pugi::xml_node& root){
-    //TODO: Load from a profile
+    auto _policies = root.child("policies");
+    auto policies = _policies.attribute("base").as_string("normal");
+    if(strcmp(policies,"all")==0)this->all();
+    else if(strcmp(policies,"none")==0)this->none();
+    else if(strcmp(policies,"trusted")==0)this->trusted();
+    else if(strcmp(policies,"normal")==0)this->normal();
+    else if(strcmp(policies,"safe")==0)this->safe();
+    else this->normal();
+
+    auto _networking = _policies.child("networking");
+    auto networking = _networking.attribute("base").as_string("normal");
+    if(strcmp(networking,"all")==0)this->networking.all();
+    else if(strcmp(networking,"none")==0)this->networking.none();
+    else if(strcmp(networking,"trusted")==0)this->networking.trusted();
+    else if(strcmp(networking,"normal")==0)this->networking.normal();
+    else if(strcmp(networking,"safe")==0)this->networking.safe();
+    else this->networking.normal();
+
+    //TODO: Add individual networking policies
+
+    auto _scripts = _policies.child("scripts");
+    auto scripts = _networking.attribute("base").as_string("normal");
+    if(strcmp(scripts,"all")==0)this->scripts.all();
+    else if(strcmp(scripts,"none")==0)this->scripts.none();
+    else if(strcmp(scripts,"trusted")==0)this->scripts.trusted();
+    else if(strcmp(scripts,"normal")==0)this->scripts.normal();
+    else if(strcmp(scripts,"safe")==0)this->scripts.safe();
+    else this->scripts.normal();
+
+    //TODO: Add individual scripts policies
+    /*
+    unsigned int allow_native_components: 1;
+    unsigned int allow_themes: 1;
+    unsigned int allow_notify: 1;
+    unsigned int allow_caching: 1;
+
+    unsigned int verbosity:2;
+    unsigned int headless:1;
+    */
+
 }
 
 void policies_t::save_to_xml(pugi::xml_node root){

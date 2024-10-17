@@ -5,7 +5,11 @@
 #include <pwd.h>
 
 #include <SQLiteCpp/Database.h>
+#include <sqlite3.h>
 #include <quickjs.h>
+#include "subprojects/libtcc/config.h"
+#include "subprojects/wamr/core/version.h"
+
 #include <uv.h>
 #ifdef HAS_CURL
 #include <curl/curl.h>
@@ -102,6 +106,11 @@ void prepare_db(){
     }
 }
 
+#define str_helper(x) #x
+#define str(x) str_helper(x)
+#define WAMR_VERSION str(WAMR_VERSION_MAJOR) "." str(WAMR_VERSION_MINOR) "." str(WAMR_VERSION_PATCH)
+
+
 versions_t get_versions(){
     versions_t tmp;
 #   ifdef HAS_CURL
@@ -111,12 +120,17 @@ versions_t get_versions(){
 #   endif
     tmp.fltk=std::to_string(FL_API_VERSION);
     tmp.libuv=uv_version_string();
-    //tmp.sqlite=sqlite3_libversion();
-    //tmp.tcc=
+    tmp.sqlite=sqlite3_libversion();
+    tmp.tcc= TCC_VERSION;
     tmp.quickjs=JS_GetVersion();
     tmp.vs=vs_version();
-    //tmp.wamr=
+    tmp.wamr= WAMR_VERSION;
     return tmp;
 }
 
+#undef WAMR_VERSION
+#undef str
+#undef str_helper
+
 }
+
