@@ -14,6 +14,7 @@
         "meson-release": "bun ./scripts/gen-release.ts"
     },
     "dependencies": {
-        "@sinclair/typebox": "^0.33.16"
+        "@sinclair/typebox": "^0.33.16",
+        "jsx-xml": "^0.2.3"
     }
 }

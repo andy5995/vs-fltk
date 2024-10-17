@@ -5,9 +5,17 @@
     "props_tail": "fl:widget",
     "computed_tail": "fl:widget",
     "props": {
-        "somethig": ["string", "...", ["alias-a","alias-b"]]
+        "somethig": {
+            "type": "string",
+            "code": "...",
+            "alias": ["alias-a","alias-b"]
+        }
     },
     "computed": {
-        "computed-a": ["color", "...", []]
+        "computed-a": {
+            "type": "string",
+            "code": "...",
+            "alias": ["alias-a","alias-b"]
+        }
     }
 }
