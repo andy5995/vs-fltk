@@ -6,17 +6,32 @@
             <b>ee</b>ww</a>
         <s:for-range tag="x" from="0" to="2">
             <s:for-range tag="y" from="0" to="2">
-                <item>hello<s:eval>x</s:eval></item>
+                <item>hello<s:value src="{x}" /><s:value src="{y}" /></item>
                 <porc>ciao<s:eval>y</s:eval></porc>
             </s:for-range>
         </s:for-range>
     </w>
     <s:for tag="window" in="/windows/">
-        <window s:value.src.label="{window}/name/">
-            <s:value src="{window}/label/" />
-            <s:for tag="button" in="$/buttons/">
-                <button s:value.src.label="$.text" />
-            </s:for>
-        </window>
+        <s:empty>Hello world!<b>hello</b></s:empty>
+
+        <s:empty>Hello world!<b>hello</b></s:empty>
+        <s:header>
+        Head</s:header>wwww <s:item>
+
+            <window s:value.src.label="{window}/name/">
+                <s:value src="{window}/label/">NO VALUE</s:value>
+                <s:for tag="button" in="$/buttons/">
+                    <s:item>
+                        <s:value
+                            src="{wew}/s/s/">NO VALUE</s:value>
+                        <button s:value.src.label="$~text" />
+                    </s:item>
+                </s:for>
+            </window>
+
+        </s:item>
+        ssss <s:footer>
+            Foot</s:footer>
+        <s:error>Oh no, I failed you</s:error>
     </s:for>
 </app>
