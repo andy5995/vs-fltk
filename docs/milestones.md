@@ -1,7 +1,7 @@
 ## 0.2.x
 `vs` must be a minimum viable product.
 - Fully functional c & js support in embedded scripts.
-    - DOM-like operations.
+    - DOM-like operations (constained due to its mostly immutable structure).
     - Constrained operations on files.
     - Constrained fetch requests.
 - Loading of native components.

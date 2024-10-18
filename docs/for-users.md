@@ -7,3 +7,7 @@
 ## Installation
 
 ## Running a `vs` application
+
+### Running an application
+### Builtin editor
+### Builtin workspace

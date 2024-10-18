@@ -8,6 +8,9 @@
 #include <vector>
 #include <pugixml.hpp>
 
+#define PREFIX_STR(name,value) char name[ns_prefix_len+std::char_traits<char>::length(value)+1];memcpy((void*)value,ns_prefix,ns_prefix_len);memcpy((void*)&value[ns_prefix_len],value,std::char_traits<char>::length(value));name[ns_prefix_len+std::char_traits<char>::length(value)]=0;
+
+
 /*
 To test:  ./build/experiments/static-preprocessor ./examples/static-building/data.xml ./examples/static-building/template.xml
 */
@@ -87,7 +90,17 @@ struct document{
         return t;
     }
 
-    void _parse(std::optional<pugi::xml_node_iterator> stop_at){
+    void _parse(std::optional<pugi::xml_node_iterator> stop_at){ 
+        /*
+        PREFIX_STR(FOR_RANGE_TAG,"for-range");
+        PREFIX_STR(FOR_TAG,"for");
+            PREFIX_STR(EMPTY_TAG,"empty");
+            PREFIX_STR(HEADER_TAG,"header");
+            PREFIX_STR(FOOTER_TAG,"footer");
+            PREFIX_STR(BODY_TAG,"body");
+        PREFIX_STR(WHEN_TAG,"when");
+            PREFIX_STR(CASE_TAG,"case");
+        */
         while(!stack_template.empty()){
             auto& current_template = stack_template.top();
             auto& current_compiled = stack_compiled.top();
@@ -98,10 +111,10 @@ struct document{
                 //Special handling of static element
                 if(strncmp(current_template.first->name(), ns_prefix, ns_prefix_len)==0){
                     if(strcmp(current_template.first->name()+ns_prefix_len,"for-range")==0){
+                        const char* tag = current_template.first->attribute("tag").as_string("$");
                         int from = current_template.first->attribute("from").as_int(0);
                         int to = current_template.first->attribute("to").as_int(0);
                         int step = current_template.first->attribute("step").as_int(1);
-                        const char* tag = current_template.first->attribute("tag").as_string("$");
                         for(int i=from; i<to; i+=step){
                             auto frame_guard = symbols.guard();
                             symbols.set(tag,std::to_string(i));
@@ -111,7 +124,31 @@ struct document{
                             stack_compiled.push(current_compiled);
                         }
                     }
-                    else if(strcmp(current_template.first->name()+ns_prefix_len,"for")==0){}
+                    else if(strcmp(current_template.first->name()+ns_prefix_len,"for")==0){
+                        const char* tag = current_template.first->attribute("tag").as_string("$");
+                        const char* in = current_template.first->attribute("in").as_string();
+                        //filter
+                        //sort-by
+                        //order-by
+                        int limit = current_template.first->attribute("limit").as_int(-1);
+                        int offset = current_template.first->attribute("offset").as_int(0);
+
+                        bool empty=false;
+                        if(empty){
+                            //TODO:Test this
+                            PREFIX_STR(EMPTY_TAG,"empty");
+                            for(const auto& el: current_template.first->children(EMPTY_TAG)){
+                                stack_template.push({el.children().begin(),el.children().end()});
+                                _parse(el);
+                                stack_compiled.push(el);
+                            }
+                        }
+                        else{
+                            //Header (once)
+                            //Items (iterate)
+                            //Footer (once)
+                        }
+                    }
                     else if(strcmp(current_template.first->name()+ns_prefix_len,"for-prop")==0){}
                     else if(strcmp(current_template.first->name()+ns_prefix_len,"element")==0){}
                     else if(strcmp(current_template.first->name()+ns_prefix_len,"eval")==0){
@@ -177,3 +214,5 @@ int main(int argc, const char* argv[]){
     doc.parse().save(std::cout);
     return 0;
 }
+
+#undef PREFIX_STR
