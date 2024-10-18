@@ -1,20 +1,21 @@
 {
     "description": "Blabla bla",
     "type": "leaf",
-    "extends": "ui<Fl_Text>",
-    "props_tail": "fl:widget",
-    "computed_tail": "fl:widget",
+    "extends": "ui<Fl_Button>",
+    "headers": ["FL/Fl_Button.H"],
+    "props_tail": "ui<Fl_Widget>",
+    "computed_tail": "ui<Fl_Widget>",
     "props": {
         "somethig": {
             "type": "string",
-            "code": "...",
+            "code": "",
             "alias": ["alias-a","alias-b"]
         }
     },
     "computed": {
         "computed-a": {
             "type": "string",
-            "code": "...",
+            "code": "",
             "alias": ["alias-a","alias-b"]
         }
     }

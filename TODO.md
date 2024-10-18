@@ -71,3 +71,12 @@ I am starting to regret java bytecode already.
 - [ ] For speed of development, many operations are written recursively.
       The stack is pretty limited, so either there is tail recursion or explicit stacks must be used.
 - [ ] Add caching & preloading to avoid making the process of building UI dog slow.
+
+
+## References
+- https://github.com/shajunxing/quickjs-ffi
+- https://github.com/q66/cffi-lua
+- https://github.com/LuaJIT/LuaJIT
+- http://lua-users.org/wiki/SimpleLuaApiExample
+
+Probably I will allow switching between Lua & LuaJIT with a compile flag.

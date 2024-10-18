@@ -5,6 +5,7 @@
     "license": "UNLICENSED",
     "scripts": {
         "codegen": "bun ./scripts/codegen/index.ts",
+        "codegen-quick": "bun ./scripts/codegen/index.ts quick",
         "meson-configure": "meson setup --reconfigure build/",
         "meson-configure-clang": "meson setup --reconfigure build/ --native-file machine-files/clang.ini",
         "meson-configure-zig": "meson setup --reconfigure build/ --native-file machine-files/zig.ini",

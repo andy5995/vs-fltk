@@ -13,7 +13,7 @@ var $$ = (string, base = this.core.self) => {
     }
 };
 
-const LOG = {
+var LOG = Object.freeze({
     INFO: 0,
     OK: 1,
     WARNING: 2,
@@ -24,7 +24,7 @@ const LOG = {
     LVL_NORMAL: 0x10,
     LVL_VERBOSE: 0x20,
     LVL_DEBUG: 0x40,
-};
+});
 
 var $ = $$();
 

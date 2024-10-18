@@ -16,7 +16,12 @@
 #include <components/containers.hpp>
 #include <ui-tree.xml.hpp>
 
-#define mkWidget($name,$class_name) else if(strcmp(root.name(),#$name)==0){\
+#if __has_include("components/autogen/index.hpp")
+#include <components/autogen/index.hpp>
+#endif
+
+//TODO: Add support for namespaces in macros
+#define mkNodeWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$name)==0){\
   auto t=build_base_widget<$class_name>(root,root_ui);\
   t->set_type(frame_type_t::NODE);\
   root_ui = tmp;\
@@ -24,7 +29,7 @@
   tmp->widget().end();\
 } 
 //TODO: Avoid parsing its head                                                 
-#define mkLeafWidget($name,$class_name) else if(strcmp(root.name(),#$name)==0){build_base_widget<$class_name>(root,root_ui); }                                                  
+#define mkLeafWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$name)==0){build_base_widget<$class_name>(root,root_ui); }                                                  
 
 namespace vs{
 
@@ -223,10 +228,10 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     else if (strcmp(root.name(),"component")==0){/*skip*/}
 
     //Basic widgets
-    mkLeafWidget(button,ui<Fl_Button>)
-    mkLeafWidget(label,ui<Fl_Box>)
-    mkLeafWidget(input,ui<Fl_Input>)
-    mkLeafWidget(button.toggle,ui<Fl_Toggle_Button>)
+    mkLeafWidget(,button,ui<Fl_Button>)
+    mkLeafWidget(,label,ui<Fl_Box>)
+    mkLeafWidget(,input,ui<Fl_Input>)
+    mkLeafWidget(,button.toggle,ui<Fl_Toggle_Button>)
     
 #   if __has_include("./ui.xml-widgets.autogen.cpp")
 #   include "./ui.xml-widgets.autogen.cpp"
@@ -364,5 +369,5 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     }
   }
 
-  #undef mkWidget
+  #undef mkNodeWidget
   #undef mkLeafWidget

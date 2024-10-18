@@ -108,8 +108,9 @@ Compared to other approaches, `vs` is extremely opinionated and tries to force j
     - [ ] An XML preprocessor like XSLT to compile *templates + static data* down to components directly on client
 - [ ] Inline code inside XML components (like JS in HTML) 
     - [ ] C as a scripting language, backed by [tinycc](https://github.com/KaruroChori/tcc-vs).
-    - [ ] Other derived alternatives, like [cello](https://libcello.org) or [vala](https://vala.dev/).
+    - [ ] Other derived alternatives, like [cello](https://libcello.org) or [vala](https://vala.dev/) would also be possible.
     - [ ] JS powered by [QuickJS](https://github.com/quickjs-ng).
+    - [ ] Lua, either based on the reference implementation or LuaJIT. 
     - [ ] WASM to run any language which can be compiled to this target & their compilers.
 - [ ] Distribution of components via http/https and gemini.
 - [ ] A self-hosted visual editor to design, code and test new components (something like [gambas](https://gambas.sourceforge.net/en/main.html) or [fluid](https://www.fltk.org/doc-1.4/fluid.html)).
@@ -144,5 +145,6 @@ This project is based on the following dependencies:
 - [pugixml](https://pugixml.org/) to parse xml.
 - [md4c](https://github.com/mity/md4c) a library to parse markdown (not just to HTML).
 - [libuv](https://libuv.org/) for me not to care about portable code.
+- [libffi]()
 - [treesitter](https://tree-sitter.github.io/tree-sitter/) to handle parsing of languages (used for some components and the self-hosted editor).
 - [cello](https://libcello.org) an unholy macro machine for C to transform it into a dynamic language.

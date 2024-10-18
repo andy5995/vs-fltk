@@ -24,6 +24,7 @@
         ]]>
     </script>
     <window box.w="640" box.h="480" frame.mode="node">
+        <textbox label="123" box="200,200,70,70"></textbox>
         <button label="callback-top">
             <script lang="c">
             <![CDATA[ 
