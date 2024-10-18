@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <windows>
     <item>
-        <name>Title A</name>
+        <name>Title_A</name>
         <label>
-            <button label="Hello world" />
+            <button label="Hello_World" />
         </label>
         <buttons>
             <item text="Text 1" />

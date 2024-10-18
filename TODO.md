@@ -1,4 +1,5 @@
 # Current
+
 - [ ] Enable codegen and port the current code over
 - [ ] Viewport tag
 - [ ] Fix on.failure and on.loading to match with `use`
@@ -12,8 +13,36 @@
 - [ ] Split font property
 - [x] Expose some sort of inverse for apply_prop, where selected fields can be read from a widget.
 - [ ] Add support for env variables to fully disable native code, internet access and to run headless.  
-      Once profiles are ready this will be obsoleted, but for now I need for testing and to let people use it "safely"
-- [ ] Add pipelines for compilation  & testing on github/gitea
+       Once profiles are ready this will be obsoleted, but for now I need for testing and to let people use it "safely"
+- [ ] Add pipelines for compilation & testing on github/gitea
+
+# Static XML builder
+
+## Block based:
+
+- [x] for-range
+- [ ] for
+  - [x] base structure
+  - [ ] filter
+  - [ ] sort & order
+  - [ ] limit & offset
+- [ ] for-prop (cpy&paste from `for`)
+- [x] value
+- [x] element
+- [ ] when/case
+
+## Props based
+
+- [ ] for
+  - [ ] base structure
+  - [ ] filter
+  - [ ] sort & order
+  - [ ] limit & offset
+- [ ] for-prop (cpy&paste from `for`)
+- [ ] value
+- [ ] prop (dual of element)
+
+I only have `when/case` and `for-prop` left to consider the first version done and ready for integration in `vs`.
 
 # Supported environments
 
@@ -34,7 +63,7 @@ All done for now
 Why is WASM so frustrating to work with!?! No compiler can compile itself into a wasm/wasi binary.  
 AssemblyScript is a mess that is barely able to generate itself with WASI, but still it requires binaryen distributed alongside.  
 Because of a series of requirements, V8 is basically the only runtime capable of running that combo.  
-An all LLVM versions for wasm/wasi I tried were failures (or half so).  
+An all LLVM versions for wasm/wasi I tried were failures (or half so).
 
 I am starting to regret java bytecode already.
 
@@ -47,7 +76,6 @@ I am starting to regret java bytecode already.
 - [x] Add quickjs to the repo
 - [x] Add basic support for quickjs environments
 
-
 # Documentation
 
 - [x] Provide actual examples.
@@ -55,6 +83,7 @@ I am starting to regret java bytecode already.
 # Unclassified
 
 ## CFLTK
+
 ~~CFLTK is likely going to be removed as a dependency.~~ removed  
 ~~There is no need nor desire to expose it directly as it was originally meant.~~
 
@@ -63,6 +92,7 @@ I am starting to regret java bytecode already.
 - [ ] ~~add `./scripts/get-cfltk.ts` to some kind of pipeline~~
 
 ## General
+
 - [x] Refactor the ui_tree to better handle different classes of components
 - [x] Prepare infrastructore for codegen (no impl yet)
 - [x] Move all the tcc stuff in proper pipelines
@@ -72,8 +102,8 @@ I am starting to regret java bytecode already.
       The stack is pretty limited, so either there is tail recursion or explicit stacks must be used.
 - [ ] Add caching & preloading to avoid making the process of building UI dog slow.
 
+## References for FFI & Lua
 
-## References
 - https://github.com/shajunxing/quickjs-ffi
 - https://github.com/q66/cffi-lua
 - https://github.com/LuaJIT/LuaJIT

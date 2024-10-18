@@ -114,10 +114,10 @@ struct document{
 
     /*
     Allowed formats (for now):
-    {node}/... .attr
+    {node}/...~attr
     {node}/.../
     /.../
-    /... .attr
+    /...~attr
     */
     std::optional<std::variant<int,const pugi::xml_node, const pugi::xml_attribute, std::string>> resolve_expr(const char* _str, int limit = -1){
         int str_len = strlen(_str);
@@ -243,7 +243,8 @@ struct document{
                                 stack_compiled.push(current_compiled);
                             }
                         }
-                        else if(!expr.has_value() || !std::holds_alternative<const pugi::xml_node>(expr.value())){ //Skip numbers since they are useless here!
+                        //Only a node is acceptable in this context, otherwise show the error
+                        else if(!expr.has_value() || !std::holds_alternative<const pugi::xml_node>(expr.value())){ 
                             PREFIX_STR(ERROR_TAG,"error");
 
                             for(const auto& el: current_template.first->children(ERROR_TAG)){
@@ -289,11 +290,40 @@ struct document{
                         }
                     }
                     else if(strcmp(current_template.first->name()+ns_prefix_len,"for-prop")==0){}
-                    else if(strcmp(current_template.first->name()+ns_prefix_len,"element")==0){}
+                    else if(strcmp(current_template.first->name()+ns_prefix_len,"element")==0){
+                        PREFIX_STR(TYPE_ATTR,"type");
+                        //It is possible for it to generate strange results as strings are not validated by pugi
+                        auto symbol = resolve_expr(current_template.first->attribute(TYPE_ATTR).as_string("$"));
+                        if(!symbol.has_value()){
+                        }
+                        else if(std::holds_alternative<std::string>(symbol.value())){
+                            auto child = current_compiled.append_child(std::get<std::string>(symbol.value()).c_str());
+                            for(auto& attr : current_template.first->attributes()){
+                                if(strcmp(attr.name(),TYPE_ATTR)!=0)child.append_attribute(attr.name()).set_value(attr.value());
+                            }
+                            stack_compiled.push(child);
+
+                            stack_template.push({current_template.first->begin(),current_template.first->end()});
+                            _parse(current_template.first);
+                            stack_compiled.push(current_compiled);
+                        }
+                        else if(std::holds_alternative<const pugi::xml_node>(symbol.value())){
+                            auto child = current_compiled.append_child(std::get<const pugi::xml_node>(symbol.value()).text().as_string());
+                            for(auto& attr : current_template.first->attributes()){
+                                if(strcmp(attr.name(),TYPE_ATTR)!=0)child.append_attribute(attr.name()).set_value(attr.value());
+                            }
+                            stack_compiled.push(child);
+
+                            stack_template.push({current_template.first->begin(),current_template.first->end()});
+                            _parse(current_template.first);
+                            stack_compiled.push(current_compiled);
+                        }
+                        else{}
+                    }
                     else if(strcmp(current_template.first->name()+ns_prefix_len,"value")==0){
                         auto symbol = resolve_expr(current_template.first->attribute("src").as_string("$"));
                         if(!symbol.has_value()){
-                            /*Show default content*/
+                            /*Show default content if search fails*/
                             stack_template.push({current_template.first->begin(),current_template.first->end()});
                             _parse(current_template.first);
                             stack_compiled.push(current_compiled);

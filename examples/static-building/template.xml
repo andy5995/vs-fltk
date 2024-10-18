@@ -20,6 +20,8 @@
 
             <window s:value.src.label="{window}/name/">
                 <s:value src="{window}/label/">NO VALUE</s:value>
+                <s:element vania="noaj" s:type="{window}/name/">Hello world</s:element>
+
                 <s:for tag="button" in="$/buttons/">
                     <s:item>
                         <s:value
