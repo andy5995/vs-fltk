@@ -127,6 +127,7 @@ struct document{
         pugi::xml_node ref;
         int idx = 0;
         if(str[0]=='.' || str[0]=='+' || str[0]=='-' || (str[0]>'0' && str[0]<'9')) return atoi(_str);
+        else if(str[0]=='#') return str+1;  //Consider it a string
         else if(str[0]=='{'){
             int close = 0;
             for(;close<str_len && str[close]!='}';close++);
@@ -234,20 +235,21 @@ struct document{
                         
                         auto expr = resolve_expr(in);
 
-                        if(empty){
-                            PREFIX_STR(EMPTY_TAG,"empty");
 
-                            for(const auto& el: current_template.first->children(EMPTY_TAG)){
+                        //Only a node is acceptable in this context, otherwise show the error
+                        if(!expr.has_value() || !std::holds_alternative<const pugi::xml_node>(expr.value())){ 
+                            PREFIX_STR(ERROR_TAG,"error");
+
+                            for(const auto& el: current_template.first->children(ERROR_TAG)){
                                 stack_template.push({el.begin(),el.end()});
                                 _parse(current_template.first);
                                 stack_compiled.push(current_compiled);
                             }
                         }
-                        //Only a node is acceptable in this context, otherwise show the error
-                        else if(!expr.has_value() || !std::holds_alternative<const pugi::xml_node>(expr.value())){ 
-                            PREFIX_STR(ERROR_TAG,"error");
+                        else if(std::get<const pugi::xml_node>(expr.value()).empty()){
+                            PREFIX_STR(EMPTY_TAG,"empty");
 
-                            for(const auto& el: current_template.first->children(ERROR_TAG)){
+                            for(const auto& el: current_template.first->children(EMPTY_TAG)){
                                 stack_template.push({el.begin(),el.end()});
                                 _parse(current_template.first);
                                 stack_compiled.push(current_compiled);
