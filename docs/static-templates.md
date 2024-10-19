@@ -13,6 +13,7 @@ As a result, `vs` vendors its own XSLT-ish preprocessor that can be used as a bu
 ## Syntax
 
 ### Path expressions
+
 - String, for expressions starting with `#`
 - Integers, for expressions starting with a digit, `+`, `-` or `.`
 - Local paths, `$/.../`
@@ -21,7 +22,7 @@ As a result, `vs` vendors its own XSLT-ish preprocessor that can be used as a bu
 - As before, but ending with a property, `{var-name}/...~prop-name`
 - Absolute paths. `/.../`
 - Absolute paths resolving in a property `/...~prop-name`
-No other combination or format is allowed.
+  No other combination or format is allowed.
 
 ### Operators for elements
 
@@ -63,15 +64,15 @@ To introduce the value of an expression as text content of an element. It accept
 
 To generate a new element whose type is determined by a tag expression `ns:type`. Any other property and child will be preserved.
 
-### `when` & `case`
+### `when` & `is`
 
 To perform conditional cut and paste in the final tree based on simple matches between a reference expression and some values.  
 `when` accepts a single `subject` property as a path expression.  
-Inside the body of `when` we have one or more `case`.  
-Attributes for `case`:
+Inside the body of `when` we have one or more `is`.  
+Attributes for `is`:
 
-- `continue` default is `false`. If `true` it will continue checking and executing even after a match. Else it will break.
-- `is` a path expression to compare against.
+- `continue` default is `false`. If `true` it continues checking and executing even after a match. Else it will break.
+- `value` a path expression to compare against.
 
 The order of `case` is important and determines the overall flow.
 

@@ -112,13 +112,7 @@ struct document{
         return compiled;
     }
 
-    /*
-    Allowed formats (for now):
-    {node}/...~attr
-    {node}/.../
-    /.../
-    /...~attr
-    */
+    //Transforming a string into a parsed symbol
     std::optional<std::variant<int,const pugi::xml_node, const pugi::xml_attribute, std::string>> resolve_expr(const char* _str, int limit = -1){
         int str_len = strlen(_str);
         char str[str_len+1];
@@ -127,7 +121,7 @@ struct document{
         pugi::xml_node ref;
         int idx = 0;
         if(str[0]=='.' || str[0]=='+' || str[0]=='-' || (str[0]>'0' && str[0]<'9')) return atoi(_str);
-        else if(str[0]=='#') return str+1;  //Consider it a string
+        else if(str[0]=='#') return std::string(str+1);  //Consider it a string
         else if(str[0]=='{'){
             int close = 0;
             for(;close<str_len && str[close]!='}';close++);
@@ -177,12 +171,6 @@ struct document{
         }
 
         return {};
-    }
-
-    //TODO: use resolve_expr
-    std::optional<std::string> eval_expr(const std::string& expr){
-        auto t =symbols.resolve_str(expr.c_str());
-        return t;
     }
 
 
@@ -349,8 +337,46 @@ struct document{
                             }
                         }
                     }
-                    else if(strcmp(current_template.first->name()+ns_prefix_len,"use")==0){}
-                    else if(strcmp(current_template.first->name()+ns_prefix_len,"when")==0){}
+                    else if(strcmp(current_template.first->name()+ns_prefix_len,"when")==0){
+                        PREFIX_STR(CASE_TAG,"is");
+
+                        auto subject = resolve_expr(current_template.first->attribute("subject").as_string("$"));
+                        for(const auto& entry: current_template.first->children(CASE_TAG)){
+                            bool _continue =  entry.attribute("continue").as_bool(false);
+                            auto test = resolve_expr(entry.attribute("value").as_string("$"));
+
+                            bool result = false;
+                            //TODO: Perform comparison.
+
+                            if(!subject.has_value() && !test.has_value()){result = true;}
+                            else if (!subject.has_value() || !test.has_value()){result = false;}
+                            else if(std::holds_alternative<int>(subject.value()) && std::holds_alternative<int>(test.value())){
+                                result = std::get<int>(subject.value())==std::get<int>(test.value());
+                            }
+                            else{
+
+                                //Move everything to string
+                                const char* op1,* op2;
+                                if(std::holds_alternative<std::string>(subject.value()))op1=std::get<std::string>(subject.value()).c_str();
+                                else if(std::holds_alternative<const pugi::xml_attribute>(subject.value()))op1=std::get<const pugi::xml_attribute>(subject.value()).as_string();
+                                else if(std::holds_alternative<const pugi::xml_node>(subject.value()))op1=std::get<const pugi::xml_node>(subject.value()).text().as_string();
+
+                                if(std::holds_alternative<std::string>(test.value()))op2=std::get<std::string>(test.value()).c_str();
+                                else if(std::holds_alternative<const pugi::xml_attribute>(test.value()))op2=std::get<const pugi::xml_attribute>(test.value()).as_string();
+                                else if(std::holds_alternative<const pugi::xml_node>(test.value()))op2=std::get<const pugi::xml_node>(test.value()).text().as_string();
+
+                                result = strcmp(op1,op2)==0;
+                            }
+                  
+                            if(result){
+                                stack_template.push({entry.begin(),entry.end()});
+                                _parse(current_template.first);
+                                stack_compiled.push(current_compiled);
+
+                                if(_continue==false)break;
+                            }
+                        }
+                    }
                     else {std::cerr<<"unrecognized static operation\n";}
                     current_template.first++;
                     continue;

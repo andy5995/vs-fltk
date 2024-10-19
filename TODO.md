@@ -30,7 +30,7 @@
 - [ ] for-prop (cpy&paste from `for`)
 - [x] value
 - [x] element
-- [ ] when/case
+- [x] when/is
 
 ## Props based
 

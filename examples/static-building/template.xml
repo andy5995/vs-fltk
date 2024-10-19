@@ -36,4 +36,7 @@
             Foot</s:footer>
         <s:error>Oh no, I failed you</s:error>
     </s:for>
+    <s:when subject="#hello">
+        <s:is value="#hello">HELLO!</s:is>
+    </s:when>
 </app>
