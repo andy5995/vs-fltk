@@ -141,7 +141,6 @@ vs_fltk = shared_library(
         './src/pipelines/wasm-wat.cpp',
 
         './src/themes/default-cute.cpp',
-
         './src/blobs.c',
     ],
     dependencies: vs_fltk_deps,
@@ -154,9 +153,6 @@ vs_fltk_dep = declare_dependency(
     include_directories: include_dirs,
     link_with: vs_fltk,
 )
-
-#Bring forward the rest of the makefile if needed
-#There is a bug with x11. I need to sort it out
 
 cello_project = subproject('cello')
 cello_dep = cello_project.get_variable('cello_dep')
@@ -174,7 +170,6 @@ executable(
     override_options: ['c_std=gnuc23', 'cpp_std=c++23'],
 )
 
-#subdir(['./examples/'])
 subdir(['./components/'])
 subdir(['./experiments/'])
 subdir(['./test/'])

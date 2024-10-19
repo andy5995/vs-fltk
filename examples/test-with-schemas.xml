@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="vs.xsd"?>
+<?xml-model href="https://github.com/KaruroChori/vs-fltk/blob/master/commons/schemas/xml/vs.xsd"?>
 <app xmlns:fl="fl" xmlns:ww="ww">
     <theme></theme>
     <mixins></mixins>

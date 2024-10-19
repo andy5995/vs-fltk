@@ -128,7 +128,7 @@ They should also be ok with their code being relicensed to a more permissive lic
 
 Still, some part of this repo are licenced separately:
 
-- All `bindings`, are CC0
+- All `bindings` are CC0
 - `examples` and `docs` are CC BY-SA
 - Each of the subprojects imported clearly keep its own licence and copyright notice.
 

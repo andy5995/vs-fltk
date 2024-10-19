@@ -58,7 +58,7 @@ Both `for` & `for-prop` support the following list of children. You can use as m
 
 ### `value`
 
-To introduce the value of an expression as text content of an element. It accept a path expression `src` as argument. By default it is assumed to be `$`. It also supports an additional `format` argument, but at this stage it has no implementation.
+To introduce the value of an expression as text content of an element. It accept a path expression `src` as argument. By default, it is assumed to be `$`. It also supports an additional `format` argument, but at this stage it has no implementation.
 
 ### `element`
 

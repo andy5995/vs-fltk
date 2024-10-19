@@ -1,6 +1,7 @@
 /*
-    Alternative take on the generation process for components from specs. Each is now its own header/cpp pair instead of a messy one.
-    Use quick as optional arg to avoid generating the meson file again, speeding up compilation. Useful when no additions of new components is made, and you want to test only changes in code.
+    Code generator for code and derived specs from json schemas.
+    Use `quick` as optional arg to avoid generating the meson file again.  
+    This will speed up compilation considerably and is fine as long as you have not added or removed files in the schema folder.
 */
 
 import type { Static } from '@sinclair/typebox';
@@ -11,7 +12,6 @@ import { widget_schema } from './components.schema';
 import { Value } from '@sinclair/typebox/value';
 
 import { render, JSXXML } from 'jsx-xml'
-import Description from '@/subprojects/wamr/tests/fuzz/wasm-mutator-fuzz/portal/src/Descrpition';
 
 
 function gen_cpp(data: Static<typeof widget_schema>) {
