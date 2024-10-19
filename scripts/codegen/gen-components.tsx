@@ -11,6 +11,7 @@ import { widget_schema } from './components.schema';
 import { Value } from '@sinclair/typebox/value';
 
 import { render, JSXXML } from 'jsx-xml'
+import Description from '@/subprojects/wamr/tests/fuzz/wasm-mutator-fuzz/portal/src/Descrpition';
 
 
 function gen_cpp(data: Static<typeof widget_schema>) {
@@ -64,7 +65,7 @@ int ${data.ns}_${data.name}::_apply_prop(${data.ns}_${data.name}* that, const ch
     }
     ).join('\n')
         }
-    ${data.props_tail === null ? `else {return 2;}\nreturn ok?0:1;` : `if(!ok) return 1; else return ${data.props_tail}::_apply_prop((${data.props_tail}*)that,prop,value);`}
+    ${data.props_tail === null ? `else {return 2;}\nreturn ok?0:1;` : `if(!ok) return 1; else return ${data.props_tail ?? data.extends}::_apply_prop((${data.props_tail ?? data.extends}*)that,prop,value);`}
 }
 
 int ${data.ns}_${data.name}:: _get_computed(${data.ns}_${data.name} * that, const char* prop, const char** value) {
@@ -81,7 +82,7 @@ int ${data.ns}_${data.name}:: _get_computed(${data.ns}_${data.name} * that, cons
         }
         ).join('\n')
         }
-    ${data.props_tail === null ? `else {return 2;}\nreturn ok?0:1;` : `if(!ok) return 1; else return ${data.props_tail}::_get_computed((${data.props_tail}*)that,prop,value);`}
+    ${data.props_tail === null ? `else {return 2;}\nreturn ok?0:1;` : `if(!ok) return 1; else return ${data.props_tail ?? data.extends}::_get_computed((${data.props_tail ?? data.extends}*)that,prop,value);`}
 }
     
 }
@@ -103,7 +104,11 @@ function gen_d_ts(data: Static<typeof widget_schema>) { }
 function gen_xsd(data: Static<typeof widget_schema>) { }
 
 function gen_xml_editor(data: Static<typeof widget_schema>) {
-    return <component><props></props><computed></computed></component>
+    return <component ns={data.ns} name={data.name} extends={data.extends} props-tail={data.props_tail} computed-tail={data.computed_tail}>
+        <description>{data.description ?? "No description provided"}</description>
+        <props>{Object.entries(data.props).map(x => <item name={x[0]} alias={x[1].alias} type={x[1].type}>{x[1].description ?? 'No description provided'}</item>)}</props>
+        <computed>{Object.entries(data.computed).map(x => <item name={x[0]} alias={x[1].alias} type={x[1].type}>{x[1].description ?? 'No description provided'}</item>)}</computed>
+    </component>
 }
 
 if (process.argv[2] != 'quick') {

@@ -1,6 +1,7 @@
 # Current
 
-- [ ] Enable codegen and port the current code over
+- [x] Enable codegen
+- [ ] and port the current code over
 - [ ] Viewport tag
 - [ ] Fix on.failure and on.loading to match with `use`
 - [x] Add properties on containers to set their type/mode whatever
@@ -12,7 +13,7 @@
 - [x] Split align property
 - [ ] Split font property
 - [x] Expose some sort of inverse for apply_prop, where selected fields can be read from a widget.
-- [ ] Add support for env variables to fully disable native code, internet access and to run headless.  
+- [x] Add support for env variables to fully disable native code, internet access and to run headless.  
        Once profiles are ready this will be obsoleted, but for now I need for testing and to let people use it "safely"
 - [ ] Add pipelines for compilation & testing on github/gitea
 
@@ -48,8 +49,6 @@ I only have `when/case` and `for-prop` left to consider the first version done a
 
 ## TCC
 
-All done for now
-
 - [x] Add basic support for TCC
 - [ ] Provide extensive bindings for TCC
   - [x] Stage 0
@@ -57,6 +56,8 @@ All done for now
   - [x] Stage 2 Full interface for ui tree operations
 - [ ] Add an alternative backend like Cello
 - [ ] Add an alternative backend like Vala (?)
+
+All done for now
 
 ## WASM/WASI
 
@@ -74,7 +75,12 @@ I am starting to regret java bytecode already.
 ## QuickJS
 
 - [x] Add quickjs to the repo
-- [x] Add basic support for quickjs environments
+- [x] Add basic support for quickjs embedded scripts.
+
+## LUA
+
+- [ ] Add Lua & LuaJIT to the repo
+- [ ] Add baseline support for Lua embedded scripts.
 
 # Documentation
 
@@ -99,7 +105,7 @@ I am starting to regret java bytecode already.
 - [x] Add more components to play with
 
 - [ ] For speed of development, many operations are written recursively.
-      The stack is pretty limited, so either there is tail recursion or explicit stacks must be used.
+      The stack is pretty limited, so either there is tail recursion or stacks in heap must be used.
 - [ ] Add caching & preloading to avoid making the process of building UI dog slow.
 
 ## References for FFI & Lua

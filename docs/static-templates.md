@@ -1,4 +1,4 @@
-Static templates are extremely contrained programs that a preprocessor can use to transform an input data XML into a final XML file. In the context of `vs` these final files will be either components or apps.  
+Static templates are extremely contained programs that a preprocessor can use to transform an input data XML into a final XML file. In the context of `vs` these final files will be either components or apps.  
 When dealing with XML the most common preprocessor is XSLT, and I briefly considered using it for this project as it is. I decided against for two main reasons:
 
 - The rest of the project is based on `pugixml`, while the only XSLT 1.0 implementation which is decently licensed is [libxslt](https://gitlab.gnome.org/GNOME/libxslt) based on [libxml2](https://gitlab.gnome.org/GNOME/libxml2).  
