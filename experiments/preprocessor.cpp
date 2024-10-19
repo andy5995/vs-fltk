@@ -212,7 +212,10 @@ struct document{
                         int from = get_or<int>(resolve_expr(current_template.first->attribute("from").as_string("0")).value_or(0),0);
                         int to = get_or<int>(resolve_expr(current_template.first->attribute("to").as_string("0")).value_or(0),0);
                         int step = get_or<int>(resolve_expr(current_template.first->attribute("step").as_string("1")).value_or(1),1);
-                        for(int i=from; i<to; i+=step){
+                        if(step>0 && to<from){/* Skip infinite loop*/}
+                        else if(step<0 && to>from){/* Skip infinite loop*/}
+                        else if(step==0){/* Skip potentially infinite loop*/}
+                        else for(int i=from; i<to; i+=step){
                             auto frame_guard = symbols.guard();
                             if(tag!=nullptr)symbols.set(tag,i);
                             symbols.set("$",i);

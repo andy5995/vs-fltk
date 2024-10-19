@@ -12,49 +12,68 @@ As a result, `vs` vendors its own XSLT-ish preprocessor that can be used as a bu
 
 ## Syntax
 
+### Path expressions
+- String, for expressions starting with `#`
+- Integers, for expressions starting with a digit, `+`, `-` or `.`
+- Local paths, `$/.../`
+- Local paths ending with a property, `$/...~prop-name`
+- Paths with arbitrary prefix `{var-name}/.../` where `var-name`is searched for in symbols
+- As before, but ending with a property, `{var-name}/...~prop-name`
+- Absolute paths. `/.../`
+- Absolute paths resolving in a property `/...~prop-name`
+No other combination or format is allowed.
+
 ### Operators for elements
 
 #### `for-range`
 
-- `from`
-- `to`
-- `step`
+- `tag` is the name of the symbol where the current value will be stored. If empty the default `$` is used.
+- `from` starting value.
+- `to` final value.
+- `step` step of increment. It can be negative. If so `to<from` must hold true.
+
+Infinite cycles are detected before execution, in which case no cycle will run.
 
 #### `for` & `for-prop`
 
-To iterate over elements and props of an element respectively. Aside from that they share the same interface.
+To iterate over elements and props of an element respectively.  
+Aside from that, they share the same interface.
 
-- `tag` if left empty its default is `$`
-- `in` must be specified
+- `tag` the name of the symbol hosting the current xml node pointer. If empty, its default is `$`
+- `in` must be specified and is a path expression
 - `filter` if set it is a quickjs formula
-- `sort-by` (only `for`) list of relevant fields, comma separated
-- `order-by` order preference for each field, comma separated. Each entry is ASC, DESC, RANDOM followed by a comparator name, empty if default. Default order is how it is in the source xml.
-- `limit` maximum number of entries
-- `offset` offset from start
+- `sort-by` (only available for `for`) list of comma separated path expressions. Elements will be sorted giving priority from left to right
+- `order-by` order preference for each field in the `sort-by` or the only default one for `for-prop`, comma separated. Each entry is a pair `type:comparator` with type either ASC, DESC or RANDOM. The comparator can be skipped, and it will be assumed default to be the default one.
+- `limit` maximum number of entries to be iterated
+- `offset` offset from start (of the filtered and ordered list of children)
 
-We can also have sub-children
+Both `for` & `for-prop` support the following list of children. You can use as many as you want with any order, they will be rearranged automatically.
 
-- `header`
-- `footer`
-- `empty`
-- `item`
-- `error`
+- `header` shown at the top of a not-emtpy container
+- `footer` shown at the botton of a not-empty container
+- `empty` shown if a container is empty
+- `item` the main body
+- `error` shown if it was not possible to retrieve items because of an error in the path
 
 ### `value`
 
-To introduce the value of an expression as text content of an element.
+To introduce the value of an expression as text content of an element. It accept a path expression `src` as argument. By default it is assumed to be `$`. It also supports an additional `format` argument, but at this stage it has no implementation.
 
 ### `element`
 
-To generate a new element whose type is determined by a tag expression.
+To generate a new element whose type is determined by a tag expression `ns:type`. Any other property and child will be preserved.
 
 ### `when` & `case`
 
-To perform conditional cut and paste in the final tree.  
+To perform conditional cut and paste in the final tree based on simple matches between a reference expression and some values.  
+`when` accepts a single `subject` property as a path expression.  
+Inside the body of `when` we have one or more `case`.  
 Attributes for `case`:
 
-- `continue` default is false.
-- `match`
+- `continue` default is `false`. If `true` it will continue checking and executing even after a match. Else it will break.
+- `is` a path expression to compare against.
+
+The order of `case` is important and determines the overall flow.
 
 ### Operators for properties
 
