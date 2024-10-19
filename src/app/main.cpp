@@ -39,36 +39,8 @@ int run(const char* path, const char *entry, const char* profile){
         std::filesystem::create_directories(global_path_env.packages_path.location);
         //std::filesystem::create_directories(global_path_env.tmp_path.as_string()); TODO: enable once it has unique suffix
 
-        pugi::xml_document doc;
-        
-        if(profile!=nullptr){
-          std::string profile_path = (global_path_env.appdata_path.as_string()+profile+".xml");
-          pugi::xml_parse_result result = doc.load_file(profile_path.c_str());
-          if(!result){
-            std::cout << "XML [" << profile_path << "] parsed with errors, attr value: [" << doc.child("node").attribute("attr").value() << "]\n";
-            std::cout << "Error description: " << result.description() << "\n";
-            std::cout << "Error offset: " << result.offset <<"\n\n";
-            std::cout << "Loading default profile instead\n\n";
-          }
-        }
-        else{
-          std::string profile_path = (global_path_env.appdata_path.as_string()+"default.xml");
-          pugi::xml_parse_result result = doc.load_file(profile_path.c_str());
-          if(!result){
-            std::cout << "XML [" << profile_path << "] parsed with errors, attr value: [" << doc.child("node").attribute("attr").value() << "]\n";
-            std::cout << "Error description: " << result.description() << "\n";
-            std::cout << "Error offset: " << result.offset <<"\n\n";
-            std::cout << "Loading embedded profile instead\n\n";
-          }
-          else{
-            doc.load_string("");
-          }
-        }
-    
-    
-
         try{
-            app_loader loader(entry);
+            app_loader loader(profile, entry);
             auto t= loader.run();
             std::cout<<"\n";
             return t;

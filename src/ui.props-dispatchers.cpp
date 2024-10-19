@@ -1,3 +1,5 @@
+//TODO: TO BE DEPRECATED
+
 // All code for property props goes here.
 // This only covers the writable interface to be exposed via xml props & c bindings
 #include <FL/Enumerations.H>

@@ -9,6 +9,10 @@ namespace vs{
 
 struct ui_xml_tree : ui_tree {
 private:
+    const char* vs_ns;      //Namespace for vs basic components (default none, suggested vs: if needed)
+    const char* fltk_ns;    //Namespace for fltk specific components (default fl:)
+    const char* s_ns;       //Namespace for static xml operations (default s:)
+
     const pugi::xml_node *caller_node = nullptr;
     ui_base* caller_ui_node=nullptr;
     ui_base* root;

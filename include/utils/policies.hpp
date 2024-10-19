@@ -2,7 +2,6 @@
 
 #include <cstddef>
 #include <cstring>
-#include <pugixml.hpp>
 
 namespace vs{
 
@@ -75,8 +74,7 @@ struct policies_t{
     policies_t(){all();}
 
     static policies_t from_env();
-    void inherit_from_xml(const pugi::xml_node& root);
-    void save_to_xml(pugi::xml_node root);
+
     void debug() const;
 };
 
