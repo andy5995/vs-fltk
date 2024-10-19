@@ -91,7 +91,7 @@ And oftentimes, we want to run them on very low spec linux system, without resor
 
 `vs` is an attempt to bring together the best of the techniques and patterns we learned in modern UI frameworks & web technologies onto a native runtime with a miniscule footprint.
 
-Compared to other approaches, `vs` is extremely opinionated and tries to force just one way to make things right. It does not mean it is inflexible, just that it makes clear where complexity should be (spoiler, not in the UI). If you are coming from a less restrictive context you might find these limitations unpleasant at first, so I compiled a list of [frequently asked questions](./docs/faq.md) to make things easier.
+Compared to other approaches, `vs` is extremely opinionated and tries to force just one way to make things right. It does not mean it is inflexible, just that it makes clear where complexity should be (spoiler, not in the UI). If you are coming from a less restrictive context you might find these limitations unpleasant at first, so I compiled a list of [frequently asked questions](./docs/faq.md) no one asked to make things easier.
 
 ## Planned Features
 
@@ -112,7 +112,7 @@ Compared to other approaches, `vs` is extremely opinionated and tries to force j
   - [ ] JS powered by [QuickJS](https://github.com/quickjs-ng).
   - [ ] Lua, either based on the reference implementation or LuaJIT.
   - [ ] WASM to run any language which can be compiled to this target & their compilers.
-- [ ] Distribution of components via http/https and gemini.
+- [ ] Distribution of components via http/https and [gemini](https://geminiprotocol.net/).
 - [ ] A self-hosted visual editor to design, code and test new components (something like [gambas](https://gambas.sourceforge.net/en/main.html) or [fluid](https://www.fltk.org/doc-1.4/fluid.html)).
 - [ ] A robust permission system to decide what components can do based on their origin.
 - [ ] A target for single executables; compile your app down into one sharable file for systems onto which `vs` is not already distributed.
@@ -146,6 +146,6 @@ This project is based on the following dependencies:
 - [pugixml](https://pugixml.org/) to parse xml.
 - [md4c](https://github.com/mity/md4c) a library to parse markdown (not just to HTML).
 - [libuv](https://libuv.org/) for me not to care about portable code.
-- [libffi]()
+- [libffi](https://github.com/libffi/libffi) to simplify symbol sharing between languages.
 - [treesitter](https://tree-sitter.github.io/tree-sitter/) to handle parsing of languages (used for some components and the self-hosted editor).
 - [cello](https://libcello.org) an unholy macro machine for C to transform it into a dynamic language.
