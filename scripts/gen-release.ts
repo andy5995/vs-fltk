@@ -13,7 +13,7 @@ await $`rm -rf ./dist/`
 await $`mkdir ./dist/`
 await $`cp -r  ./bindings ./dist/`
 await $`cp -r  ./docs ./dist/`
-await $`cp -r  ./conf ./dist/`
+await $`cp -r  ./commons  ./dist/`
 await $`cp -r  ./build/vs ./dist/`
 if (RELEASE_TYPE == "linux") {
     await $`find . -name '*.so' -exec rsync -Rl {} ../dist/ \;`.cwd('./build')

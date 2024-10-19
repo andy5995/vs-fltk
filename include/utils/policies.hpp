@@ -25,19 +25,20 @@ struct policies_t{
         unsigned int allow_native:1;
         unsigned int allow_quickjs:1;
         unsigned int allow_wasm:1;
+        unsigned int allow_lua:1;
 
         unsigned int allow_networking: 1;
         unsigned int allow_fs: 1;
         unsigned int allow_permanent_storage: 1;
 
-        void all(){allow_wasm=true;allow_quickjs=true;allow_native=true;allow_networking=true;allow_fs=true;allow_permanent_storage=true;}
-        void none(){allow_wasm=false;allow_quickjs=false;allow_native=false;allow_networking=false;allow_fs=false;allow_permanent_storage=false;}
-        void trusted(){allow_wasm=true;allow_quickjs=true;allow_native=true;allow_networking=false;allow_fs=false;allow_permanent_storage=true;}
-        void normal(){allow_wasm=true;allow_quickjs=true;allow_native=false;allow_networking=false;allow_fs=false;allow_permanent_storage=true;}
-        void safe(){allow_wasm=true;allow_quickjs=true;allow_native=false;allow_networking=false;allow_fs=false;allow_permanent_storage=false;}
+        void all(){allow_lua=true;allow_wasm=true;allow_quickjs=true;allow_native=true;allow_networking=true;allow_fs=true;allow_permanent_storage=true;}
+        void none(){allow_lua=false;allow_wasm=false;allow_quickjs=false;allow_native=false;allow_networking=false;allow_fs=false;allow_permanent_storage=false;}
+        void trusted(){allow_lua=true;allow_wasm=true;allow_quickjs=true;allow_native=true;allow_networking=false;allow_fs=false;allow_permanent_storage=true;}
+        void normal(){allow_lua=true;allow_wasm=true;allow_quickjs=true;allow_native=false;allow_networking=false;allow_fs=false;allow_permanent_storage=true;}
+        void safe(){allow_lua=true;allow_wasm=true;allow_quickjs=true;allow_native=false;allow_networking=false;allow_fs=false;allow_permanent_storage=false;}
 
         void inherit(const embedded_scripts_t& parent){
-            allow_wasm&=parent.allow_wasm;allow_quickjs&=parent.allow_quickjs;
+            allow_lua&=parent.allow_lua;allow_wasm&=parent.allow_wasm;allow_quickjs&=parent.allow_quickjs;
             allow_native&=parent.allow_native;allow_networking&=parent.allow_networking;
             allow_fs&=parent.allow_fs;allow_permanent_storage&=parent.allow_permanent_storage;
         }

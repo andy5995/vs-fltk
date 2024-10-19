@@ -120,17 +120,20 @@ vs_fltk = shared_library(
 
         #TODO: move them in a split meson file
         './src/components/containers.cpp',
-        './src/components/markdown.cpp',
-        './src/components/data.cpp',
-        './src/components/editor.cpp',
+        './src/components/markdown-view.cpp',
+        './src/components/code-editor.cpp',
+        './src/components/data.xml.cpp',
+        './src/components/data.json.cpp',
+        './src/components/data.sqlite.cpp',
+        './src/components/data.csv.cpp',
 
         autogen_components,
 
         './src/ui-frame.cpp',
         './src/ui.cpp',
         './src/ui-base.cpp',
-        './src/ui.template-builders.cpp',
-        './src/ui.props-dispatchers.cpp',
+        './src/ui.template-builders.cpp', #TODO: Deprecate
+        './src/ui.props-dispatchers.cpp', #TODO: Deprecate
 
         './src/ui-tree.cpp',
         './src/ui-tree.xml.cpp',
@@ -140,6 +143,7 @@ vs_fltk = shared_library(
         './src/pipelines/tcc-cello.cpp',
         './src/pipelines/quickjs-js.cpp',
         './src/pipelines/wasm-wat.cpp',
+        './src/pipelines/lua-lua.cpp',
 
         './src/themes/default-cute.cpp',
     ],

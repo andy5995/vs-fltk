@@ -16,6 +16,9 @@
 - [x] Add support for env variables to fully disable native code, internet access and to run headless.  
        Once profiles are ready this will be obsoleted, but for now I need for testing and to let people use it "safely"
 - [ ] Add pipelines for compilation & testing on github/gitea
+- [ ] Policies are so complex to write manually and very easy to mess them up.
+      Maybe code generation starting from a schema might be a better option.
+- [ ] Simplify codegen for all computed/props types which are not `raw` by writing more or the boilerplate.
 
 # Static XML builder
 
@@ -43,8 +46,6 @@
 - [ ] value
 - [ ] prop (dual of element)
 
-I only have `when/case` and `for-prop` left to consider the first version done and ready for integration in `vs`.
-
 # Supported environments
 
 ## TCC
@@ -68,6 +69,9 @@ An all LLVM versions for wasm/wasi I tried were failures (or half so).
 
 I am starting to regret java bytecode already.
 
+Notice: the wasmer registry seems to have a small collection of clang builds on it. It might be good enough to start experimenting.  
+https://wasmer.io/taybenlor/runno-clang
+
 - [x] Integrate an engine (WAMR)
 - [ ] ~~Find a way to have llvm/clang running as wasm an build to wasm (no emscripten)~~ cannot do that
 - [ ] ~~Find a way to integrate assemblyscript as a language and embeding the compiler~~ ahah. not working
@@ -88,19 +92,10 @@ I am starting to regret java bytecode already.
 
 # Unclassified
 
-## CFLTK
-
-~~CFLTK is likely going to be removed as a dependency.~~ removed  
-~~There is no need nor desire to expose it directly as it was originally meant.~~
-
-- [ ] ~~add the patch file to remove calls to that single x11 function `fl_x11_gc`.~~
-      ~~It would be nice to understand what is going wrong there.~~
-- [ ] ~~add `./scripts/get-cfltk.ts` to some kind of pipeline~~
-
 ## General
 
 - [x] Refactor the ui_tree to better handle different classes of components
-- [x] Prepare infrastructore for codegen (no impl yet)
+- [x] Prepare infrastructure for codegen (no impl yet)
 - [x] Move all the tcc stuff in proper pipelines
 - [x] Add more components to play with
 

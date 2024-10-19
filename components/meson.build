@@ -1,6 +1,6 @@
 shared_library(
     'static-for',
-    ['./static-for.cpp'],
+    ['./dyn-for.cpp'],
     dependencies: [
         libfltk_dep,
     ],
@@ -10,7 +10,7 @@ shared_library(
 
 shared_library(
     'static-if',
-    ['./static-if.cpp'],
+    ['./dyn-if.cpp'],
     dependencies: [
         libfltk_dep,
     ],

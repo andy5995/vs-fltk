@@ -21,7 +21,7 @@
 #include "FL/Fl_Input.H"
 
 #include <components/containers.hpp>
-#include <components/markdown.hpp>
+#include <components/markdown-view.hpp>
 
 
 namespace vs{

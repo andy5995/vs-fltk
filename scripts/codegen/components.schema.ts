@@ -1,6 +1,6 @@
 import { Type as t } from "@sinclair/typebox"
 
-const type_schema = t.Union([t.Literal('string'), t.Literal('color'), t.Literal('scalar-1'), t.Literal('scalar-2'), t.Literal('scalar-4')], { description: 'type', default: 'string' });
+const type_schema = t.Union([t.Literal('raw'), t.Literal('string'), t.Literal('color'), t.Literal('scalar-1'), t.Literal('scalar-2'), t.Literal('scalar-4')], { description: 'type', default: 'string' });
 
 const entries_schema = t.Record(t.String(), t.Object({
     type: type_schema,

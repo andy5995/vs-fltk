@@ -4,7 +4,7 @@
 #include "FL/Fl_Input.H"
 #include "FL/Fl_Toggle_Button.H"
 #include "FL/Fl_Widget.H"
-#include "components/markdown.hpp"
+#include "components/markdown-view.hpp"
 #include "pipelines/quickjs-js.hpp"
 #include "resolvers/fs.hpp"
 #include "ui-frame.hpp"

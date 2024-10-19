@@ -1,29 +1,14 @@
-test_path_resolver = executable(
-    'path-resolver',
-    ['./path-resolver.cpp'],
-    dependencies: [vs_fltk_dep],
-)
+vg = find_program('valgrind', required: false)
+if vg.found()
+    add_test_setup(
+        'valgrind',
+        exe_wrapper: [join_paths(meson.current_source_dir(), 'valgrind_wrap.sh')],
+    )
+endif
 
-test_quickjs_integration = executable(
-    'quickjs-integration',
-    ['./quickjs-integration.cpp'],
-    dependencies: [vs_fltk_dep],
-)
+test_cases = ['tcc-integration', 'quickjs-integration', 'static-xml', 'path-resolver']
 
-test_static_xml = executable(
-    'static-xml',
-    ['./static-xml.cpp'],
-    dependencies: [vs_fltk_dep],
-)
-
-test_tcc_integration = executable(
-    'tcc-integration',
-    ['./tcc-integration.cpp'],
-    dependencies: [vs_fltk_dep],
-)
-
-test('path resolver', test_path_resolver)
-test('static xml', test_static_xml)
-
-test('tcc_integration', test_tcc_integration)
-test('quickjs integration', test_quickjs_integration)
+foreach case : test_cases
+    exe = executable('test_' + case, './' + case + '.cpp', dependencies: [vs_fltk_dep])
+    test('test_' + case, exe)
+endforeach
