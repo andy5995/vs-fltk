@@ -17,9 +17,12 @@ export const widget_schema = t.Object({
     headers: t.Optional(t.Array(t.String())),
     type: t.Union([t.Literal('leaf'), t.Literal('node'), t.Literal('container'), t.Literal('slot'), t.Literal('slot-contaiener')]),
     public: t.Optional(t.Boolean({ default: true })),
+    codegen: t.Object({
+        extends: t.Union([t.Null(), t.String()], { default: null }),
+        props_tail: t.Optional(t.Union([t.Null(), t.String()])),
+        computed_tail: t.Optional(t.Union([t.Null(), t.String()])),
+    }),
     extends: t.Union([t.Null(), t.String()], { default: null }),
-    props_tail: t.Optional(t.Union([t.Null(), t.String()])),
-    computed_tail: t.Optional(t.Union([t.Null(), t.String()])),
     props: entries_schema,
     computed: entries_schema,
 }, { additionalProperties: false })

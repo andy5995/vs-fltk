@@ -1,22 +1,25 @@
 {
-    "description": "Blabla bla",
-    "type": "leaf",
+  "description": "Blabla bla",
+  "type": "leaf",
+  "headers": ["FL/Fl_Button.H"],
+  "codegen": {
     "extends": "ui<Fl_Button>",
-    "headers": ["FL/Fl_Button.H"],
     "props_tail": "ui<Fl_Widget>",
-    "computed_tail": "ui<Fl_Widget>",
-    "props": {
-        "somethig": {
-            "type": "string",
-            "code": "",
-            "alias": ["alias-a","alias-b"]
-        }
-    },
-    "computed": {
-        "computed-a": {
-            "type": "string",
-            "code": "",
-            "alias": ["alias-a","alias-b"]
-        }
+    "computed_tail": "ui<Fl_Widget>"
+  },
+  "extends": "fl:widget",
+  "props": {
+    "somethig": {
+      "type": "string",
+      "code": "",
+      "alias": ["alias-a", "alias-b"]
     }
+  },
+  "computed": {
+    "computed-a": {
+      "type": "string",
+      "code": "",
+      "alias": ["alias-a", "alias-b"]
+    }
+  }
 }
