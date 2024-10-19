@@ -1,5 +1,5 @@
 project(
-    'fltk-vb',
+    'vs-fltk',
     ['c', 'cpp'],
     default_options: ['c_std=gnu23', 'cpp_std=c++23'],
 )
@@ -177,3 +177,4 @@ executable(
 subdir(['./components/'])
 subdir(['./experiments/'])
 subdir(['./test/'])
+subdir(['./benchmark/'])

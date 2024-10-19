@@ -6,9 +6,33 @@ if vg.found()
     )
 endif
 
-test_cases = ['tcc-integration', 'quickjs-integration', 'static-xml', 'path-resolver']
+to_pass = [
+    'tcc-integration',
+    'quickjs-integration',
+    'static-xml',
+]
+to_fail = ['path-resolver']
 
-foreach case : test_cases
-    exe = executable('test_' + case, './' + case + '.cpp', dependencies: [vs_fltk_dep])
+foreach case : to_pass
+    exe = executable(
+        'test_' + case,
+        './' + case + '.cpp',
+        dependencies: [vs_fltk_dep],
+        cpp_args: '-DIS_TESTING=true',
+    )
     test('test_' + case, exe)
+endforeach
+
+foreach case : to_fail
+    exe = executable(
+        'test_' + case,
+        './' + case + '.cpp',
+        dependencies: [vs_fltk_dep],
+        cpp_args: '-DIS_TESTING=true',
+    )
+    test(
+        'test_' + case,
+        exe,
+        should_fail: true,
+    )
 endforeach

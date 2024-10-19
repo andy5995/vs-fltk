@@ -17,23 +17,23 @@ Run the following npm scripts:
 
 ```bash
 bun run codegen             #Initial codegen from schemas
-bun run meson-configure     #Set up the meson builddir
-bun run vs                  #Compile and run the main application with the demo xml.
+bun run meson-setup         #Set up the meson builddir
 ```
 
-To perform tests:
+To perform tests and benchmarks:
 
 ```bash
-bun run meson-test
+bun run test
+bun run benchmark
 ```
 
 To run my dev demo:
 
 ```bash
-bun run vs
+bun run vs.example
 ```
 
-`meson-install` is not implemented yet. `meson-release` works, but it is only meant for automatic pipelines.
+`meson-install` is not implemented yet. `prepare-release` works, but it is only meant for automatic pipelines.
 
 ### Patches
 
@@ -52,6 +52,8 @@ Make sure you run `bun run codegen` before you attempt any further step with mes
 
 The main source for automatic code generation is located in `/schemas`. The json component definitions are compiled down into C++ classes, typescript type definitions, XSD schemas and XML data used in the embedded editor of `vs`.  
 Any component shipped with `vs` (not those externally distributed in `/components`) must have a json schema definition, even if their class definition is not automatically generated.
+
+During development, you might want to use `codegen.quick` in place of `codegen`, as long as you are not altering the number of files involved or their naming. Some changes in the schemas will be incompatible with `codegen.quick`, so if you don't observe what you expect just perform a full refresh.
 
 ## Structure of the repo
 
