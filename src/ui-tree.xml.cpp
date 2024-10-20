@@ -262,18 +262,41 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         current->add_mixin(root.attribute("name").as_string(""), tmp);
         // Always remove the `name` attribute from mixins.
       }
+      // SCRIPT.MODULE
+      else if (strcmp(root.name(), "script.module") == 0) {
+        current->mk_frame();
+        if(current->get_local_frame()->has_script()){
+          log(severety_t::WARNING, root, "Only one `script` or `script.module` is allowed per frame.");
+          continue;
+        }
+
+        if(root.attribute("$cached").as_string()!=nullptr){
+          //TODO: Recover the cached result
+        }
+  
+        if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::DEFAULT) {
+          const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
+          if (strcmp(lang, "c") == 0) {
+            auto compiler = bindings::tcc_c_pipeline_single_xml(current, nullptr, root, nullptr, true);
+            if(compiler!=nullptr)current->attach_unique_script(compiler);
+            current->set_mode(frame_mode_t::NATIVE);
+            continue;
+          }
+        }
+      }
       // SCRIPT
       else if (strcmp(root.name(), "script") == 0) {
         current->mk_frame();
-        if (!root.attribute("name").empty()) {
-          log(severety_t::WARNING, root, "Scripts cannot have a `name`");
+        if(current->get_local_frame()->has_script()){
+          log(severety_t::WARNING, root, "Only one `script` or `script.module` is allowed per frame.");
+          continue;
         }
         //I am ignoring the one of the tree. Mode is now widget based and not component based.
         auto mode =current->get_local_frame()->get_mode();
         if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::DEFAULT) {
           const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
           if (strcmp(lang, "c") == 0) {
-            resolve_path resolver(policies,global_path_env,local);
+            //resolve_path resolver(policies,global_path_env,local);
             //TODO: Because of tcc limitations these files must be local only. Check how to solve that.
             //Also, since the root is checked, policies cannot be properly applied.
             //auto link_with = doc.first_child().attribute("link-with").as_string(nullptr);

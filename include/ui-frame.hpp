@@ -58,6 +58,7 @@ enum class frame_mode_t{
   DEFAULT,
   NATIVE,
   QUICKJS,
+  LUA,
   WASM,
   EXTERNAL,
 };
@@ -219,6 +220,8 @@ class frame{
     inline frame_access_t get_access() const {return access;}
     inline frame_mode_t get_mode() const {return mode;}
     inline ctx_t get_context() const {return context;}
+
+    inline bool has_script() const {return context.shared!=nullptr && context.unique!=nullptr;}
 
     int call_dispatcher(const char* key, const char* value);
 
