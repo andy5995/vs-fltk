@@ -20,7 +20,7 @@ foreach case : to_pass
         dependencies: [vs_fltk_dep],
         cpp_args: '-DIS_TESTING=true',
     )
-    test('test_' + case, exe)
+    test('test_' + case, exe, env: ['VS_HEADLESS=true'])
 endforeach
 
 foreach case : to_fail
@@ -30,9 +30,5 @@ foreach case : to_fail
         dependencies: [vs_fltk_dep],
         cpp_args: '-DIS_TESTING=true',
     )
-    test(
-        'test_' + case,
-        exe,
-        should_fail: true,
-    )
+    test('test_' + case, exe, should_fail: true, env: ['VS_HEADLESS=true'])
 endforeach

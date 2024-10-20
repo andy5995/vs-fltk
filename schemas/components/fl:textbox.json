@@ -1,4 +1,5 @@
 {
+  "$schema": "../../commons/schemas/json-component.schema.json",
   "description": "Blabla bla",
   "type": "leaf",
   "headers": ["FL/Fl_Button.H"],

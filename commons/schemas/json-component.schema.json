@@ -1,0 +1,252 @@
+{
+    "additionalProperties": false,
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "ns": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "use_main_header": {
+            "default": null,
+            "anyOf": [
+                {
+                    "type": "null"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "headers": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "type": {
+            "anyOf": [
+                {
+                    "const": "leaf",
+                    "type": "string"
+                },
+                {
+                    "const": "node",
+                    "type": "string"
+                },
+                {
+                    "const": "container",
+                    "type": "string"
+                },
+                {
+                    "const": "slot",
+                    "type": "string"
+                },
+                {
+                    "const": "slot-contaiener",
+                    "type": "string"
+                }
+            ]
+        },
+        "public": {
+            "default": true,
+            "type": "boolean"
+        },
+        "codegen": {
+            "additionalProperties": false,
+            "type": "object",
+            "properties": {
+                "extends": {
+                    "default": null,
+                    "anyOf": [
+                        {
+                            "type": "null"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
+                "props_tail": {
+                    "anyOf": [
+                        {
+                            "type": "null"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
+                "computed_tail": {
+                    "anyOf": [
+                        {
+                            "type": "null"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "extends"
+            ]
+        },
+        "extends": {
+            "default": null,
+            "anyOf": [
+                {
+                    "type": "null"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "props": {
+            "type": "object",
+            "patternProperties": {
+                "^(.*)$": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "description": "type",
+                            "default": "string",
+                            "anyOf": [
+                                {
+                                    "type": "string",
+                                    "pattern": "^enum$"
+                                },
+                                {
+                                    "const": "raw",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "string",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "color",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "scalar-1",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "scalar-2",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "scalar-4",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "subtype": {
+                            "type": "string"
+                        },
+                        "code": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "alias": {
+                            "description": "alias names",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "code",
+                        "alias"
+                    ]
+                }
+            }
+        },
+        "computed": {
+            "type": "object",
+            "patternProperties": {
+                "^(.*)$": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "description": "type",
+                            "default": "string",
+                            "anyOf": [
+                                {
+                                    "type": "string",
+                                    "pattern": "^enum$"
+                                },
+                                {
+                                    "const": "raw",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "string",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "color",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "scalar-1",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "scalar-2",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "scalar-4",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "subtype": {
+                            "type": "string"
+                        },
+                        "code": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "alias": {
+                            "description": "alias names",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "code",
+                        "alias"
+                    ]
+                }
+            }
+        }
+    },
+    "required": [
+        "use_main_header",
+        "type",
+        "codegen",
+        "extends",
+        "props",
+        "computed"
+    ]
+}

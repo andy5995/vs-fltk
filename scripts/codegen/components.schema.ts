@@ -1,15 +1,17 @@
 import { Type as t } from "@sinclair/typebox"
 
-const type_schema = t.Union([t.Literal('raw'), t.Literal('string'), t.Literal('color'), t.Literal('scalar-1'), t.Literal('scalar-2'), t.Literal('scalar-4')], { description: 'type', default: 'string' });
+export const type_schema = t.Union([t.TemplateLiteral('enum'), t.Literal('raw'), t.Literal('string'), t.Literal('color'), t.Literal('scalar-1'), t.Literal('scalar-2'), t.Literal('scalar-4')], { description: 'type', default: 'string' });
 
 const entries_schema = t.Record(t.String(), t.Object({
     type: type_schema,
+    subtype: t.Optional(t.String()),
     code: t.String(),
     description: t.Optional(t.String()),
     alias: t.Array(t.String(), { description: "alias names" })
 }))
 
 export const widget_schema = t.Object({
+    $schema: t.Optional(t.String()),
     ns: t.Optional(t.String()),
     name: t.Optional(t.String()),
     description: t.Optional(t.String()),
@@ -21,7 +23,7 @@ export const widget_schema = t.Object({
         extends: t.Union([t.Null(), t.String()], { default: null }),
         props_tail: t.Optional(t.Union([t.Null(), t.String()])),
         computed_tail: t.Optional(t.Union([t.Null(), t.String()])),
-    }),
+    }, { additionalProperties: false }),
     extends: t.Union([t.Null(), t.String()], { default: null }),
     props: entries_schema,
     computed: entries_schema,

@@ -8,11 +8,21 @@ import type { Static } from '@sinclair/typebox';
 import { $ } from 'bun'
 import { Glob } from "bun";
 import { parse } from "node:path"
-import { widget_schema } from './components.schema';
+import { widget_schema, type_schema } from './components.schema';
 import { Value } from '@sinclair/typebox/value';
 
 import { render, JSXXML } from 'jsx-xml'
 
+
+function make_type_code(type: Static<typeof type_schema>, subtype: string, code: string) {
+    if (type === 'raw') return code;
+    else if (type === 'color') return `uint32_t computed; if((ok=ui_tree::h_colour(&computed,value,that))){${code}}`
+    else if (type === 'string') return code;
+    else if (type === 'scalar-1') return `size_t computed[1]; if((ok = ui_tree::h_px(1,computed,value,that))){${code}}`
+    else if (type === 'scalar-2') return `size_t computed[2]; if((ok = ui_tree::h_px(2,computed,value,that))){${code}}`
+    else if (type === 'scalar-4') return `size_t computed[4]; if((ok = ui_tree::h_px(4,computed,value,that))){${code}}`
+    else if (type === 'enum') return `int computed  = ${subtype}_i(value);if((ok=(t!=-1))){${code}}`
+}
 
 function gen_cpp(data: Static<typeof widget_schema>) {
     let class_decl = data.use_main_header === null ? `
@@ -60,7 +70,7 @@ int ${data.ns}_${data.name}::_apply_prop(${data.ns}_${data.name}* that, const ch
         return x[1].alias.map(y => `
     ${x[1].description ? `//${x[1].description}` : ``}
     else if(strcmp(prop,"${y}")==0){
-        ${x[1].code}
+        ${make_type_code(x[1].type, x[1].subtype ?? "", x[1].code)}
     }`).join('\n')
     }
     ).join('\n')
@@ -175,6 +185,9 @@ for await (const file of glob.scan(".")) {
 
 await Bun.write('./include/components/autogen/index.hpp', h_files.map(x => `#include <${x}>`).join('\n'))
 await Bun.write('./src/ui.xml-widgets.autogen.cpp', parser_entries.join('\n'))
+
+//Save the schema, so that our json files can all be validated in the editor while writing them.
+await Bun.write('./commons/schemas/json-component.schema.json', JSON.stringify(widget_schema, null, 4))
 
 if (process.argv[2] != 'quick') {
     await Bun.write('./src/components/autogen/meson.build', `autogen_components = [${cpp_files.map(x => `'${x}'`)}]`)
