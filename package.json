@@ -18,5 +18,8 @@
   "dependencies": {
     "@sinclair/typebox": "^0.33.16",
     "jsx-xml": "^0.2.3"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.11"
   }
 }

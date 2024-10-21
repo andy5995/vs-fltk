@@ -186,6 +186,11 @@ for await (const file of glob.scan(".")) {
 await Bun.write('./include/components/autogen/index.hpp', h_files.map(x => `#include <${x}>`).join('\n'))
 await Bun.write('./src/ui.xml-widgets.autogen.cpp', parser_entries.join('\n'))
 
+//TODO
+await Bun.write('./include/cbindings/components.autogen.h', '')
+//TODO
+await Bun.write('./src/cbindings/components.autogen.cpp', '')
+
 //Save the schema, so that our json files can all be validated in the editor while writing them.
 await Bun.write('./commons/schemas/json-component.schema.json', JSON.stringify(widget_schema, null, 4))
 

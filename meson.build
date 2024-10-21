@@ -61,7 +61,7 @@ treesitter_dep = treesitter_proj.get_variable('tree_sitter_dep')
 libtcc_proj = subproject('libtcc')
 libtcc_dep = libtcc_proj.get_variable('libtcc_dep')
 
-uv_proj = subproject('libuv', default_options: 'build_tests=false,build_benchmarks=false')
+uv_proj = subproject('libuv')
 uv_dep = uv_proj.get_variable('libuv_dep')
 
 #TODO convert to internald dep
@@ -135,6 +135,8 @@ vs_fltk = shared_library(
         './src/ui.template-builders.cpp', #TODO: Deprecate
         './src/ui.props-dispatchers.cpp', #TODO: Deprecate
 
+        './src/xml2native.cpp',
+
         './src/ui-tree.cpp',
         './src/ui-tree.xml.cpp',
         './src/ui-tree.symbols.cpp',
@@ -146,6 +148,9 @@ vs_fltk = shared_library(
         './src/pipelines/lua-lua.cpp',
 
         './src/themes/default-cute.cpp',
+
+        './src/cbindings/vs.cpp',
+        './src/cbindings/components.autogen.cpp'
     ],
     dependencies: vs_fltk_deps,
     include_directories: include_dirs,

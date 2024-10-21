@@ -1,24 +1,33 @@
 ## Building requirements
 
 You will need a proper Linux environment, with a modern C++ toolchain installed.  
+Specifically, I suggest `clang-19` as this repo is using modern C23 features like `#embed` to make everyone's life a bit easier.
 In addition to that, this repo makes use of:
 
-- [meson](https://mesonbuild.com/) as its main build system
+- [meson](https://mesonbuild.com/) as its main build system. Any recent-ish version will do (unless you want zig to simplify cross-compiling for which 1.60 is needed)
 - [bun](https://bun.sh/) as the ts/js runtime to support some codegen and the more complex releasing pipelines.  
    I hate bash, and this is what replaces it.
-- [libcurl] unless you are trying to compile a release without it.
+- [libcurl] unless you are trying to compile a release without it, which is supported.
 
 At the moment only Linux is supported, probably on any of the major CPU architecture. Possibly some more UNIX-like systems.  
 This is just temporary limitation, as all dependencies are portable, but my own code is not.
 
 ## Building process
 
-Run the following npm scripts:
+Start by installing all the `bun` dependencies needed:
+```bash
+bun install
+```
+
+Then run the following npm scripts:
 
 ```bash
 bun run codegen             #Initial codegen from schemas
 bun run meson-setup         #Set up the meson builddir
 ```
+
+You might want to use `meson-setup.clang` to use clang-19 if installed in your system, and the default compiler might not support all the modern features needed.  
+
 
 To perform tests and benchmarks:
 
@@ -27,13 +36,13 @@ bun run test
 bun run benchmark
 ```
 
-To run my dev demo:
+To run the dev demo where features under development are tested:
 
 ```bash
 bun run vs.example
 ```
 
-`meson-install` is not implemented yet. `prepare-release` works, but it is only meant for automatic pipelines.
+`meson-install` is not implemented yet. `prepare-release` works, but it is only meant for automatic pipelines at this stage.
 
 ### Patches
 
@@ -48,7 +57,7 @@ at the end of the library generation. The issue is tracked [here](https://github
 ## A word on codegen
 
 A significant portion of code in this repository is generated automatically and does not ship with your `git clone`.  
-Make sure you run `bun run codegen` before you attempt any further step with meson. I will probably integrate it in the main build file itself at some point.
+Make sure you run `bun run codegen` before you attempt any further step with meson. I will probably integrate it as part of the meson setup step.
 
 The main source for automatic code generation is located in `/schemas`. The json component definitions are compiled down into C++ classes, typescript type definitions, XSD schemas and XML data used in the embedded editor of `vs`.  
 Any component shipped with `vs` (not those externally distributed in `/components`) must have a json schema definition, even if their class definition is not automatically generated.

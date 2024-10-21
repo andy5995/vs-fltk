@@ -48,7 +48,7 @@
         "variant": "cpp",
         "__nullptr": "cpp"
     },
-    "C_Cpp.default.compileCommands": "/archive/shared/projects/fltk-vb/build/compile_commands.json",
+    "C_Cpp.default.compileCommands": "/home/checkroom/Documents/projects/vs-fltk/build/compile_commands.json",
     "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild",
     "mesonbuild.buildFolder": "build",
     "mesonbuild.linting.enabled": true,
