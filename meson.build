@@ -1,6 +1,6 @@
 project(
     'vs-fltk',
-    ['c', 'cpp'],
+    ['c', 'cpp', 'swift'],
     default_options: ['c_std=gnu23', 'cpp_std=c++23'],
 )
 
@@ -175,8 +175,16 @@ executable(
         './src/app/settings.cpp',
         './src/app/updater.cpp',
     ],
-    dependencies: [vs_fltk_dep, pugixml_dep],
+    dependencies: [vs_fltk_dep],
     override_options: ['c_std=gnuc23', 'cpp_std=c++23'],
+)
+
+executable(
+    'swift_vs',
+    [
+        './src/swift-app/app.swift',
+    ],
+    dependencies: [vs_fltk_dep],
 )
 
 subdir(['./components/'])

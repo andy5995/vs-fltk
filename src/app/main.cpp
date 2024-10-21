@@ -19,8 +19,6 @@
 #include <loader.hpp>
 #include <themes/default-cute.hpp>
 
-#include <pugixml.hpp>
-
 using namespace vs;
 
 
