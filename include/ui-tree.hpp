@@ -23,7 +23,7 @@ struct ui_tree {
   ui_script global_def;
 
   // Support during navigation
-  frame_mode_t mode = frame_mode_t::DEFAULT;
+  frame_mode_t mode = frame_mode_t::VOID;
 
 
   constexpr const char * fl_align_pos_s(Fl_Align v);

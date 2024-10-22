@@ -92,7 +92,7 @@ int ui_xml_tree::build(){
   ui_base* base;
   const auto& type = xml_root.attribute("type").as_string("native");
   if(strcmp(type,"native")==0){
-    if(is_app){base = (ui_base*)new ui_root_app(frame_mode_t::DEFAULT);}
+    if(is_app){base = (ui_base*)new ui_root_app(frame_mode_t::VOID);}
     else base = caller_ui_node;//(ui_base*)new ui_root_component(frame_mode_t::DEFAULT);
   }
   else{
@@ -274,7 +274,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
           //TODO: Recover the cached result
         }
   
-        if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::DEFAULT) {
+        if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::VOID) {
           const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
           if (strcmp(lang, "c") == 0) {
             auto compiler = bindings::tcc_c_pipeline_single_xml(current, nullptr, root, nullptr, true);
@@ -293,7 +293,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         }
         //I am ignoring the one of the tree. Mode is now widget based and not component based.
         auto mode =current->get_local_frame()->get_mode();
-        if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::DEFAULT) {
+        if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::VOID) {
           const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
           if (strcmp(lang, "c") == 0) {
             //resolve_path resolver(policies,global_path_env,local);
@@ -308,7 +308,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
             continue;
           }
         }
-        if (mode == frame_mode_t::QUICKJS || mode == frame_mode_t::DEFAULT) {
+        if (mode == frame_mode_t::QUICKJS || mode == frame_mode_t::VOID) {
           const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::QUICKJS?"js":"");
           if (strcmp(lang, "js") == 0) {
             auto compiler = bindings::qjs_js_pipeline_single_xml(current, nullptr, root, true);
@@ -341,7 +341,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         if (!tmp.empty()) {
           if(strcmp(tmp.as_string(),"native")==0)current->set_mode(frame_mode_t::NATIVE);
           else if(strcmp(tmp.as_string(),"quickjs")==0)current->set_mode(frame_mode_t::QUICKJS);
-          else{current->set_mode(frame_mode_t::DEFAULT);}
+          else{current->set_mode(frame_mode_t::VOID);}
         }
       }
 

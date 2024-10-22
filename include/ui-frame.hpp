@@ -18,7 +18,12 @@ enum class symbol_type_t{
 };
 
 enum class symbol_mode_t{
-  VOID, NATIVE, QUICKJS, WASM
+  VOID,
+  NATIVE,
+  QUICKJS,
+  WASM,
+  EXTERNAL,
+  LUA,
 };
 
 struct symbol_t{
@@ -38,8 +43,8 @@ struct symbol_ret_t{
   typedef ui_base*(*ctx_apply_fn)(ui_base*);
   typedef void(*cb_fn)(ui_base*);
   typedef void(*draw_fn)(); //TODO: to be defined
-  typedef void(*set_fn)(); //TODO: to be defined
-  typedef void(*get_fn)(); //TODO: to be defined
+  typedef int(*set_fn)(void* src);
+  typedef int(*get_fn)(void** src);
 };
 
 enum class frame_type_t{
@@ -54,14 +59,8 @@ enum class frame_access_t{
   PRIVATE,          //There can be symbols, but they are only visible by self. Requests are passed
 };
 
-enum class frame_mode_t{
-  DEFAULT,
-  NATIVE,
-  QUICKJS,
-  LUA,
-  WASM,
-  EXTERNAL,
-};
+typedef  symbol_mode_t frame_mode_t;
+
 
 struct module_symbols: smap<symbol_t>{
 };
@@ -84,7 +83,7 @@ class frame{
     typedef bool(*resolver_t)(message_t*);
 
   protected:
-    frame_mode_t mode = frame_mode_t::DEFAULT;
+    frame_mode_t mode = frame_mode_t::VOID;
 
     struct ctx_t{
         std::shared_ptr<void> shared;
@@ -103,8 +102,6 @@ class frame{
     std::shared_ptr<module_symbols> msymbols;         //For symbol resolution on function calling (module)
     smap<filter_t> filters;                           //To prevent top/down propagation of messages
     smap<resolver_t> resolvers;                       //To catch messages coming from bottom up
-
-    //smap<const void*> data;         //For data sources
 
     smap<smap<std::string>> mixins;   //Provide css-like classes for itself and children based on the same scoping rules for symbols.
 
