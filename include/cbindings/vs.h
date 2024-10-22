@@ -17,6 +17,8 @@ typedef void vs_ui_base;
     #include "./components.autogen.h"
 #endif
 
+extern void vs_hello_world();
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,8 +1,3 @@
+import vs
 
-
-struct CLIApp {
-  static func main() {
-  }
-}
-
-func main(){}
+vs_hello_world()
