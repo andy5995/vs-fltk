@@ -12,6 +12,7 @@
 
 #include "FL/Fl_Toggle_Button.H"
 #include "FL/Fl_Widget.H"
+#include "pipelines/quickjs-js.hpp"
 #include "ui-frame.hpp"
 #include "utils/strings.hpp"
 
@@ -262,7 +263,36 @@ void ui_base::refresh_style(const char* local_mixins){
   }
 }
 
-
+int ui_base::use_getter(const symbol_ret_t& sym, void ** value){
+  *value=nullptr;
+  return 1;
+}
+int ui_base::use_setter(const symbol_ret_t& sym, const void * value){
+  return 1;
+}
+int ui_base::use_callback(const symbol_ret_t& sym, ui_base * node){
+void (*fn)(ui_base*)=(void (*)(ui_base*))sym.symbol.symbol;
+  if(sym.found_at->get_mode()==frame_mode_t::NATIVE){
+    if(sym.ctx_apply.symbol!=nullptr){
+      const ui_base* (*ctx_apply)(const ui_base*) = ( const ui_base* (*)(const ui_base*) ) sym.ctx_apply.symbol;
+      const ui_base* tmp =ctx_apply(sym.found_at->widget());
+      fn(node);
+      ctx_apply(tmp);
+    }
+    else fn(node);
+  }
+  else if(sym.found_at->get_mode()==frame_mode_t::QUICKJS){
+    bindings::quickjs_t* ctx = (bindings::quickjs_t*)sym.found_at->get_context().unique.get();
+    auto globalThis = JS_GetGlobalObject(ctx->ctx);
+    auto ret= JS_Call(ctx->ctx,ctx->handles[(size_t)sym.symbol.symbol-1],globalThis,0,nullptr);
+    JS_FreeValue(ctx->ctx, ret);
+    JS_FreeValue(ctx->ctx, globalThis);
+  }
+  else{
+    //Callback type not supported yet.
+  }
+  return 1;
+}
 
 
 }

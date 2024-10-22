@@ -28,8 +28,15 @@ class ui_base{
     void reset_symbols();
     void set_dispatcher(symbol_t value);
 
+    //This is to centralize implementations in one place instead of having them spread all across for no good reason.
+    //Return 0 if success, 1 if failure for all of them.
+    static int use_getter(const symbol_ret_t& sym, void ** value);
+    static int use_setter(const symbol_ret_t& sym, const void * value);
+    static int use_callback(const symbol_ret_t& sym, ui_base * node);
+    //use_draw, use_function. use_dispatched does not exist as its usage is extremely constrained.
+    //TODO: Add vs_event or something like that to let scripts access the global event queue information.
+
     //Attach scripts
-    //TODO: Make generic?
     void attach_unique_script(const std::shared_ptr<void>& ref);
     void attach_shared_script(const std::shared_ptr<void>& ref);
 
@@ -74,6 +81,7 @@ class ui_base{
 
     virtual int get_computed(const char* prop, const char ** value) = 0;
     virtual int apply_prop(const char* prop, const char * value) = 0;
+
     smap<std::string> compute_refresh_style(const char* local_mixins="");
     void refresh_style(const char* local_mixins="");
 };

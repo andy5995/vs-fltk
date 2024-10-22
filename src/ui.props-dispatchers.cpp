@@ -39,7 +39,6 @@ template<> const char* ui<Fl_Markdown>::class_name()  {return "markdown";}
 
 //TODO: this can become the generic approach to handle symbols based on their type. For now just callbacks from the ui
 struct ui_callback_t : Fl_Callback_User_Data{
-  enum {FL_CALLBACK, SETTER, GETTER} type;
   ui_base* caller;
   symbol_ret_t sym;
 };
@@ -47,26 +46,7 @@ struct ui_callback_t : Fl_Callback_User_Data{
 //TODO: Refresh logic to check callback type
 void ui_callback_handler(Fl_Widget* _, void* _data){
   ui_callback_t* data = (ui_callback_t*)_data;
-  void (*fn)(ui_base*)=(void (*)(ui_base*))data->sym.symbol.symbol;
-  if(data->sym.found_at->get_mode()==frame_mode_t::NATIVE){
-    if(data->sym.ctx_apply.symbol!=nullptr){
-      const ui_base* (*ctx_apply)(const ui_base*) = ( const ui_base* (*)(const ui_base*) ) data->sym.ctx_apply.symbol;
-      const ui_base* tmp =ctx_apply(data->sym.found_at->widget());
-      fn(data->caller);
-      ctx_apply(tmp);
-    }
-    else fn(data->caller);
-  }
-  else if(data->sym.found_at->get_mode()==frame_mode_t::QUICKJS){
-    bindings::quickjs_t* ctx = (bindings::quickjs_t*)data->sym.found_at->get_context().unique.get();
-    auto globalThis = JS_GetGlobalObject(ctx->ctx);
-    auto ret= JS_Call(ctx->ctx,ctx->handles[(size_t)data->sym.symbol.symbol-1],globalThis,0,nullptr);
-    JS_FreeValue(ctx->ctx, ret);
-    JS_FreeValue(ctx->ctx, globalThis);
-  }
-  else{
-    //Callback type not supported yet.
-  }
+  ui_base::use_callback(data->sym, data->caller);
 }
 
 #define $eq(b) else if(strcmp((prop),(b))==0)
@@ -171,7 +151,6 @@ $start_prop(ui<Fl_Widget>){
         }
         else{
           ui_callback_t* payload = new ui_callback_t();
-          payload->type=ui_callback_t::FL_CALLBACK;
           payload->caller=that;
           payload->sym=result;
           w.callback(ui_callback_handler,payload,true);
