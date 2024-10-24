@@ -1,5 +1,5 @@
 #include <utils/paths.hpp>
-#include <resolvers/http.hpp>
+#include <resolvers/network.hpp>
 #include <ui.hpp>
 
 //TODO: Avoid directories& symlinks

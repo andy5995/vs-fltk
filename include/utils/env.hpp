@@ -13,11 +13,6 @@
 
 namespace vs{
 
-
-extern policies_t global_policy;
-
-extern path_env_t global_path_env;
-
 path_env_t mk_env(const char* arg0, const char* arg1);
 
 struct js_rt_t{
@@ -26,8 +21,6 @@ struct js_rt_t{
     ~js_rt_t();
     void* operator()();
 };
-
-extern js_rt_t global_js_rt;
 
 /**
  * @brief In case it is not configured already, it prepares the SQLITE file and all the pre-compiled queries needed.

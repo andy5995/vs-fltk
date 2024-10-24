@@ -56,6 +56,4 @@ struct severety_t{
 
 extern void vs_log(int severety, const ui_base* ctx, const char* str, ...);
 
-extern path_env_t global_path_env;
-
 }

@@ -18,24 +18,25 @@
 #include <utils/env.hpp>
 #include <loader.hpp>
 #include <themes/default-cute.hpp>
+#include <globals.hpp>
 
 using namespace vs;
 
 
 int run(const char* path, const char *entry, const char* profile){
-   global_policy.inherit(policies_t::from_env());
-   global_path_env = mk_env(path, entry);
+   globals::policy.inherit(policies_t::from_env());
+   globals::path_env = mk_env(path, entry);
         std::cout<<"\n--------- paths ---------\n";
-        std::cout <<"cwd:      "<<global_path_env.cwd.as_string()<<"\n"
-                  <<"app:      "<<global_path_env.app_path.as_string()<<"\n"
-                  <<"root:     "<<global_path_env.root.as_string()<<"\n"
-                  <<"appdata:  "<<global_path_env.appdata_path.as_string()<<"\n"
-                  <<"packages: "<<global_path_env.packages_path.as_string()<<"\n"
-                  <<"tmp:      "<<global_path_env.tmp_path.as_string()<<"\n";
+        std::cout <<"cwd:      "<<globals::path_env.cwd.as_string()<<"\n"
+                  <<"app:      "<<globals::path_env.app_path.as_string()<<"\n"
+                  <<"root:     "<<globals::path_env.root.as_string()<<"\n"
+                  <<"appdata:  "<<globals::path_env.appdata_path.as_string()<<"\n"
+                  <<"packages: "<<globals::path_env.packages_path.as_string()<<"\n"
+                  <<"tmp:      "<<globals::path_env.tmp_path.as_string()<<"\n";
 
-        std::filesystem::create_directories(global_path_env.appdata_path.location);
-        std::filesystem::create_directories(global_path_env.packages_path.location);
-        //std::filesystem::create_directories(global_path_env.tmp_path.as_string()); TODO: enable once it has unique suffix
+        std::filesystem::create_directories(globals::path_env.appdata_path.location);
+        std::filesystem::create_directories(globals::path_env.packages_path.location);
+        //std::filesystem::create_directories(globals::path_env.tmp_path.as_string()); TODO: enable once it has unique suffix
 
         try{
             app_loader loader(profile, entry);
@@ -101,7 +102,7 @@ int main(int argc, char **argv) {
   }
 
   
-  //std::filesystem::remove_all(global_path_env.tmp_path.location);
+  //std::filesystem::remove_all(globals::path_env.tmp_path.location);
  
   return 0;
 } 

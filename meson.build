@@ -105,6 +105,8 @@ subdir('./src/components/autogen')
 vs_fltk = shared_library(
     'vs-fltk',
     [
+        './src/cache/memory-storage.cpp',
+
         './src/utils/paths.cpp',
         './src/utils/strings.cpp',
         './src/utils/env.cpp',
@@ -114,7 +116,7 @@ vs_fltk = shared_library(
         './src/tcc-wrap.cpp',
 
         './src/resolvers/fs.cpp',
-        './src/resolvers/http.cpp',
+        './src/resolvers/network.cpp',
 
         './src/loader.cpp',
 
@@ -150,7 +152,9 @@ vs_fltk = shared_library(
         './src/themes/default-cute.cpp',
 
         './src/cbindings/vs.cpp',
-        './src/cbindings/components.autogen.cpp'
+        './src/cbindings/components.autogen.cpp',
+
+        './src/globals.cpp'
     ],
     dependencies: vs_fltk_deps,
     include_directories: include_dirs,

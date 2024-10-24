@@ -16,6 +16,7 @@
 #include <components/containers.hpp>
 #include <ui-tree.xml.hpp>
 #include <unistd.h>
+#include <globals.hpp>
 
 #if __has_include("components/autogen/index.hpp")
 #include <components/autogen/index.hpp>
@@ -58,7 +59,7 @@ void ui_xml_tree::log(int severety, const void* _ctx, const char* str, ...){
 //TODO: The caller node is a design flaw. We need to be given the list of props and slots. Not the full node which might not even exist.
 int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* caller_node, ui_base* caller_ui_node, const scoped_rpath_t* caller_path)
 {
-  resolve_path resolver(policies,global_path_env,(caller_path==nullptr)?global_path_env.cwd:*caller_path);
+  resolve_path resolver(policies,globals::path_env,(caller_path==nullptr)?globals::path_env.cwd:*caller_path);
   auto computed_path = resolver(resolve_path::from_t::NATIVE_CODE,file);
   if(computed_path.first!=resolve_path::reason_t::OK)return 2;
   this->local=computed_path.second.base_dir();
@@ -302,7 +303,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
             auto link_with = doc.first_child().attribute("link-with").as_string(nullptr);
             std::string tmp_link;
             if(link_with!=nullptr){
-              resolve_path resolver(policies,global_path_env,local);
+              resolve_path resolver(policies,globals::path_env,local);
               auto computed_path = resolver(resolve_path::from_t::NATIVE_CODE,link_with);
               if(computed_path.first==resolve_path::reason_t::OK){
                 //TODO: For now I am assuming it is on the fs. I should resolve it to tmp if remote for example

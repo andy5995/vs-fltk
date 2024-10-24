@@ -1,10 +1,12 @@
-#include "quickjs.h"
-#include "ui-frame.hpp"
-#include "ui.hpp"
-#include "utils/env.hpp"
 #include <memory>
+
+#include <quickjs.h>
+
+#include <ui-frame.hpp>
+#include <ui.hpp>
 #include <ui-tree.xml.hpp>
 #include <pipelines/quickjs-js.hpp>
+#include <globals.hpp>
 
 namespace vs{
 namespace pipelines{ 
@@ -187,7 +189,7 @@ static void dump_value_to_stream(JSContext* ctx,const pugi::xml_node& node, JSVa
 }
 
 std::shared_ptr<quickjs_t> qjs_js_pipeline(bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), const char *link_with){
-    std::shared_ptr<quickjs_t> _ctx = std::make_shared<quickjs_t>((JSRuntime*)(global_js_rt()));
+    std::shared_ptr<quickjs_t> _ctx = std::make_shared<quickjs_t>((JSRuntime*)(globals::js_rt()));
     return _ctx;
 }
 
@@ -199,7 +201,7 @@ void qjs_js_pipeline_apply(const std::shared_ptr<quickjs_t>& script,vs::ui_base*
 extern std::shared_ptr<quickjs_t> qjs_js_pipeline_single_xml(vs::ui_base* obj, vs::ui_base* component_root, const pugi::xml_node& node, bool is_runtime){
     //TODO: If using the cache I can duplicate from one already mostly defined.
     //std::shared_ptr<quickjs_t> _ctx = std::make_shared<quickjs_t>((JSRuntime*)(global_js_rt()));
-    std::shared_ptr<quickjs_t> _ctx = std::shared_ptr<quickjs_t>( new quickjs_t((JSRuntime*)(global_js_rt())), +[](void* o){delete (quickjs_t*)o;});
+    std::shared_ptr<quickjs_t> _ctx = std::shared_ptr<quickjs_t>( new quickjs_t((JSRuntime*)(globals::js_rt())), +[](void* o){delete (quickjs_t*)o;});
 
 
     auto& ctx = *_ctx;
