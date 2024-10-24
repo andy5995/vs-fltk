@@ -29,9 +29,7 @@ To be changes so that it can do everything in a single function.
 
 #define LIB(x)     script->add_sym(#x, (void *)x)
 
-std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), void(*register_fn)(void*,const char*, const char*), const char *link_with){
-    //For now since we don't handel it
-    if(obj==nullptr)return nullptr;
+std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), const char *link_with){
 
     auto script = std::make_shared<tcc>();
 
@@ -106,6 +104,12 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
 
     script->relocate();
 
+    auto on_compiled = (uint64_t(*)())script->get_sym("on_compiled");
+    if(on_compiled!=nullptr)on_compiled();
+    return script;
+}
+
+void tcc_c_pipeline_apply(const std::shared_ptr<tcc>& script,vs::ui_base* obj,void* ctx,void(*register_fn)(void*,const char*, const char*)){
     struct callback_ctx_t{
         ui_base* node_ui;
         void* ref;
@@ -141,9 +145,6 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
         }
     });
     
-    auto on_compiled = (uint64_t(*)())script->get_sym("on_compiled");
-    if(on_compiled!=nullptr)on_compiled();
-    return script;
 }
 
 #undef LIB

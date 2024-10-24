@@ -305,6 +305,8 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
             //auto link_with_path = resolver(link_with);
             //std::cout<<"LINKING"<<link_with_path.second.location.c_str()<<"\n";
             auto compiler = pipelines::tcc_c_pipeline_xml(true, current, root, nullptr);
+            pipelines::tcc_c_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::tcc_log_symbol_func_xml);
+
             if(compiler!=nullptr)current->attach_unique_script(compiler);
             current->set_mode(frame_mode_t::NATIVE);
             continue;
