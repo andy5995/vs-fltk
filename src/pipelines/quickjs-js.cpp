@@ -7,7 +7,7 @@
 #include <pipelines/quickjs-js.hpp>
 
 namespace vs{
-namespace bindings{ 
+namespace pipelines{ 
 
 static void qjs_error_func_xml(const pugi::xml_node& env, const char * msg) {
     printf("\n\033[41;37;1m[QJS]\033[0m      : %s @ [\033[93;3m%s\033[0m]", msg,env.path().c_str());

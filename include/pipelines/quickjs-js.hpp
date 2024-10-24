@@ -6,8 +6,10 @@
 
 #include <pugixml.hpp>
 
+//TODO: restructure following changes in the tcc interface
+
 namespace vs{
-namespace bindings{
+namespace pipelines{
 
 /*
 struct jsctx{

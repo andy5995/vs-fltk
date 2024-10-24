@@ -23,7 +23,7 @@ namespace vs{
 struct vpath_type_t{
     enum t{
         NONE,
-        THIS,FS,HTTP,HTTPS,TMP,DATA,REPO,APP,VS,CWD,  //Real paths
+        THIS,FS,HTTP,HTTPS,GEMINI,TMP,DATA,REPO,APP,VS,CWD,  //Real paths
         SOCKET,                                 //External endpoint
         STORAGE,SESSION                         //Cache loopbacks
     };
@@ -34,13 +34,14 @@ struct vpath_type_t{
         "file://",      //Local fs
         "http://",      //Unprotected http traffic
         "https://",     //Encrypted http traffic
+        "gemini://",    //Encrypted gemini traffic
         "tmp://",       //Location on disk which can be used to store temporary files (cannot ..)
-        "data://",       //Location on disk where packages & custom elements are stored (cannot ..)
-        "repo://",       //Location on disk where packages & custom elements are stored (cannot ..)
+        "data://",      //Location on disk where packages & custom elements are stored (cannot ..)
+        "repo://",      //Location on disk where packages & custom elements are stored (cannot ..)
         "app://",       //Location on disk where the root application node is stored (cannot ..)
-        "vs://",        //Location on disk where the VS application is hosted (cannot ..)
-        "cwd://",       //Location on disk of the current working directory
-        "socket://",    //Location of the socket endpoint used for external code (cannot ..)
+        "vs://",       //Location on disk where the VS application is hosted (cannot ..)
+        "cwd://",      //Location on disk of the current working directory
+        "socket://",   //Location of the socket endpoint used for external code (cannot ..)
         "storage://",  //Loopback to the internal permanent cache. Format: class/key/hash
         "session://",  //Loopback to the internal temporary cache. Format: class/key/hash
     };
@@ -53,7 +54,7 @@ struct vpath_type_t{
 struct rpath_type_t{
     enum t{
         NONE,
-        FS,HTTP,HTTPS
+        FS,HTTP,HTTPS, GEMINI
     };
 
     static inline constexpr const char* prefixes[] = {
@@ -61,6 +62,7 @@ struct rpath_type_t{
         "file://",      //Local fs
         "http://",      //Unprotected http traffic
         "https://",     //Encrypted http traffic
+        "gemini://",     //Encrypted http traffic
     };
 
     static inline constexpr const char* as_string(t idx){
@@ -85,6 +87,7 @@ struct scoped_vpath_t{
         else vprefix(vpath_type_t::FS)
         else vprefix(vpath_type_t::HTTP)
         else vprefix(vpath_type_t::HTTPS)
+        else vprefix(vpath_type_t::GEMINI)
         else vprefix(vpath_type_t::TMP)
         else vprefix(vpath_type_t::VS)
         else vprefix(vpath_type_t::SOCKET)
@@ -115,6 +118,7 @@ struct scoped_rpath_t{
         rprefix(rpath_type_t::FS)
         else rprefix(rpath_type_t::HTTP)
         else rprefix(rpath_type_t::HTTPS)
+        else rprefix(rpath_type_t::GEMINI)
 
         else {type=rpath_type_t::FS;location=src;}
     }
@@ -154,6 +158,10 @@ struct resolve_path{
 
     public:
 
+    enum class from_t{
+        EMBEDDED_SCRIPT, NATIVE_CODE,
+    };
+
     inline resolve_path(const policies_t& _0, const path_env_t& _1, const scoped_rpath_t& _2):policies(_0),env(_1),local(_2){}
 
     struct reason_t{
@@ -184,7 +192,9 @@ struct resolve_path{
     };
 
     std::pair<bool, std::string> static normalizer(const char *parent, const char *child, bool allow_exit, bool base_dir=false);
-    std::pair<reason_t::t,scoped_rpath_t> operator()(const char* src);
+
+    ///Try to resolve the path described by src based on the policies, env, and current path.
+    std::pair<reason_t::t,scoped_rpath_t> operator()(from_t from,const char* src);
 };
 
 #undef tnk

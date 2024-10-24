@@ -285,7 +285,7 @@ void (*fn)(ui_base*)=(void (*)(ui_base*))sym.symbol.symbol;
     }
   }
   else if(sym.found_at->get_mode()==frame_mode_t::QUICKJS){
-    bindings::quickjs_t* ctx = (bindings::quickjs_t*)sym.found_at->get_context().unique.get();
+    pipelines::quickjs_t* ctx = (pipelines::quickjs_t*)sym.found_at->get_context().unique.get();
     auto globalThis = JS_GetGlobalObject(ctx->ctx);
     auto ret= JS_Call(ctx->ctx,ctx->handles[(size_t)sym.symbol.symbol-1],globalThis,0,nullptr);
     JS_FreeValue(ctx->ctx, ret);

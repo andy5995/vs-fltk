@@ -55,7 +55,7 @@ std::pair<bool, std::string> resolve_path::normalizer(const char *parent, const 
 }
 
 //TODO: Once policies are implemented, they will be tested in here as well.
-std::pair<resolve_path::reason_t::t,scoped_rpath_t> resolve_path::operator()(const char* src){
+std::pair<resolve_path::reason_t::t,scoped_rpath_t> resolve_path::operator()(from_t from,const char* src){
     scoped_vpath_t tmp; tmp.from_string(src);
 
     if(tmp.type==vpath_type_t::THIS){
@@ -66,40 +66,33 @@ std::pair<resolve_path::reason_t::t,scoped_rpath_t> resolve_path::operator()(con
         else return {reason_t::ROOT_REACHED, {rpath_type_t::NONE, ""}};
     }
     //All on FS Block
-    else if(tmp.type==vpath_type_t::APP){
-        auto normalized = normalizer(env.app_path.location.data(), tmp.location.data(), false);
-        if(normalized.first){
-            return {reason_t::OK,{rpath_type_t::FS,normalized.second}};
-        }
-        else return {reason_t::ROOT_REACHED, {rpath_type_t::NONE, ""}};
-    }
     else if(tmp.type==vpath_type_t::CWD){
         auto normalized = normalizer(env.cwd.location.data(), tmp.location.data(), false);
         if(normalized.first){
-            return {reason_t::OK,{rpath_type_t::FS,normalized.second}};
+            return {reason_t::OK,{env.cwd.type,normalized.second}};
         }
         else return {reason_t::ROOT_REACHED, {rpath_type_t::NONE, ""}};
     }
     else if(tmp.type==vpath_type_t::REPO){
         auto normalized = normalizer(env.packages_path.location.data(), tmp.location.data(), false);
         if(normalized.first){
-            return {reason_t::OK,{rpath_type_t::FS,normalized.second}};
+            return {reason_t::OK,{env.packages_path.type,normalized.second}};
         }
         else return {reason_t::ROOT_REACHED, {rpath_type_t::NONE, ""}};
     }
     else if(tmp.type==vpath_type_t::DATA){
         auto normalized = normalizer(env.appdata_path.location.data(), tmp.location.data(), false);
         if(normalized.first){
-            return {reason_t::OK,{rpath_type_t::FS,normalized.second}};
+            return {reason_t::OK,{env.appdata_path.type,normalized.second}};
         }
         else return {reason_t::ROOT_REACHED, {rpath_type_t::NONE, ""}};
     }
     else if(tmp.type==vpath_type_t::TMP){
         auto normalized = normalizer(env.tmp_path.location.data(), tmp.location.data(), false);
         if(normalized.first){
-            return {reason_t::OK,{rpath_type_t::FS,normalized.second}};
+            return {reason_t::OK,{env.tmp_path.type,normalized.second}};
         }
-        else return {reason_t::ROOT_REACHED, {rpath_type_t::NONE, ""}};
+        else return {reason_t::ROOT_REACHED, {env.tmp_path.type, ""}};
     }
     else if(tmp.type==vpath_type_t::VS){
         auto normalized = normalizer(env.app_path.location.data(), tmp.location.data(), false);
@@ -109,13 +102,31 @@ std::pair<resolve_path::reason_t::t,scoped_rpath_t> resolve_path::operator()(con
         else return {reason_t::ROOT_REACHED, {rpath_type_t::NONE, ""}};
     }
     else if(tmp.type==vpath_type_t::FS){
-        return {reason_t::OK, {rpath_type_t::FS, tmp.location}};
+        if(from==from_t::NATIVE_CODE || policies.scripts.allow_fs)
+            return {reason_t::OK, {rpath_type_t::FS, tmp.location}};
+        else return {reason_t::POLICY_VIOLATION, {rpath_type_t::NONE, ""}};
+    }
+    else if(tmp.type==vpath_type_t::APP){
+        auto normalized = normalizer(env.root.location.data(), tmp.location.data(), false);
+        if(normalized.first){
+            return {reason_t::OK,{env.root.type,normalized.second}};
+        }
+        else return {reason_t::ROOT_REACHED, {rpath_type_t::NONE, ""}};
     }
     else if(tmp.type==vpath_type_t::HTTP){
-        return {reason_t::OK, {rpath_type_t::HTTP, tmp.location}};
+        if(((from==from_t::NATIVE_CODE) || (from==from_t::EMBEDDED_SCRIPT && policies.scripts.allow_networking)) && policies.networking.allow_http)
+            return {reason_t::OK, {rpath_type_t::HTTP, tmp.location}};
+        else return {reason_t::POLICY_VIOLATION, {rpath_type_t::NONE, ""}};
     }
     else if(tmp.type==vpath_type_t::HTTPS){
-        return {reason_t::OK, {rpath_type_t::HTTPS, tmp.location}};
+        if(((from==from_t::NATIVE_CODE) || (from==from_t::EMBEDDED_SCRIPT && policies.scripts.allow_networking)) && policies.networking.allow_https)
+            return {reason_t::OK, {rpath_type_t::HTTPS, tmp.location}};
+        else return {reason_t::POLICY_VIOLATION, {rpath_type_t::NONE, ""}};
+    }
+    else if(tmp.type==vpath_type_t::GEMINI){
+        if(((from==from_t::NATIVE_CODE) || (from==from_t::EMBEDDED_SCRIPT && policies.scripts.allow_networking)) && policies.networking.allow_gemini)
+            return {reason_t::OK, {rpath_type_t::GEMINI, tmp.location}};
+        else return {reason_t::POLICY_VIOLATION, {rpath_type_t::NONE, ""}};
     }
     return {reason_t::MALFORMED,{rpath_type_t::NONE, ""}};
 }  

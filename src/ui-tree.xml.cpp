@@ -59,7 +59,7 @@ void ui_xml_tree::log(int severety, const void* _ctx, const char* str, ...){
 int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* caller_node, ui_base* caller_ui_node, const scoped_rpath_t* caller_path)
 {
   resolve_path resolver(policies,global_path_env,(caller_path==nullptr)?global_path_env.cwd:*caller_path);
-  auto computed_path = resolver(file);
+  auto computed_path = resolver(resolve_path::from_t::NATIVE_CODE,file);
   if(computed_path.first!=resolve_path::reason_t::OK)return 2;
   this->local=computed_path.second.base_dir();
   this->fullname=computed_path.second;
@@ -315,7 +315,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         if (mode == frame_mode_t::QUICKJS || mode == frame_mode_t::VOID) {
           const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::QUICKJS?"js":"");
           if (strcmp(lang, "js") == 0) {
-            auto compiler = bindings::qjs_js_pipeline_single_xml(current, nullptr, root, true);
+            auto compiler = pipelines::qjs_js_pipeline_single_xml(current, nullptr, root, true);
             if(compiler!=nullptr)current->attach_unique_script(compiler);
             current->set_mode(frame_mode_t::QUICKJS);
             continue;
