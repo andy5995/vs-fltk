@@ -298,17 +298,24 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::VOID) {
           const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
           if (strcmp(lang, "c") == 0) {
-            //resolve_path resolver(policies,global_path_env,local);
-            //TODO: Because of tcc limitations these files must be local only. Check how to solve that.
-            //Also, since the root is checked, policies cannot be properly applied.
-            //auto link_with = doc.first_child().attribute("link-with").as_string(nullptr);
-            //auto link_with_path = resolver(link_with);
-            //std::cout<<"LINKING"<<link_with_path.second.location.c_str()<<"\n";
-            auto compiler = pipelines::tcc_c_pipeline_xml(true, current, root, nullptr);
-            pipelines::tcc_c_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::tcc_log_symbol_func_xml);
-
-            if(compiler!=nullptr)current->attach_unique_script(compiler);
-            current->set_mode(frame_mode_t::NATIVE);
+            //Maybe took it away from app and place it locally for each script? Not sure. 
+            auto link_with = doc.first_child().attribute("link-with").as_string(nullptr);
+            std::string tmp_link;
+            if(link_with!=nullptr){
+              resolve_path resolver(policies,global_path_env,local);
+              auto computed_path = resolver(resolve_path::from_t::NATIVE_CODE,link_with);
+              if(computed_path.first==resolve_path::reason_t::OK){
+                //TODO: For now I am assuming it is on the fs. I should resolve it to tmp if remote for example
+                tmp_link=computed_path.second.location;
+                log(severety_t::INFO, root, "Requested linking with `%s`", link_with);
+              }
+            }
+            auto compiler = pipelines::tcc_c_pipeline_xml(true, current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
+            if(compiler!=nullptr){
+              pipelines::tcc_c_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::tcc_log_symbol_func_xml);
+              current->attach_unique_script(compiler);
+              current->set_mode(frame_mode_t::NATIVE);
+            }
             continue;
           }
         }

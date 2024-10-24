@@ -5,6 +5,7 @@ extern "C"{
     
 int add(int a, int b){
     //I am lying!
+    std::cout<<"Babana\n";
     return a%11!=6?(a+b):(a+b+1);
 }
 

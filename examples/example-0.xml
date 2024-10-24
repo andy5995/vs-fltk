@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<app type="native">
+<app type="native" link-with="this://native-app/app">
     <import src="file://./two-buttons.xml" as="TwoButtons" />
     <import src="file://./three-buttons.xml" as="ThreeButtons">
         <label>It does not exist</label>
@@ -28,7 +28,9 @@
         <button label="callback-top">
             <script lang="c">
             <![CDATA[ 
+            #include <app.h>
             void callback(){
+                add(1,2);
                 $log(0,"Tying call %p",$("..."));
                 $$prop($("..."),"ciao","mondo");
                 return;

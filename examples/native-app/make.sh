@@ -1,2 +1,2 @@
 #!/bin/sh
-cc -shared -fPIC -o libapp.so app.cpp -ldl
+cc -shared  -rdynamic -fPIC -o libapp.so app.cpp  -lstdc++

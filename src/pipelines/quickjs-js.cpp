@@ -186,6 +186,15 @@ static void dump_value_to_stream(JSContext* ctx,const pugi::xml_node& node, JSVa
     }
 }
 
+std::shared_ptr<quickjs_t> qjs_js_pipeline(bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), const char *link_with){
+    std::shared_ptr<quickjs_t> _ctx = std::make_shared<quickjs_t>((JSRuntime*)(global_js_rt()));
+    return _ctx;
+}
+
+void qjs_js_pipeline_apply(const std::shared_ptr<quickjs_t>& script,vs::ui_base* obj,void* ctx,void(*register_fn)(void*,const char*, const char*)){
+
+}
+
 
 extern std::shared_ptr<quickjs_t> qjs_js_pipeline_single_xml(vs::ui_base* obj, vs::ui_base* component_root, const pugi::xml_node& node, bool is_runtime){
     //TODO: If using the cache I can duplicate from one already mostly defined.
@@ -293,6 +302,8 @@ extern std::shared_ptr<quickjs_t> qjs_js_pipeline_single_xml(vs::ui_base* obj, v
 
     return _ctx;
 }
+
+
 
 }
 }

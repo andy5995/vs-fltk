@@ -2,6 +2,7 @@
 #include "ui.hpp"
 #include <cstddef>
 
+#include <iostream>
 #include <pipelines/tcc-c.hpp>
 #include <ui-tree.xml.hpp>
 
@@ -26,22 +27,39 @@ To be changes so that it can do everything in a single function.
 -  bool is_runtime
 */
 
+//'/home/checkroom/Documents/projects/vs-fltk/subprojects/libtcc/tcc'  test.c  -I../../subprojects/libtcc/include/ -L.  -L../../subprojects/libtcc -lapp 
 
-#define LIB(x)     script->add_sym(#x, (void *)x)
+#define LIB(x)  script->add_sym(#x, (void*) x)
+#define LIBT(x,t)  script->add_sym(#x, (void*) t x)
 
 std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), const char *link_with){
-
     auto script = std::make_shared<tcc>();
 
+    //This part is a bit of a mess.
+    //Without libc.so and libtcc1.a (not sure which) dynamic linking is not working as expected. I would really like to remove the libc dependency.
+
     script->set_error_fn(ctx,error_fn);
-    script->set_opts("-nostdlib"); //-fno-builtin
+    //script->set_opts("-nostdlib"); //-fno-builtin
+    script->add_lib_path("/usr/lib/x86_64-linux-gnu/"); //I dont' want to hardcode this one.
+    script->add_lib_path("./subprojects/libtcc");
+
     script->set_out_type(tcc::memory);
     script->add_sysinclude_path("./subprojects/libtcc/include/");
     script->add_include_path("./bindings/native/include");
+    
+    //script->add_lib("d");
+    //script->add_lib("tcc1");
+    //script->add_lib("c");
+
 
     if(link_with!=nullptr){
-        //TODO: Add header path
-        //Boilerplate for dlopen?
+        //TODO: Split in the last "/" position. Left is path for include and libraries to link, the remaining tag is the name it has.
+        std::string link_header=(std::string(link_with));
+        link_header.append(".h");
+        std::string link_lib=(std::string(link_with));
+        script->add_lib_path("/home/checkroom/Documents/projects/vs-fltk/examples/native-app/");
+        script->add_include_path("/home/checkroom/Documents/projects/vs-fltk/examples/native-app/");
+        script->add_lib("app");
     }
 
     // Custom symbol
@@ -73,13 +91,13 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     LIB(strncmp);
     LIB(strxfrm);
 
-    LIB((void*(*)(void*, int, size_t))memchr);
-    LIB((char*(*)(char*, int))strchr);
+    LIBT(memchr,(void*(*)(void*, int, size_t)));
+    LIBT(strchr,(char*(*)(char*, int)));
     LIB(strcspn);
-    LIB((char*(*)(char*, const char* ))strpbrk);
-    LIB((char*(*)(char*, int))strrchr);
+    LIBT(strpbrk,(char*(*)(char*, const char* )));
+    LIBT(strrchr,(char*(*)(char*, int)));
     LIB(strspn);
-    LIB((char*(*)(char*, const char*))strstr);
+    LIBT(strstr,(char*(*)(char*, const char*)));
     LIB(strtok);
 
     LIB(memset);
@@ -102,6 +120,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
         ""
     );
 
+    //TODO Tcc error handling if compile fails to show error but fail to generate the tcc smart pointer.
     script->relocate();
 
     auto on_compiled = (uint64_t(*)())script->get_sym("on_compiled");
@@ -148,6 +167,7 @@ void tcc_c_pipeline_apply(const std::shared_ptr<tcc>& script,vs::ui_base* obj,vo
 }
 
 #undef LIB
+#undef LIBT
 
 }
 }
