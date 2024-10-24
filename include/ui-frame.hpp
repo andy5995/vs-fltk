@@ -97,7 +97,7 @@ class frame{
     ui_base* ui_node =nullptr;
 
     smap<frame*> children;
-    symbol_t custom_dispatcher;
+    symbol_t custom_dispatcher = symbol_t::VOID;
     local_symbols symbols;                            //For symbol resolution on function calling (local)
     std::shared_ptr<module_symbols> msymbols;         //For symbol resolution on function calling (module)
     smap<filter_t> filters;                           //To prevent top/down propagation of messages

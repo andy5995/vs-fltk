@@ -59,7 +59,7 @@ at the end of the library generation. The issue is tracked [here](https://github
 A significant portion of code in this repository is generated automatically and does not ship with your `git clone`.  
 Make sure you run `bun run codegen` before you attempt any further step with meson. I will probably integrate it as part of the meson setup step.
 
-The main source for automatic code generation is located in `/schemas`. The json component definitions are compiled down into C++ classes, typescript type definitions, XSD schemas and XML data used in the embedded editor of `vs`.  
+The main source for automatic code generation is located in `/schemas`. The json component definitions are compiled down into C++ classes, c bindings, typescript type definitions, XSD schemas and XML data used in the embedded editor of `vs`.  
 Any component shipped with `vs` (not those externally distributed in `/components`) must have a json schema definition, even if their class definition is not automatically generated.
 
 During development, you might want to use `codegen.quick` in place of `codegen`, as long as you are not altering the number of files involved or their naming. Some changes in the schemas will be incompatible with `codegen.quick`, so if you don't observe what you expect just perform a full refresh.

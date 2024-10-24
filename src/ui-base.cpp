@@ -1,4 +1,3 @@
-#include <iostream>
 #include <ostream>
 #include <sstream>
 #include <ui.hpp>
@@ -278,8 +277,12 @@ void (*fn)(ui_base*)=(void (*)(ui_base*))sym.symbol.symbol;
       const ui_base* tmp =ctx_apply(sym.found_at->widget());
       fn(node);
       ctx_apply(tmp);
+      return 0;
     }
-    else fn(node);
+    else{
+      fn(node);
+      return 0;
+    }
   }
   else if(sym.found_at->get_mode()==frame_mode_t::QUICKJS){
     bindings::quickjs_t* ctx = (bindings::quickjs_t*)sym.found_at->get_context().unique.get();
@@ -287,6 +290,7 @@ void (*fn)(ui_base*)=(void (*)(ui_base*))sym.symbol.symbol;
     auto ret= JS_Call(ctx->ctx,ctx->handles[(size_t)sym.symbol.symbol-1],globalThis,0,nullptr);
     JS_FreeValue(ctx->ctx, ret);
     JS_FreeValue(ctx->ctx, globalThis);
+    return 0;
   }
   else{
     //Callback type not supported yet.

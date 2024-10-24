@@ -82,20 +82,10 @@
                 
                 int count=0;
 
-                int test(void* _args){
-                    struct args_t{int a; int b;} *args = _args;
-                    $log(LOG_LOG,"DRIP, DROP %d",args->a,+args->b);
-                    return 0;
-                }
-                $cb(test);
-
                 void on_click_a(){
+                    
                     static char strbuff[32];
-                    struct args_t{int a; int b;} args = {10,20};
-                    __vs_call(&vs_self,"test",&args);
-                    $call("test",&args);
-                    test(&args);
-                    self_t tmp = vs_resolve_name("%tmp-data");
+                    node_t tmp = $("%tmp-data");
                     if(tmp!=0){
                         itoa(count,strbuff,10);
                         vs_apply_prop(tmp,"label",strbuff);
@@ -112,6 +102,7 @@
                     else 
                         $log(LOG_LOG,"But nobody came.");
                     count++;
+                    
                 }
                 $cb(on_click_a);
 
@@ -127,7 +118,7 @@
         <button base="parent" box="0,40,80,30" on.callback="on_click_a" label="BTN2">
             <script lang="c">
             <![CDATA[ 
-            void callback(){
+            int callback(){
                 //app_debug("Hello world 2");
             }
             ]]>

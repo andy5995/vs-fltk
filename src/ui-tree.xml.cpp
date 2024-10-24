@@ -15,6 +15,7 @@
 #include <ui.hpp>
 #include <components/containers.hpp>
 #include <ui-tree.xml.hpp>
+#include <unistd.h>
 
 #if __has_include("components/autogen/index.hpp")
 #include <components/autogen/index.hpp>
@@ -246,7 +247,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
 
   void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, ui_base* current) {
     
-    for (const auto &root : root.children()) {
+    for (auto &root : root.children()) {
 
       // MIXIN
       if (strcmp(root.name(), "mixin") == 0) {
@@ -272,12 +273,13 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
 
         if(root.attribute("$cached").as_string()!=nullptr){
           //TODO: Recover the cached result
+          continue;
         }
   
         if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::VOID) {
           const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
           if (strcmp(lang, "c") == 0) {
-            auto compiler = bindings::tcc_c_pipeline_single_xml(current, nullptr, root, nullptr, true);
+            auto compiler = pipelines::tcc_c_pipeline_xml(true, nullptr, root, nullptr);
             if(compiler!=nullptr)current->attach_unique_script(compiler);
             current->set_mode(frame_mode_t::NATIVE);
             continue;
@@ -302,7 +304,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
             //auto link_with = doc.first_child().attribute("link-with").as_string(nullptr);
             //auto link_with_path = resolver(link_with);
             //std::cout<<"LINKING"<<link_with_path.second.location.c_str()<<"\n";
-            auto compiler = bindings::tcc_c_pipeline_single_xml(current, nullptr, root, nullptr, true);
+            auto compiler = pipelines::tcc_c_pipeline_xml(true, current, root, nullptr);
             if(compiler!=nullptr)current->attach_unique_script(compiler);
             current->set_mode(frame_mode_t::NATIVE);
             continue;
