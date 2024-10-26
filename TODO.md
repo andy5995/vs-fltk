@@ -10,6 +10,10 @@
 - [ ] Add namespaces for vs elements and fltk elements
 - [ ] Add support for more widgets to make this thing usable
 - [ ] Add support of loading of so/dylib/dll modules
+  - [x] Test linking
+  - [ ] On http/s & gemini
+  - [ ] Without libc?
+  - [ ] If nobuiltin is not usable, I need to add more of libtcc to meson targets.
 - [x] Split align property
 - [ ] Split font property
 - [x] Expose some sort of inverse for apply_prop, where selected fields can be read from a widget.
@@ -18,9 +22,12 @@
 - [ ] Add pipelines for compilation & testing on github/gitea
 - [ ] Policies are so complex to write manually and very easy to mess them up.
       Maybe code generation starting from a schema might be a better option.
-- [ ] Simplify codegen for all computed/props types which are not `raw` by writing more or the boilerplate.
+- [x] Simplify codegen for all computed/props types which are not `raw` by writing more or the boilerplate.
 
 # Static XML builder
+
+- [ ] Add support for element.text() in query.
+- [ ] Replace the current split implementation with something not requiring these many allocations
 
 ## Block based:
 
@@ -28,8 +35,8 @@
 - [ ] for
   - [x] base structure
   - [ ] filter
-  - [ ] sort & order
-  - [ ] limit & offset
+  - [x] sort & order
+  - [x] limit & offset
 - [ ] for-prop (cpy&paste from `for`)
 - [x] value
 - [x] element
