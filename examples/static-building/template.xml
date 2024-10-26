@@ -26,6 +26,8 @@
                     <s:item>
                         <s:value
                             src="{wew}/s/s/">NO VALUE</s:value>
+                        Q:<s:value
+                            src="{button}~text">NO VALUE</s:value>:
                         <button s:value.src.label="$~text" />
                     </s:item>
                 </s:for>

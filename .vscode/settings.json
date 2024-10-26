@@ -65,4 +65,5 @@
         "editor.formatOnSave": false,
         "editor.formatOnPaste": false
     },
+    "mesonbuild.linter.muon.enabled": false,
 }

@@ -24,4 +24,5 @@ executable(
     ['./preprocessor.cpp'],
     dependencies: [pugixml_dep],
     override_options: ['cpp_std=c++20'],
+    c_args: ['-Wvla-cxx-extension']
 )

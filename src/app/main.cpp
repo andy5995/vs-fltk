@@ -62,7 +62,8 @@ int main(int argc, char **argv) {
         return 1;
       }
 
-      return run(argv[0],argv[2],nullptr);
+      auto t =run(argv[0],argv[2],nullptr);
+      return t;
     }
     else if(strcmp(argv[1],"version")==0){
         versions_t versions = get_versions();
@@ -103,6 +104,5 @@ int main(int argc, char **argv) {
 
   
   //std::filesystem::remove_all(globals::path_env.tmp_path.location);
- 
   return 0;
 } 

@@ -4,6 +4,7 @@ project(
     default_options: ['c_std=gnu23', 'cpp_std=c++23'],
 )
 
+
 cmake = import('cmake')
 
 opt_fltk = cmake.subproject_options()

@@ -1,8 +1,10 @@
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <map>
 #include <optional>
+#include <set>
 #include <stack>
 #include <string>
 #include <variant>
@@ -25,7 +27,6 @@ const T& get_or(const auto& ref, const T& defval) noexcept{
 
 const char* ns_prefix = "s:";
 size_t ns_prefix_len = strlen(ns_prefix);
-
 
 
 //Utility class to implement a list of symbols. Use for `for` like structures in pattern matching.
@@ -113,7 +114,7 @@ struct document{
     }
 
     //Transforming a string into a parsed symbol
-    std::optional<std::variant<int,const pugi::xml_node, const pugi::xml_attribute, std::string>> resolve_expr(const char* _str, int limit = -1){
+    std::optional<std::variant<int,const pugi::xml_node, const pugi::xml_attribute, std::string>> resolve_expr(const char* _str, const pugi::xml_node* base=nullptr){
         int str_len = strlen(_str);
         char str[str_len+1];
         memcpy(str,_str,str_len+1);
@@ -142,11 +143,15 @@ struct document{
         }
         else if(str[0]=='$'){
 
-            auto tmp =  symbols.resolve("$");
-            if(!tmp.has_value() || std::holds_alternative<const pugi::xml_node>(tmp.value())==false)return {};
-            else{
-                ref=std::get<const pugi::xml_node>(tmp.value());
+            if(base==nullptr){
+                auto tmp = symbols.resolve("$");
+                if(!tmp.has_value() || std::holds_alternative<const pugi::xml_node>(tmp.value())==false)return {};
+                else{
+                    ref=std::get<const pugi::xml_node>(tmp.value());
+                }
             }
+            else ref=*base;
+
             if(str[1]==0)return ref;            //End of string was met earlier
             idx++;
         }
@@ -159,18 +164,45 @@ struct document{
         for(;;){
             int close = idx;
             for(;close<str_len && str[close]!='/' && str[close]!='~';close++);
+            char oldc=str[close];
             str[close]=0;
             if(idx!=close)ref = ref.child(str+idx); //Avoid the prefix /
             if(close==str_len )return ref;            //End of string was met earlier
-            else if(str[close]=='~'){idx=close;break;}
+            else if(oldc=='~'){str[close]=oldc;idx=close;break;}
             else{idx=close+1;}
         }
         //Process the terminal attribute
         if(str[idx]=='~'){
+            std::cout<<"Returning "<<str<<" as "<<ref.attribute(str+idx+1).as_string();
             return ref.attribute(str+idx+1).as_string();
         }
 
+        //TODO: Add command type to return the text() of a node as string.
+
         return {};
+    }
+
+
+    std::vector<pugi::xml_node> prepare_node_data(const pugi::xml_node& base, int limit, int offset, bool(*filter)(const pugi::xml_node&), const std::vector<std::pair<std::string,int>>& criteria){
+        auto cmp_fn = [&](const pugi::xml_node& a, const pugi::xml_node& b)->int{
+            for(auto& criterion: criteria){
+                auto valA = resolve_expr(criterion.first.c_str(),&a);
+                auto valB = resolve_expr(criterion.first.c_str(),&b);
+                if(valA<valB)return true;
+                else if(valA>valB) return false;
+            }
+            return false;
+        };
+        
+        std::vector<pugi::xml_node> dataset;
+        for(auto& child: base.children()){
+            if(filter(child))dataset.push_back(child);
+        }
+
+        std::sort(dataset.begin(),dataset.end(),cmp_fn);
+
+        if(limit<=0)return std::vector(dataset.begin()+offset, dataset.end()-limit);
+        else return std::vector(dataset.begin()+offset, dataset.begin()+offset+limit);
     }
 
 
@@ -221,8 +253,6 @@ struct document{
                         //order-by
                         int limit = get_or<int>(resolve_expr(current_template.first->attribute("limit").as_string("-1")).value_or(-1),-1);
                         int offset = get_or<int>(resolve_expr(current_template.first->attribute("offset").as_string("0")).value_or(0),0);
-
-                        bool empty=false;
                         
                         auto expr = resolve_expr(in);
 
