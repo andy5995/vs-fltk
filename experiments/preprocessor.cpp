@@ -25,6 +25,19 @@ const T& get_or(const auto& ref, const T& defval) noexcept{
     else return defval;
 }
 
+#include <sstream>
+std::vector<std::string> split (const std::string &s, char delim) {
+    std::vector<std::string> result;
+    std::stringstream ss (s);
+    std::string item;
+
+    while (getline (ss, item, delim)) {
+        result.push_back (item);
+    }
+
+    return result;
+}
+
 const char* ns_prefix = "s:";
 size_t ns_prefix_len = strlen(ns_prefix);
 
@@ -196,12 +209,18 @@ struct document{
         
         std::vector<pugi::xml_node> dataset;
         for(auto& child: base.children()){
-            if(filter(child))dataset.push_back(child);
+            if(filter==nullptr || filter(child))dataset.push_back(child);
         }
 
         std::sort(dataset.begin(),dataset.end(),cmp_fn);
 
-        if(limit<=0)return std::vector(dataset.begin()+offset, dataset.end()-limit);
+        //TODO: Check if these boudary condition are sound.
+        if(offset<0)offset=0;
+        else if(offset>=dataset.size())return {};
+        if(limit>0 && offset+limit>dataset.size())limit=dataset.size()-offset;
+        else if(limit<0 && dataset.size()+limit<=offset)return {};
+
+        else if(limit<=0)return std::vector(dataset.begin()+offset, dataset.end()-limit);
         else return std::vector(dataset.begin()+offset, dataset.begin()+offset+limit);
     }
 
@@ -248,10 +267,13 @@ struct document{
                     else if(strcmp(current_template.first->name()+ns_prefix_len,"for")==0){
                         const char* tag = current_template.first->attribute("tag").as_string();
                         const char* in = current_template.first->attribute("in").as_string();
-                        //filter
-                        //sort-by
-                        //order-by
-                        int limit = get_or<int>(resolve_expr(current_template.first->attribute("limit").as_string("-1")).value_or(-1),-1);
+                        //TODO: filter has not defined syntax yet.
+                        const char* _filter = current_template.first->attribute("filter").as_string();
+                        //TODO: Split by , and use both to build the arg for the `prepare_node_data`
+                        const char* _sort_by = current_template.first->attribute("sort-by").as_string();
+                        const char* _order_by = current_template.first->attribute("order-by").as_string();
+
+                        int limit = get_or<int>(resolve_expr(current_template.first->attribute("limit").as_string("0")).value_or(0),0);
                         int offset = get_or<int>(resolve_expr(current_template.first->attribute("offset").as_string("0")).value_or(0),0);
                         
                         auto expr = resolve_expr(in);
@@ -267,16 +289,24 @@ struct document{
                                 stack_compiled.push(current_compiled);
                             }
                         }
-                        else if(std::get<const pugi::xml_node>(expr.value()).empty()){
-                            PREFIX_STR(EMPTY_TAG,"empty");
-
-                            for(const auto& el: current_template.first->children(EMPTY_TAG)){
-                                stack_template.push({el.begin(),el.end()});
-                                _parse(current_template.first);
-                                stack_compiled.push(current_compiled);
-                            }
-                        }
                         else{
+                            //TODO: split _sort_by & _order_by by `,` and build criteria.
+                            std::vector<std::pair<std::string,int>> criteria;
+                            
+                            for(auto& i:split(_sort_by,',')){criteria.push_back({i,0});}
+
+                            auto good_data = prepare_node_data(std::get<const pugi::xml_node>(expr.value()), limit, offset, nullptr, criteria);
+
+                            if(good_data.size()==0){
+                                PREFIX_STR(EMPTY_TAG,"empty");
+
+                                for(const auto& el: current_template.first->children(EMPTY_TAG)){
+                                    stack_template.push({el.begin(),el.end()});
+                                    _parse(current_template.first);
+                                    stack_compiled.push(current_compiled);
+                                }
+                            }
+                            else{
                                 //Header (once)
                                 {
                                     PREFIX_STR(HEADER_TAG,"header");
@@ -289,7 +319,8 @@ struct document{
                             
                                 //Items (iterate)
                                 PREFIX_STR(ITEM_TAG,"item");
-                                for(auto& i : std::get<const pugi::xml_node>(expr.value()).children()){
+
+                                for(auto& i : good_data){
                                     auto frame_guard = symbols.guard();
                                     if(tag!=nullptr)symbols.set(tag,i);
                                     symbols.set("$",i);
@@ -310,6 +341,7 @@ struct document{
                                         stack_compiled.push(current_compiled);
                                     }
                                 }
+                            }
                         }
                     }
                     else if(strcmp(current_template.first->name()+ns_prefix_len,"for-prop")==0){}

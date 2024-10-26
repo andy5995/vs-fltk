@@ -12,9 +12,9 @@
         </s:for-range>
     </w>
     <s:for tag="window" in="/windows/">
-        <s:empty>Hello world!<b>hello</b></s:empty>
+        <s:empty>Empty Hello world!<b>hello</b></s:empty>
 
-        <s:empty>Hello world!<b>hello</b></s:empty>
+        <s:empty>Empty Hello world!<b>hello</b></s:empty>
         <s:header>
         Head</s:header>wwww <s:item>
 
@@ -22,23 +22,23 @@
                 <s:value src="{window}/label/">NO VALUE</s:value>
                 <s:element vania="noaj" s:type="{window}/name/">Hello world</s:element>
 
-                <s:for tag="button" in="$/buttons/">
+                <s:for tag="button" in="$/buttons/" limit="0" offset="0" sort-by="$~text,$~vault">
+                    <s:empty>Empty Hello world!<b>hello</b></s:empty>
                     <s:item>
                         <s:value
                             src="{wew}/s/s/">NO VALUE</s:value>
-                        Q:<s:value
-                            src="{button}~text">NO VALUE</s:value>:
+                        Q:<s:value src="{button}~text">NO VALUE</s:value>:<s:value src="{button}~vault"/>,
                         <button s:value.src.label="$~text" />
                     </s:item>
                 </s:for>
             </window>
 
         </s:item>
-        ssss <s:footer>
+        not seen <s:footer>
             Foot</s:footer>
         <s:error>Oh no, I failed you</s:error>
     </s:for>
     <s:when subject="#hello">
-        <s:is value="#hello">HELLO!</s:is>
+        <s:is value="#hello">TROVATO!</s:is>
     </s:when>
 </app>
