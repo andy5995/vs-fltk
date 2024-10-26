@@ -6,10 +6,11 @@ std::pair<bool, std::string> resolve_path::normalizer(const char *parent, const 
     int parent_len=strlen(parent);
     int child_len=strlen(child);
     char ret[parent_len+child_len+1];
+    memset(ret+parent_len,0,child_len+1);
     memcpy(ret,parent,parent_len);
     int ptr = parent_len;
     
-    for(int j =0; j<child_len; ){
+    for(int j=0; j<child_len; ){
         if(tkn(child+j,"../")){
             //Go back to the past /
             if(ptr<=1)return {false, ""}; //Early failure, cannot track back.
@@ -33,7 +34,8 @@ std::pair<bool, std::string> resolve_path::normalizer(const char *parent, const 
         }
         else{
             ret[ptr]=child[j];
-            ptr++;j++;
+            ptr++;
+            j++;
             continue;
         }
 
