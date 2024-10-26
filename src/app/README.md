@@ -1,1 +1,1 @@
-The source of the application itself, entrypoint for the runtime. 
+The source of the main application itself, entrypoint for the runtime of custom apps, the internal browser & the builtin editor. 

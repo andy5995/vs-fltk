@@ -128,42 +128,41 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     return script;
 }
 
-void tcc_c_pipeline_apply(const std::shared_ptr<tcc>& script,vs::ui_base* obj,void* ctx,void(*register_fn)(void*,const char*, const char*)){
+std::shared_ptr<smap<symbol_t>>  tcc_c_pipeline_apply(const std::shared_ptr<tcc>& script,vs::ui_base* obj,void* ctx,void(*register_fn)(void*,const char*, const char*)){
+    std::shared_ptr<smap<symbol_t>> symbols = std::make_shared<smap<symbol_t>>();
+    
     struct callback_ctx_t{
-        ui_base* node_ui;
+        smap<symbol_t>& symbols;
         void* ref;
         void(*log)(void*,const char*, const char*);
-    }cb_ctx{.node_ui=obj, .ref=ctx, .log=register_fn};
+    }cb_ctx{.symbols=*symbols, .ref=ctx, .log=register_fn};
 
     script->ls_sym(&cb_ctx, +[](void* _ctx, const char* name, const void* value){
         callback_ctx_t* ctx = (callback_ctx_t*)_ctx;
 
         if(strcmp("callback", name)==0){
         ctx->log(ctx->ref,"Registering default callback symbol `%s`",name);
-        ctx->node_ui->register_symbol(name, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::CALLBACK,value});
-        ctx->node_ui->apply_prop("on.callback", "callback");
+        ctx->symbols.emplace(name, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::CALLBACK,value});
         }else if(strcmp("draw", name)==0){
         ctx->log(ctx->ref,"Registering default drawing symbol `%s`",name);
-        ctx->node_ui->register_symbol(name, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::DRAW,value});
-        ctx->node_ui->apply_prop("on.draw", "draw");
+        ctx->symbols.emplace(name, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::DRAW,value});
         }else if(strcmp("dispatcher", name)==0){
         ctx->log(ctx->ref,"Registering default dispatching symbol `%s`",name);
-        ctx->node_ui->set_dispatcher(symbol_t{symbol_mode_t::NATIVE,symbol_type_t::DRAW,value});
         }else if(strncmp("__EXPORT_CB__", name, 13)==0){
         ctx->log(ctx->ref,"Registering public callback symbol `%s`",name+13);
-        ctx->node_ui->register_symbol(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::CALLBACK,(const void*)(((size_t*)value)[0])});
+        ctx->symbols.emplace(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::CALLBACK,(const void*)(((size_t*)value)[0])});
         }else if(strncmp("__EXPORT_GET_", name, 13)==0){
         ctx->log(ctx->ref,"Registering public getter symbol `%s`",name+13);
-        ctx->node_ui->register_symbol(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::GETTER,(const void*)(((size_t*)value)[0])});
+        ctx->symbols.emplace(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::GETTER,(const void*)(((size_t*)value)[0])});
         }else if(strncmp("__EXPORT_SET_", name, 13)==0){
         ctx->log(ctx->ref,"Registering public setter symbol `%s`",name+13);
-        ctx->node_ui->register_symbol(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::GETTER,(const void*)(((size_t*)value)[0])});
+        ctx->symbols.emplace(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::GETTER,(const void*)(((size_t*)value)[0])});
         }else if(strncmp("__EXPORT_UKN_", name, 13)==0){
         ctx->log(ctx->ref,"Registering public unknown symbol `%s`",name+13);
-        ctx->node_ui->register_symbol(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::UNKNOWN,(const void*)(((size_t*)value)[0])});
+        ctx->symbols.emplace(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::UNKNOWN,(const void*)(((size_t*)value)[0])});
         }
     });
-    
+    return symbols;
 }
 
 #undef LIB

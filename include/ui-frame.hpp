@@ -62,12 +62,6 @@ enum class frame_access_t{
 typedef  symbol_mode_t frame_mode_t;
 
 
-struct module_symbols: smap<symbol_t>{
-};
-
-struct local_symbols : smap<symbol_t>{
-};
-
 class frame{
   template<std::derived_from<Fl_Widget> T, int SubType>
   friend class ui;
@@ -85,12 +79,8 @@ class frame{
   protected:
     frame_mode_t mode = frame_mode_t::VOID;
 
-    struct ctx_t{
-        std::shared_ptr<void> shared;
-        std::shared_ptr<void> unique;
-    };
-
-    ctx_t context;
+    std::shared_ptr<void> script;
+    bool is_script_module = false;
 
     std::string name;
     frame* parent = nullptr;
@@ -98,8 +88,7 @@ class frame{
 
     smap<frame*> children;
     symbol_t custom_dispatcher = symbol_t::VOID;
-    local_symbols symbols;                            //For symbol resolution on function calling (local)
-    std::shared_ptr<module_symbols> msymbols;         //For symbol resolution on function calling (module)
+    std::shared_ptr<smap<symbol_t>> symbols = nullptr;  //For symbol resolution on function calling 
     smap<filter_t> filters;                           //To prevent top/down propagation of messages
     smap<resolver_t> resolvers;                       //To catch messages coming from bottom up
 
@@ -163,22 +152,18 @@ class frame{
           return parent->_resolve_symbol(name, origin);
         }
         return {
-          symbol_t::VOID,
+           symbol_t::VOID,
            symbol_t::VOID,
            nullptr
         };
       }
 
       //If not private
-      {
-        auto t = symbols.find(name);
-        if(t!=symbols.end()){return {t->second,symbol_t::VOID,this};}
-      }
-      if(msymbols!=nullptr){      
-        auto t = msymbols->find(name);
-        if(t!=msymbols->end()){return {t->second,msymbols->find("vs_set_env")->second,this};}
-      }
- 
+      if(symbols!=nullptr){
+        auto t = symbols->find(name);
+        if(t!=symbols->end() && !is_script_module){return {t->second,symbol_t::VOID,this};}
+        else if(t!=symbols->end() && is_script_module){return {t->second,symbols->find("vs_set_env")->second,this};}
+      } 
 
       //If I am a container I cannot let this progress any further.
       if(type==frame_type_t::CONTAINER or type==frame_type_t::SLOT_CONTAINER){
@@ -216,9 +201,8 @@ class frame{
     inline frame_type_t get_type() const {return type;}
     inline frame_access_t get_access() const {return access;}
     inline frame_mode_t get_mode() const {return mode;}
-    inline ctx_t get_context() const {return context;}
 
-    inline bool has_script() const {return context.shared!=nullptr && context.unique!=nullptr;}
+    inline bool has_script() const {return script!=nullptr;}
 
     int call_dispatcher(const char* key, const char* value);
 
@@ -268,10 +252,10 @@ class frame{
     }
 
     //Only for local symbols as module ones are not owned
-    inline void register_symbol(const char* name, symbol_t value){symbols.insert_or_assign(name,value);}
-    inline symbol_t get_symbol(const char* name){const auto& it = symbols.find(name);if(it==symbols.end())return symbol_t::VOID; else return it->second;}
-    inline void unregister_symbol(const char* name){symbols.erase(symbols.find(name));}
-    inline void reset_symbols(){symbols.clear();}
+    inline void register_symbol(const char* name, symbol_t value){symbols->insert_or_assign(name,value);}
+    inline symbol_t get_symbol(const char* name){const auto& it = symbols->find(name);if(it==symbols->end())return symbol_t::VOID; else return it->second;}
+    inline void unregister_symbol(const char* name){symbols->erase(symbols->find(name));}
+    inline void reset_symbols(){symbols->clear();}
 
     //For top->down signals
     inline void register_filter(const char* name, filter_t value){filters.insert_or_assign(name,value);}
@@ -290,12 +274,10 @@ class frame{
     virtual ~frame() {
       //Not needed right now, as frames are destroyed alongside their owners from a list
       return;
-      //std::cout<<"Deleting "<<name<<";\n";
       prune();
       //Not very optimized, but it is only going to happen at the end so no worries.
       for(;children.size()!=0;){
         auto i = children.begin();
-        //std::cout<<"Deleting child "<<i->second->name<<";\n";
         delete i->second;
       }
     }

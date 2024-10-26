@@ -265,31 +265,29 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         current->add_mixin(root.attribute("name").as_string(""), tmp);
         // Always remove the `name` attribute from mixins.
       }
-      // SCRIPT.MODULE
-      else if (strcmp(root.name(), "script.module") == 0) {
+
+      // SCRIPT
+      else if (strcmp(root.name(), "script") == 0) {
+        //Check uniqueness
         current->mk_frame();
         if(current->get_local_frame()->has_script()){
-          log(severety_t::WARNING, root, "Only one `script` or `script.module` is allowed per frame.");
+          log(severety_t::WARNING, root, "Only one `script` is allowed per frame.");
           continue;
         }
 
-        if(root.attribute("$cached").as_string()!=nullptr){
-          //TODO: Recover the cached result
-          continue;
-        }
-  
-        if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::VOID) {
-          const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
-          if (strcmp(lang, "c") == 0) {
-            auto compiler = pipelines::tcc_c_pipeline_xml(true, nullptr, root, nullptr);
-            if(compiler!=nullptr)current->attach_unique_script(compiler);
-            current->set_mode(frame_mode_t::NATIVE);
+        bool is_module=false;
+
+        //Check if it is a module or single user; if module check for cache and use it.
+        if(strcmp(root.attribute("type").as_string(""),"module")==0){
+          is_module=true;
+          if(root.attribute("$cached").as_string()!=nullptr){
+            //TODO: Recover the cached result and apply it to the current object.
+            //TODO it requires the basic memory cache to be implemented.
             continue;
           }
         }
-      }
-      // SCRIPT
-      else if (strcmp(root.name(), "script") == 0) {
+
+        //Information for linking
         auto link_with = doc.first_child().attribute("link-with").as_string(nullptr);
         std::string tmp_link;
         if(link_with!=nullptr){
@@ -303,21 +301,17 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         }
 
 
-        current->mk_frame();
-        if(current->get_local_frame()->has_script()){
-          log(severety_t::WARNING, root, "Only one `script` or `script.module` is allowed per frame.");
-          continue;
-        }
         //I am ignoring the one of the tree. Mode is now widget based and not component based.
         auto mode =current->get_local_frame()->get_mode();
         if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::VOID) {
           const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
           if (strcmp(lang, "c") == 0) {
-            auto compiler = pipelines::tcc_c_pipeline_xml(true, current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
+            auto compiler = pipelines::tcc_c_pipeline_xml(true, is_module?nullptr:current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
             if(compiler!=nullptr){
-              pipelines::tcc_c_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::tcc_log_symbol_func_xml);
-              current->attach_unique_script(compiler);
               current->set_mode(frame_mode_t::NATIVE);
+              current->attach_script(compiler,is_module);
+              current->set_symbols(pipelines::tcc_c_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::tcc_log_symbol_func_xml));
+              //TODO: Apply default callback, dispatcher and drawing
             }
             continue;
           }
@@ -325,10 +319,10 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         if (mode == frame_mode_t::QUICKJS || mode == frame_mode_t::VOID) {
           const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::QUICKJS?"js":"");
           if (strcmp(lang, "js") == 0) {
-            auto compiler = pipelines::qjs_js_pipeline_xml(true, current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
+            auto compiler = pipelines::qjs_js_pipeline_xml(true, is_module?nullptr:current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
               if(compiler!=nullptr){
                 pipelines::qjs_js_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::qjs_log_symbol_func_xml);
-                current->attach_unique_script(compiler);
+                current->attach_script(compiler,is_module);
                 current->set_mode(frame_mode_t::QUICKJS);
             }
             continue;

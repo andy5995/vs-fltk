@@ -1,3 +1,4 @@
+#include <memory>
 #include <ostream>
 #include <sstream>
 #include <ui.hpp>
@@ -144,6 +145,14 @@ void ui_base::set_dispatcher(symbol_t value){
     local_frame->custom_dispatcher = value;
 }
 
+void ui_base::set_symbols(std::shared_ptr<smap<symbol_t>> ref){
+  mk_frame();
+  local_frame->symbols=ref;
+  {auto it = ref->find("callback"); if(it!=ref->end()){this->apply_prop("on.callback","callback");}}
+  {auto it = ref->find("draw"); if(it!=ref->end()){this->apply_prop("on.draw","draw");}}
+  {auto it = ref->find("draw"); if(it!=ref->end()){this->set_dispatcher(it->second);}}
+}
+
 void ui_base::register_symbol(const char* name, symbol_t value){
     mk_frame();
     return local_frame->register_symbol(name, value);
@@ -164,14 +173,10 @@ void ui_base::reset_symbols(){
     return local_frame->reset_symbols();
 }
 
-void ui_base::attach_unique_script(const std::shared_ptr<void>& ref){
+void ui_base::attach_script(const std::shared_ptr<void>& ref, bool is_script_module){
     mk_frame();
-    local_frame->context.unique = ref;
-}
-
-void ui_base::attach_shared_script(const std::shared_ptr<void>& ref){
-    mk_frame();
-    local_frame->context.shared = ref;
+    local_frame->script = ref;
+    local_frame->is_script_module=is_script_module;
 }
 
 void ui_base::add_mixin(const char* name, const smap<std::string>& map){
@@ -270,7 +275,8 @@ int ui_base::use_setter(const symbol_ret_t& sym, const void * value){
   return 1;
 }
 int ui_base::use_callback(const symbol_ret_t& sym, ui_base * node){
-void (*fn)(ui_base*)=(void (*)(ui_base*))sym.symbol.symbol;
+  void (*fn)(ui_base*)=(void (*)(ui_base*))sym.symbol.symbol;
+
   if(sym.found_at->get_mode()==frame_mode_t::NATIVE){
     if(sym.ctx_apply.symbol!=nullptr){
       const ui_base* (*ctx_apply)(const ui_base*) = ( const ui_base* (*)(const ui_base*) ) sym.ctx_apply.symbol;
@@ -285,11 +291,11 @@ void (*fn)(ui_base*)=(void (*)(ui_base*))sym.symbol.symbol;
     }
   }
   else if(sym.found_at->get_mode()==frame_mode_t::QUICKJS){
-    pipelines::quickjs_t* ctx = (pipelines::quickjs_t*)sym.found_at->get_context().unique.get();
-    auto globalThis = JS_GetGlobalObject(ctx->ctx);
-    auto ret= JS_Call(ctx->ctx,std::get<2>(ctx->handles[(size_t)sym.symbol.symbol-1]),globalThis,0,nullptr);
-    JS_FreeValue(ctx->ctx, ret);
-    JS_FreeValue(ctx->ctx, globalThis);
+    pipelines::quickjs_t* script = (pipelines::quickjs_t*)sym.found_at->script.get();
+    auto globalThis = JS_GetGlobalObject(script->ctx);
+    auto ret= JS_Call(script->ctx,std::get<2>(script->handles[(size_t)sym.symbol.symbol-1]),globalThis,0,nullptr);
+    JS_FreeValue(script->ctx, ret);
+    JS_FreeValue(script->ctx, globalThis);
     return 0;
   }
   else{

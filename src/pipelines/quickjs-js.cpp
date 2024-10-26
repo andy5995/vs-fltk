@@ -20,35 +20,6 @@ void qjs_log_symbol_func_xml(const pugi::xml_node& ctx, const char * msg, const 
     ui_xml_tree::log(severety_t::INFO, ctx , msg, name);
 }
 
-/*
-static JSValue js_print_to_console(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv) {
-    int i;
-    const char* str;
-    size_t len;
-
-    for (i = 0; i < argc; i++) {
-        if (i != 0) fputc(' ', stdout);
-        str = JS_ToCStringLen(ctx, &len, argv[i]);
-        if (!str) return JS_EXCEPTION;
-        fwrite(str, 1, len, stdout);
-        JS_FreeCString(ctx, str);
-    }
-    fputc('\n', stdout);
-    return JS_UNDEFINED;
-}
-
-
-static JSValue js_export(JSContext * ctx , JSValueConst this_val, int argc, JSValueConst* argv){
-    if(argc!=1){
-        throw "Cannot accept export of zero functions";
-    }
-    if(JS_IsFunction(ctx, argv[0])){
-        auto ret = JS_Call(ctx, argv[0], this_val, 0, nullptr);
-        JS_FreeValue(ctx,ret);
-    }
-    return JS_UNDEFINED;
-}
-*/
 
 /*Cannot handle additional args. Use string interpolation from JS*/
 static JSValue js_log(JSContext * ctx , JSValueConst this_val, int argc, JSValueConst* argv){

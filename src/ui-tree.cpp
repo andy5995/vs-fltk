@@ -30,7 +30,6 @@ namespace vs{
 
   ui_tree::~ui_tree(){
     for(auto i : nodes){
-      //std::cout<<"Delete "<<i->get_name()<<"\n";
       delete i;
     }
     Fl::wait();

@@ -9,7 +9,7 @@
         void _update(){
             static char str_buf[32];
             itoa(counter,str_buf,10);
-            //$$prop($("main-text"),"label",str_buf);
+            $$prop($("main-text"),"label",str_buf);
         }
 
         void on_add(){

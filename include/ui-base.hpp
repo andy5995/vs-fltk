@@ -22,6 +22,7 @@ class ui_base{
     void set_access(frame_access_t);
     const std::string& get_name() const;
 
+    void set_symbols(std::shared_ptr<smap<symbol_t>> ref);
     void register_symbol(const char* name, symbol_t value);
     symbol_t get_symbol(const char* name);
     void unregister_symbol(const char* name);
@@ -36,9 +37,8 @@ class ui_base{
     //use_draw, use_function. use_dispatched does not exist as its usage is extremely constrained.
     //TODO: Add vs_event or something like that to let scripts access the global event queue information.
 
-    //Attach scripts
-    void attach_unique_script(const std::shared_ptr<void>& ref);
-    void attach_shared_script(const std::shared_ptr<void>& ref);
+    //Attach script
+    void attach_script(const std::shared_ptr<void>& ref, bool is_script_module);
 
     //Add mixin
     void add_mixin(const char* name, const smap<std::string>& ref);
