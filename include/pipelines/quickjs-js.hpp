@@ -56,7 +56,7 @@ struct quickjs_t{
 };
 
 extern std::shared_ptr<quickjs_t> qjs_js_pipeline(bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), const char *link_with);
-extern void qjs_js_pipeline_apply(const std::shared_ptr<quickjs_t>& script,vs::ui_base* obj,void* ctx,void(*register_fn)(void*,const char*, const char*));
+extern std::shared_ptr<smap<symbol_t>> qjs_js_pipeline_apply(const std::shared_ptr<quickjs_t>& script,vs::ui_base* obj,void* ctx,void(*register_fn)(void*,const char*, const char*));
 
 inline std::shared_ptr<quickjs_t> qjs_js_pipeline_xml(bool is_runtime, vs::ui_base* obj, pugi::xml_node& ctx,  const char *link_with){
     return qjs_js_pipeline(is_runtime,obj,ctx.text().as_string(),&ctx,(void(*)(void*,const char*))qjs_error_func_xml,link_with);

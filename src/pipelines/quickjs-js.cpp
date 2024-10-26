@@ -166,34 +166,33 @@ static void dump_value_to_stream(JSContext* ctx, JSValueConst val, void(*error_f
 
 
 
-void qjs_js_pipeline_apply(const std::shared_ptr<quickjs_t>& script,vs::ui_base* obj,void* node,void(*register_fn)(void*,const char*, const char*)){
+std::shared_ptr<smap<symbol_t>> qjs_js_pipeline_apply(const std::shared_ptr<quickjs_t>& script,vs::ui_base* obj,void* node,void(*register_fn)(void*,const char*, const char*)){
+    std::shared_ptr<smap<symbol_t>> symbols = std::make_shared<smap<symbol_t>>();
 
     size_t count = 1;   //Start from 1 due to alignment in the vector, to keep 0 as special case interpreted as nullptr.
     for(auto& i : script->handles){
         auto* name = std::get<0>(i).c_str();
-        std::cout<<std::get<0>(i)<<"\n\n";
         if(strcmp("callback", name)==0){
             register_fn(node, "Registering default callback symbol `%s`",name);
-            obj->register_symbol(name,symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::CALLBACK,(void*)count});
-            obj->apply_prop("on.callback", "callback");
+            symbols->emplace(name,symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::CALLBACK,(void*)count});
         }
         else if(strcmp("draw", name)==0){
             register_fn(node, "Registering default drawing symbol `%s`",name);
-            obj->register_symbol(name,symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::DRAW,(void*)count});
-            obj->apply_prop("on.draw", "draw");
+            symbols->emplace(name,symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::DRAW,(void*)count});
         }
         else if(strcmp("dispatcher", name)==0){
             register_fn(node,  "Registering default dispatching symbol `%s`",name);
-            obj->set_dispatcher(symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::DISPATCHER,(void*)count});
+            symbols->emplace(name, symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::DISPATCHER,(void*)count});
         }
         else{
             //TODO use the type to show it back again
             register_fn(node,  "Registering symbol `%s`",name);
-            obj->register_symbol(name,symbol_t{symbol_mode_t::QUICKJS,std::get<1>(i),(void*)count});
+            symbols->emplace(name,symbol_t{symbol_mode_t::QUICKJS,std::get<1>(i),(void*)count});
         }
         count++;
     }
-
+    
+    return symbols;
 }
 
 
