@@ -19,10 +19,7 @@
 
 namespace vs{
 
-policies_t global_policy;
 
-//To be set in the main of the application of before any ui_tree facility is used.
-path_env_t global_path_env;
 
 //TODO: For now this is linux only. I will need to be expanded to support more os
 path_env_t mk_env(const char* arg0,const char* arg1){
@@ -73,7 +70,7 @@ js_rt_t::~js_rt_t(){JS_FreeRuntime((JSRuntime*)rt);}
 void* js_rt_t::operator()(){return rt;}
 
 
-js_rt_t global_js_rt;
+
 
 
 void prepare_db(){

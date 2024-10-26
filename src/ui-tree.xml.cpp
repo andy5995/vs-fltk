@@ -12,6 +12,7 @@
 #include "utils/paths.hpp"
 #include <cstdarg>
 
+#include <iostream>
 #include <ui.hpp>
 #include <components/containers.hpp>
 #include <ui-tree.xml.hpp>
@@ -247,7 +248,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
   }
 
   void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, ui_base* current) {
-    
+
     for (auto &root : root.children()) {
 
       // MIXIN
@@ -289,6 +290,19 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
       }
       // SCRIPT
       else if (strcmp(root.name(), "script") == 0) {
+        auto link_with = doc.first_child().attribute("link-with").as_string(nullptr);
+        std::string tmp_link;
+        if(link_with!=nullptr){
+          resolve_path resolver(policies,globals::path_env,local);
+          auto computed_path = resolver(resolve_path::from_t::NATIVE_CODE,link_with);
+          if(computed_path.first==resolve_path::reason_t::OK){
+            //TODO: For now I am assuming it is on the fs. I should resolve it to tmp if remote for example
+            tmp_link=computed_path.second.location;
+            log(severety_t::INFO, root, "Requested linking with `%s`", link_with);
+          }
+        }
+
+
         current->mk_frame();
         if(current->get_local_frame()->has_script()){
           log(severety_t::WARNING, root, "Only one `script` or `script.module` is allowed per frame.");
@@ -299,18 +313,6 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::VOID) {
           const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
           if (strcmp(lang, "c") == 0) {
-            //Maybe took it away from app and place it locally for each script? Not sure. 
-            auto link_with = doc.first_child().attribute("link-with").as_string(nullptr);
-            std::string tmp_link;
-            if(link_with!=nullptr){
-              resolve_path resolver(policies,globals::path_env,local);
-              auto computed_path = resolver(resolve_path::from_t::NATIVE_CODE,link_with);
-              if(computed_path.first==resolve_path::reason_t::OK){
-                //TODO: For now I am assuming it is on the fs. I should resolve it to tmp if remote for example
-                tmp_link=computed_path.second.location;
-                log(severety_t::INFO, root, "Requested linking with `%s`", link_with);
-              }
-            }
             auto compiler = pipelines::tcc_c_pipeline_xml(true, current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
             if(compiler!=nullptr){
               pipelines::tcc_c_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::tcc_log_symbol_func_xml);
@@ -323,9 +325,12 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         if (mode == frame_mode_t::QUICKJS || mode == frame_mode_t::VOID) {
           const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::QUICKJS?"js":"");
           if (strcmp(lang, "js") == 0) {
-            auto compiler = pipelines::qjs_js_pipeline_single_xml(current, nullptr, root, true);
-            if(compiler!=nullptr)current->attach_unique_script(compiler);
-            current->set_mode(frame_mode_t::QUICKJS);
+            auto compiler = pipelines::qjs_js_pipeline_xml(true, current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
+              if(compiler!=nullptr){
+                pipelines::qjs_js_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::qjs_log_symbol_func_xml);
+                current->attach_unique_script(compiler);
+                current->set_mode(frame_mode_t::QUICKJS);
+            }
             continue;
           }
         }

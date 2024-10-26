@@ -11,6 +11,9 @@
 namespace vs{
 namespace pipelines{
 
+extern void qjs_error_func_xml(const pugi::xml_node& env, const char * msg);
+extern void qjs_log_symbol_func_xml(const pugi::xml_node& env, const char * msg, const char* name);
+
 /*
 struct jsctx{
     private:
@@ -24,7 +27,7 @@ struct jsctx{
 
 struct quickjs_t{
     JSContext* ctx;
-    std::vector<JSValue> handles;
+    std::vector<std::tuple<std::string,symbol_type_t,JSValue>> handles;
 
     operator JSContext* (){return ctx;}
 
@@ -47,27 +50,18 @@ struct quickjs_t{
     }
 
     virtual ~quickjs_t(){
-        for(auto& i: handles){JS_FreeValue(ctx, i);}
+        for(auto& i: handles){JS_FreeValue(ctx, std::get<2>(i));}
         JS_FreeContext(ctx);
     }
 };
 
 extern std::shared_ptr<quickjs_t> qjs_js_pipeline(bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), const char *link_with);
-
 extern void qjs_js_pipeline_apply(const std::shared_ptr<quickjs_t>& script,vs::ui_base* obj,void* ctx,void(*register_fn)(void*,const char*, const char*));
 
+inline std::shared_ptr<quickjs_t> qjs_js_pipeline_xml(bool is_runtime, vs::ui_base* obj, pugi::xml_node& ctx,  const char *link_with){
+    return qjs_js_pipeline(is_runtime,obj,ctx.text().as_string(),&ctx,(void(*)(void*,const char*))qjs_error_func_xml,link_with);
+}
 
-/**
- * @brief 
- * 
- * @param obj the UI widget this is linked to
- * @param component_root the component root. Used to link its symbols.
- * @param node the xml node of the script parent
- * @param is_runtime Handle the case of the script being inside the editor or in the actual runtime.
- * @return std::shared_ptr<quickjs_t> 
- */
-extern std::shared_ptr<quickjs_t> qjs_js_pipeline_single_xml(vs::ui_base* obj, vs::ui_base* component_root, const pugi::xml_node& node, bool is_runtime);
 
-extern std::pair<std::shared_ptr<quickjs_t>,std::shared_ptr<module_symbols>> qjs_js_pipeline_module_xml(const pugi::xml_node& node, bool is_runtime);
 }
 }

@@ -1,3 +1,4 @@
+#include <iostream>
 #include <memory>
 
 #include <quickjs.h>
@@ -11,8 +12,12 @@
 namespace vs{
 namespace pipelines{ 
 
-static void qjs_error_func_xml(const pugi::xml_node& env, const char * msg) {
+void qjs_error_func_xml(const pugi::xml_node& env, const char * msg) {
     printf("\n\033[41;37;1m[QJS]\033[0m      : %s @ [\033[93;3m%s\033[0m]", msg,env.path().c_str());
+}
+
+void qjs_log_symbol_func_xml(const pugi::xml_node& ctx, const char * msg, const char * name) {
+    ui_xml_tree::log(severety_t::INFO, ctx , msg, name);
 }
 
 /*
@@ -178,36 +183,58 @@ static void init_c_hooks(JSContext* ctx, void* self, bool is_runtime) {
 }   
 
 
-static void dump_value_to_stream(JSContext* ctx,const pugi::xml_node& node, JSValueConst val) {
+static void dump_value_to_stream(JSContext* ctx, JSValueConst val, void(*error_fn)(void*,const char*), void* node) {
     const char* strval = JS_ToCString(ctx, val);
     if (strval) {
-        qjs_error_func_xml(node,strval);
+        error_fn(node,strval);
         JS_FreeCString(ctx, strval);
     } else {
-        qjs_error_func_xml(node,"[exception]");
+        error_fn(node,"[exception]");
     }
 }
 
-std::shared_ptr<quickjs_t> qjs_js_pipeline(bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), const char *link_with){
-    std::shared_ptr<quickjs_t> _ctx = std::make_shared<quickjs_t>((JSRuntime*)(globals::js_rt()));
-    return _ctx;
+
+
+void qjs_js_pipeline_apply(const std::shared_ptr<quickjs_t>& script,vs::ui_base* obj,void* node,void(*register_fn)(void*,const char*, const char*)){
+
+    size_t count = 1;   //Start from 1 due to alignment in the vector, to keep 0 as special case interpreted as nullptr.
+    for(auto& i : script->handles){
+        auto* name = std::get<0>(i).c_str();
+        std::cout<<std::get<0>(i)<<"\n\n";
+        if(strcmp("callback", name)==0){
+            register_fn(node, "Registering default callback symbol `%s`",name);
+            obj->register_symbol(name,symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::CALLBACK,(void*)count});
+            obj->apply_prop("on.callback", "callback");
+        }
+        else if(strcmp("draw", name)==0){
+            register_fn(node, "Registering default drawing symbol `%s`",name);
+            obj->register_symbol(name,symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::DRAW,(void*)count});
+            obj->apply_prop("on.draw", "draw");
+        }
+        else if(strcmp("dispatcher", name)==0){
+            register_fn(node,  "Registering default dispatching symbol `%s`",name);
+            obj->set_dispatcher(symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::DISPATCHER,(void*)count});
+        }
+        else{
+            //TODO use the type to show it back again
+            register_fn(node,  "Registering symbol `%s`",name);
+            obj->register_symbol(name,symbol_t{symbol_mode_t::QUICKJS,std::get<1>(i),(void*)count});
+        }
+        count++;
+    }
+
 }
 
-void qjs_js_pipeline_apply(const std::shared_ptr<quickjs_t>& script,vs::ui_base* obj,void* ctx,void(*register_fn)(void*,const char*, const char*)){
 
-}
-
-
-extern std::shared_ptr<quickjs_t> qjs_js_pipeline_single_xml(vs::ui_base* obj, vs::ui_base* component_root, const pugi::xml_node& node, bool is_runtime){
-    //TODO: If using the cache I can duplicate from one already mostly defined.
-    //std::shared_ptr<quickjs_t> _ctx = std::make_shared<quickjs_t>((JSRuntime*)(global_js_rt()));
+std::shared_ptr<quickjs_t> qjs_js_pipeline(bool is_runtime, vs::ui_base* obj, const char* src, void* nctx, void(*error_fn)(void*,const char*), const char *link_with){
+    //std::shared_ptr<quickjs_t> _ctx = std::make_shared<quickjs_t>((JSRuntime*)(globals::js_rt()));
     std::shared_ptr<quickjs_t> _ctx = std::shared_ptr<quickjs_t>( new quickjs_t((JSRuntime*)(globals::js_rt())), +[](void* o){delete (quickjs_t*)o;});
 
 
     auto& ctx = *_ctx;
 
     if (!ctx) {
-        qjs_error_func_xml(node, "Unable to create a new js context");
+        error_fn(nctx, "Unable to create a new js context");
         return nullptr;
     }
 
@@ -219,82 +246,83 @@ extern std::shared_ptr<quickjs_t> qjs_js_pipeline_single_xml(vs::ui_base* obj, v
 #embed "../../bindings/quickjs/vs.js"       
     };
 
-    for (auto &i : node.children()) {
-        const char* program =i.text().as_string("");
-
-        auto result = JS_Eval(ctx, prefix, strlen(prefix), "<input>", JS_EVAL_TYPE_GLOBAL);
-        result = JS_Eval(ctx, program, strlen(program), "<input>", JS_EVAL_TYPE_GLOBAL);
+    //Parse prefix script/library
+    {
+        auto result = JS_Eval(ctx, prefix, sizeof(prefix), "<input>", JS_EVAL_TYPE_GLOBAL);
         if (JS_IsException(result)) {
             JSValue exception = JS_GetException(ctx);
             JS_BOOL is_error = JS_IsError(ctx, exception);
-            dump_value_to_stream(ctx, node, exception);
+            dump_value_to_stream(ctx, exception, error_fn, nctx);
             if (is_error) {
                 JSValue stack = JS_GetPropertyStr(ctx, exception, "stack");
                 if (!JS_IsUndefined(stack)) {
-                    dump_value_to_stream(ctx, node, stack);
+                    dump_value_to_stream(ctx, exception, error_fn, nctx);
                 }
                 JS_FreeValue(ctx, stack);
             }
             
             JS_FreeValue(ctx, exception);
         }
+        JS_FreeValue(ctx,result);
+    }
 
+    //Process custom script
+    {
+        auto result = JS_Eval(ctx, src, strlen(src), "<input>", JS_EVAL_TYPE_GLOBAL);
+        if (JS_IsException(result)) {
+            JSValue exception = JS_GetException(ctx);
+            JS_BOOL is_error = JS_IsError(ctx, exception);
+            dump_value_to_stream(ctx, exception, error_fn, nctx);
+            if (is_error) {
+                JSValue stack = JS_GetPropertyStr(ctx, exception, "stack");
+                if (!JS_IsUndefined(stack)) {
+                    dump_value_to_stream(ctx, exception, error_fn, nctx);
+                }
+                JS_FreeValue(ctx, stack);
+            }
+            
+            JS_FreeValue(ctx, exception);
+        }
         JS_FreeValue(ctx,result);
     }
 
     JSPropertyEnum* list = nullptr;
     uint32_t list_items;
     auto globalThis = JS_GetGlobalObject(ctx);
-    //auto module = JS_GetPropertyStr(ctx,globalThis,"this");
 
     JS_GetOwnPropertyNames(ctx,&list,&list_items, globalThis,JS_GPN_STRING_MASK|JS_GPN_SYMBOL_MASK|JS_GPN_PRIVATE_MASK);
 
+    //This first cycle is only performed to create references to be later garbage collected.
     for(int i=0;i<list_items;i++){
         auto name = JS_AtomToCString(ctx, list[i].atom);
 
         if(strcmp("callback", name)==0){
-            ui_xml_tree::log(severety_t::INFO, node, "Registering default callback symbol `%s`",name);
             auto ref = JS_GetPropertyStr(ctx, globalThis, name);
-            ctx.handles.push_back(ref);
-            obj->register_symbol(name,symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::CALLBACK,(void*)(ctx.handles.size())});
-            obj->apply_prop("on.callback", "callback");
+            ctx.handles.push_back({name,symbol_type_t::CALLBACK,ref});
         }
         else if(strcmp("draw", name)==0){
-            ui_xml_tree::log(severety_t::INFO, node, "Registering default drawing symbol `%s`",name);
             auto ref = JS_GetPropertyStr(ctx, globalThis, name);
-            ctx.handles.push_back(ref);
-            obj->register_symbol(name,symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::DRAW,(void*)(ctx.handles.size())});
-            obj->apply_prop("on.draw", "draw");
+            ctx.handles.push_back({name,symbol_type_t::DRAW,ref});
         }
         else if(strcmp("dispatcher", name)==0){
-            ui_xml_tree::log(severety_t::INFO, node, "Registering default dispatching symbol `%s`",name);
             auto ref = JS_GetPropertyStr(ctx, globalThis, name);
-            ctx.handles.push_back(ref);
-            obj->set_dispatcher(symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::DISPATCHER,(void*)(ctx.handles.size())});
+            ctx.handles.push_back({name,symbol_type_t::DISPATCHER,ref});
         }
         else if(strncmp("__EXPORT_CB__", name, 13)==0){
-            ui_xml_tree::log(severety_t::INFO, node, "Registering public callback symbol `%s`",name+13);
             auto ref = JS_GetPropertyStr(ctx, globalThis, name);
-            ctx.handles.push_back(ref);
-            obj->register_symbol(name+13, symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::CALLBACK,(void*)(ctx.handles.size())});
+            ctx.handles.push_back({name+13,symbol_type_t::CALLBACK,ref});
         }
         else if(strncmp("__EXPORT_GET__", name, 13)==0){
-            ui_xml_tree::log(severety_t::INFO, node, "Registering public getter symbol `%s`",name+13);
             auto ref = JS_GetPropertyStr(ctx, globalThis, name);
-            ctx.handles.push_back(ref);
-            obj->register_symbol(name+13, symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::GETTER,(void*)(ctx.handles.size())});
+            ctx.handles.push_back({name+13,symbol_type_t::GETTER,ref});
         }
         else if(strncmp("__EXPORT_SET__", name, 13)==0){
-            ui_xml_tree::log(severety_t::INFO, node, "Registering public setter symbol `%s`",name+13);
             auto ref = JS_GetPropertyStr(ctx, globalThis, name);
-            ctx.handles.push_back(ref);
-            obj->register_symbol(name+13, symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::GETTER,(void*)(ctx.handles.size())});
+            ctx.handles.push_back({name+13,symbol_type_t::SETTER,ref});
         }
         else if(strncmp("__EXPORT_UKN__", name, 13)==0){
-            ui_xml_tree::log(severety_t::INFO, node, "Registering public unknown symbol `%s`",name+13);
             auto ref = JS_GetPropertyStr(ctx, globalThis, name);
-            ctx.handles.push_back(ref);
-            obj->register_symbol(name+13, symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::UNKNOWN,(void*)(ctx.handles.size())});
+            ctx.handles.push_back({name+13,symbol_type_t::UNKNOWN,ref});
         }
         JS_FreeCString(ctx, name);
     }
