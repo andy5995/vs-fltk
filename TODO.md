@@ -23,6 +23,7 @@
 - [ ] Policies are so complex to write manually and very easy to mess them up.
       Maybe code generation starting from a schema might be a better option.
 - [x] Simplify codegen for all computed/props types which are not `raw` by writing more or the boilerplate.
+- [ ] Basic LSP for the vs syntax. Implementation @ https://github.com/KaruroChori/vs-fltk-lsp
 
 # Static XML builder
 

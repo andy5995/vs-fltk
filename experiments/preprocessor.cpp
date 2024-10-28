@@ -4,7 +4,6 @@
 #include <iostream>
 #include <map>
 #include <optional>
-#include <set>
 #include <stack>
 #include <string>
 #include <variant>
@@ -18,6 +17,7 @@ To test:  ./build/experiments/static-preprocessor ./examples/static-building/dat
 
 
 #define PREFIX_STR(name,value) char name[ns_prefix_len+std::char_traits<char>::length(value)+1];memcpy(name,ns_prefix,ns_prefix_len);memcpy(name+ns_prefix_len,value,std::char_traits<char>::length(value));name[ns_prefix_len+std::char_traits<char>::length(value)]=0;
+
 
 template<typename T>
 const T& get_or(const auto& ref, const T& defval) noexcept{
@@ -186,8 +186,9 @@ struct document{
         }
         //Process the terminal attribute
         if(str[idx]=='~'){
-            std::cout<<"Returning "<<str<<" as "<<ref.attribute(str+idx+1).as_string();
-            return ref.attribute(str+idx+1).as_string();
+            //std::cout<<"Returning "<<str<<" as "<<ref.attribute(str+idx+1).as_string();
+            if(strcmp(str+idx+1,"~")==0) return ref.text().as_string();
+            else return ref.attribute(str+idx+1).as_string();
         }
 
         //TODO: Add command type to return the text() of a node as string.
@@ -195,14 +196,36 @@ struct document{
         return {};
     }
 
+    enum class order_method_t{
+        UNKNOWN, ASC, DESC, DOT_ASC, DOT_DESC, RANDOM
+        
+    };
 
-    std::vector<pugi::xml_node> prepare_node_data(const pugi::xml_node& base, int limit, int offset, bool(*filter)(const pugi::xml_node&), const std::vector<std::pair<std::string,int>>& criteria){
+    order_method_t order_form_str(const std::string& str){
+        if(str=="asc")return order_method_t::ASC;
+        else if(str=="desc")return order_method_t::DESC;
+        else return order_method_t::UNKNOWN;
+    }
+
+    std::vector<pugi::xml_node> prepare_node_data(const pugi::xml_node& base, int limit, int offset, bool(*filter)(const pugi::xml_node&), const std::vector<std::pair<std::string,order_method_t>>& criteria){
         auto cmp_fn = [&](const pugi::xml_node& a, const pugi::xml_node& b)->int{
             for(auto& criterion: criteria){
                 auto valA = resolve_expr(criterion.first.c_str(),&a);
                 auto valB = resolve_expr(criterion.first.c_str(),&b);
-                if(valA<valB)return true;
-                else if(valA>valB) return false;
+
+                if(criterion.second==order_method_t::ASC){
+                    if(valA<valB)return true;
+                    else if(valA>valB) return false;
+                }
+                else if(criterion.second==order_method_t::ASC){
+                    if(valA<valB)return false;
+                    else if(valA>valB) return true;
+                }
+                else{
+                    //TODO: methods not implemented. The dot variants are only valid for strings or string-like content. They uses `.` to nest the search in blocks, like for prop names.
+                    //Random is based on the hash of the value. It requires to be stable: as such, a fast hashing function is needed (externally supplied, C++ has none).
+
+                }
             }
             return false;
         };
@@ -224,18 +247,69 @@ struct document{
         else return std::vector(dataset.begin()+offset, dataset.begin()+offset+limit);
     }
 
+    struct node_strings{
+        private:
+            char* data = nullptr;
+        public:
+
+        const char *FOR_RANGE_TAG;
+
+        const char *FOR_TAG;
+        const char *FOR_PROPS_TAG;
+            const char *EMPTY_TAG;
+            const char *HEADER_TAG;
+            const char *FOOTER_TAG;
+            const char *ITEM_TAG;
+            const char *ERROR_TAG;
+
+        const char *WHEN_TAG;
+            const char *IS_TAG;
+
+        const char *ELEMENT_TAG;
+
+#       define WRITE(name,value) name=data+count;memcpy(data+count,ns_prefix,ns_prefix_len);memcpy(data+count+ns_prefix_len,value,std::char_traits<char>::length(value));data[count+ns_prefix_len+std::char_traits<char>::length(value)]=0;count+=ns_prefix_len+std::char_traits<char>::length(value)+1;
+#       define STRLEN(str) ns_prefix_len+std::char_traits<char>::length(str)+1
+
+        void prepare(const char * ns_prefix){
+            size_t ns_prefix_len=strlen(ns_prefix);
+
+            if(data!=nullptr)delete []data;
+            data = new char[
+                STRLEN("for-range")+
+                STRLEN("for")+STRLEN("for-props")+STRLEN("empty")+STRLEN("header")+STRLEN("footer")+STRLEN("item")+STRLEN("error")+
+                STRLEN("when")+STRLEN("is")+
+                STRLEN("element")
+                ];
+            int count=0;
+            
+            WRITE(FOR_RANGE_TAG,"for-range");
+
+            WRITE(FOR_TAG,"for");
+            WRITE(FOR_PROPS_TAG,"for-props");
+                WRITE(EMPTY_TAG,"empty");
+                WRITE(HEADER_TAG,"header");
+                WRITE(FOOTER_TAG,"footer");
+                WRITE(ITEM_TAG,"item");
+                WRITE(ERROR_TAG,"error");
+
+            WRITE(WHEN_TAG,"when");
+                WRITE(IS_TAG,"is");
+
+            WRITE(ELEMENT_TAG,"element");
+
+        }
+
+        ~node_strings(){delete[] data;}
+
+        node_strings(){std::cout<<ns_prefix<<"POOOO";prepare(ns_prefix);}
+
+#       undef STRLEN
+#       undef WRITE
+    }strings;
+
 
     void _parse(std::optional<pugi::xml_node_iterator> stop_at){ 
-        /*
-        PREFIX_STR(FOR_RANGE_TAG,"for-range");
-        PREFIX_STR(FOR_TAG,"for");
-            PREFIX_STR(EMPTY_TAG,"empty");
-            PREFIX_STR(HEADER_TAG,"header");
-            PREFIX_STR(FOOTER_TAG,"footer");
-            PREFIX_STR(BODY_TAG,"body");
-        PREFIX_STR(WHEN_TAG,"when");
-            PREFIX_STR(CASE_TAG,"case");
-        */
+        
         while(!stack_template.empty()){
 
             auto& current_template = stack_template.top();
@@ -245,8 +319,9 @@ struct document{
 
             if(current_template.first!=current_template.second){
                 //Special handling of static element
-                if(strncmp(current_template.first->name(), ns_prefix, ns_prefix_len)==0){
-                    if(strcmp(current_template.first->name()+ns_prefix_len,"for-range")==0){
+
+                if(strncmp(current_template.first->name(),ns_prefix,ns_prefix_len)==0) {
+                    if(strcmp(current_template.first->name(),strings.FOR_RANGE_TAG)==0){
                         const char* tag = current_template.first->attribute("tag").as_string();
                         int from = get_or<int>(resolve_expr(current_template.first->attribute("from").as_string("0")).value_or(0),0);
                         int to = get_or<int>(resolve_expr(current_template.first->attribute("to").as_string("0")).value_or(0),0);
@@ -264,14 +339,14 @@ struct document{
                             stack_compiled.push(current_compiled);
                         }
                     }
-                    else if(strcmp(current_template.first->name()+ns_prefix_len,"for")==0){
+                    else if(strcmp(current_template.first->name(),strings.FOR_TAG)==0){
                         const char* tag = current_template.first->attribute("tag").as_string();
                         const char* in = current_template.first->attribute("in").as_string();
                         //TODO: filter has not defined syntax yet.
                         const char* _filter = current_template.first->attribute("filter").as_string();
-                        //TODO: Split by , and use both to build the arg for the `prepare_node_data`
+
                         const char* _sort_by = current_template.first->attribute("sort-by").as_string();
-                        const char* _order_by = current_template.first->attribute("order-by").as_string();
+                        const char* _order_by = current_template.first->attribute("order-by").as_string("asc");
 
                         int limit = get_or<int>(resolve_expr(current_template.first->attribute("limit").as_string("0")).value_or(0),0);
                         int offset = get_or<int>(resolve_expr(current_template.first->attribute("offset").as_string("0")).value_or(0),0);
@@ -281,9 +356,7 @@ struct document{
 
                         //Only a node is acceptable in this context, otherwise show the error
                         if(!expr.has_value() || !std::holds_alternative<const pugi::xml_node>(expr.value())){ 
-                            PREFIX_STR(ERROR_TAG,"error");
-
-                            for(const auto& el: current_template.first->children(ERROR_TAG)){
+                            for(const auto& el: current_template.first->children(strings.ERROR_TAG)){
                                 stack_template.push({el.begin(),el.end()});
                                 _parse(current_template.first);
                                 stack_compiled.push(current_compiled);
@@ -291,16 +364,19 @@ struct document{
                         }
                         else{
                             //TODO: split _sort_by & _order_by by `,` and build criteria.
-                            std::vector<std::pair<std::string,int>> criteria;
+                            std::vector<std::pair<std::string,order_method_t>> criteria;
                             
-                            for(auto& i:split(_sort_by,',')){criteria.push_back({i,0});}
+                            {
+                                auto orders = split(_order_by,',');
+                                int c = 0;
+                                //Apply order directive with wrapping in case not enough cases are specified.
+                                for(auto& i:split(_sort_by,',')){criteria.push_back({i,order_form_str(orders[c%orders.size()])});c++;}
+                            }
 
                             auto good_data = prepare_node_data(std::get<const pugi::xml_node>(expr.value()), limit, offset, nullptr, criteria);
 
                             if(good_data.size()==0){
-                                PREFIX_STR(EMPTY_TAG,"empty");
-
-                                for(const auto& el: current_template.first->children(EMPTY_TAG)){
+                                for(const auto& el: current_template.first->children(strings.EMPTY_TAG)){
                                     stack_template.push({el.begin(),el.end()});
                                     _parse(current_template.first);
                                     stack_compiled.push(current_compiled);
@@ -309,8 +385,7 @@ struct document{
                             else{
                                 //Header (once)
                                 {
-                                    PREFIX_STR(HEADER_TAG,"header");
-                                    for(const auto& el: current_template.first->children(HEADER_TAG)){
+                                    for(const auto& el: current_template.first->children(strings.HEADER_TAG)){
                                         stack_template.push({el.begin(),el.end()});
                                         _parse(current_template.first);
                                         stack_compiled.push(current_compiled);
@@ -318,13 +393,11 @@ struct document{
                                 }
                             
                                 //Items (iterate)
-                                PREFIX_STR(ITEM_TAG,"item");
-
                                 for(auto& i : good_data){
                                     auto frame_guard = symbols.guard();
                                     if(tag!=nullptr)symbols.set(tag,i);
                                     symbols.set("$",i);
-                                    for(const auto& el: current_template.first->children(ITEM_TAG)){
+                                    for(const auto& el: current_template.first->children(strings.ITEM_TAG)){
                                         stack_template.push({el.begin(),el.end()});
                                         _parse(current_template.first);
                                         stack_compiled.push(current_compiled);
@@ -334,8 +407,7 @@ struct document{
 
                                 //Footer (once)
                                 {
-                                    PREFIX_STR(FOOTER_TAG,"footer");
-                                    for(const auto& el: current_template.first->children(FOOTER_TAG)){
+                                    for(const auto& el: current_template.first->children(strings.FOOTER_TAG)){
                                         stack_template.push({el.begin(),el.end()});
                                         _parse(current_template.first);
                                         stack_compiled.push(current_compiled);
@@ -344,8 +416,8 @@ struct document{
                             }
                         }
                     }
-                    else if(strcmp(current_template.first->name()+ns_prefix_len,"for-prop")==0){}
-                    else if(strcmp(current_template.first->name()+ns_prefix_len,"element")==0){
+                    else if(strcmp(current_template.first->name(),strings.FOR_PROPS_TAG)==0){}
+                    else if(strcmp(current_template.first->name(), strings.ELEMENT_TAG)==0){
                         PREFIX_STR(TYPE_ATTR,"type");
                         //It is possible for it to generate strange results as strings are not validated by pugi
                         auto symbol = resolve_expr(current_template.first->attribute(TYPE_ATTR).as_string("$"));
@@ -399,11 +471,9 @@ struct document{
                             }
                         }
                     }
-                    else if(strcmp(current_template.first->name()+ns_prefix_len,"when")==0){
-                        PREFIX_STR(CASE_TAG,"is");
-
+                    else if(strcmp(current_template.first->name(),strings.WHEN_TAG)==0){
                         auto subject = resolve_expr(current_template.first->attribute("subject").as_string("$"));
-                        for(const auto& entry: current_template.first->children(CASE_TAG)){
+                        for(const auto& entry: current_template.first->children(strings.IS_TAG)){
                             bool _continue =  entry.attribute("continue").as_bool(false);
                             auto test = resolve_expr(entry.attribute("value").as_string("$"));
 
@@ -429,7 +499,7 @@ struct document{
 
                                 result = strcmp(op1,op2)==0;
                             }
-                  
+                    
                             if(result){
                                 stack_template.push({entry.begin(),entry.end()});
                                 _parse(current_template.first);
@@ -440,9 +510,12 @@ struct document{
                         }
                     }
                     else {std::cerr<<"unrecognized static operation\n";}
+                    
                     current_template.first++;
                     continue;
                 }
+            
+                
 
                 auto last = current_compiled.append_child(current_template.first->type());
                 last.set_name(current_template.first->name());

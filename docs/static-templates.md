@@ -22,6 +22,7 @@ As a result, `vs` vendors its own XSLT-ish preprocessor that can be used as a bu
 - As before, but ending with a property, `{var-name}/...~prop-name`
 - Absolute paths. `/.../`
 - Absolute paths resolving in a property `/...~prop-name`
+- Access to the text of an element: `$/.../~~`
   No other combination or format is allowed.
 
 ### Operators for elements
