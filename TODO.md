@@ -38,7 +38,7 @@
   - [ ] filter
   - [x] sort & order
   - [x] limit & offset
-- [ ] for-prop (cpy&paste from `for`)
+- [x] for-prop (mostly cpy&paste from `for`)
 - [x] value
 - [x] element
 - [x] when/is
