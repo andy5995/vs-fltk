@@ -1,33 +1,46 @@
-Static templates are extremely contained programs that a preprocessor can use to transform an input data XML into a final XML file. In the context of `vs` these final files will be either components or apps.  
-When dealing with XML the most common preprocessor is XSLT, and I briefly considered using it for this project as it is. I decided against for two main reasons:
+Static templates are extremely simple programs serving as preprocessor to transform an input data XML into a derived XML file. This program is also expressed in XML. Whithin the context of `vs`, these derived files will be either components or apps.  
+Dealing with XML, the most common and widespred preprocessor is XSLT. It was briefly considered for this project, but discarded for few reasons:
 
 - The rest of the project is based on `pugixml`, while the only XSLT 1.0 implementation which is decently licensed is [libxslt](https://gitlab.gnome.org/GNOME/libxslt) based on [libxml2](https://gitlab.gnome.org/GNOME/libxml2).  
-  Because of that, its integration would have been quite wasteful, requiring an additional serialization and parsing.
-- The scope of XSLT, even in its very first version is too wide and somewhat verbose.
-- I am trying to match the features set and syntax of the equivalent dynamic components that will be offered at some point in the standard library. A custom implementation ensures they are mostly aligned.
+  Because of that, its integration would have been quite wasteful, requiring an additional serialization and parsing to go from one library to the next.
+- The scope of XSLT, even in its very first version is too wide, verbose and not always easy to decode from its syntax.
+- At some point `vs` will come with dynamic native components matching in behaviour the extended tagsused in the preprocessor program. A custom implementation ensures they can be seamlessly replaced when needed.
 
-As a result, `vs` vendors its own XSLT-ish preprocessor that can be used as a build step for any component or fragment inside the supported xml files.
+As a result, `vs` vendors its own XSLT-ish preprocessor. Still, nothing about its semantics or syntax is directly tied to `vs`; as such, it can be used for standalone applications as well.
 
-## Examples
+## Usage
+In general there are two files involved:
+- the static dataset contains any data needed for the generation of the final component. For vs, its root must be `<vs:sdata>` and provide a `s:template` attribute pointing to the actual component template. The conventional extension, like normal components, is `.vs`.
+- the template itself, containing a `vs` tree structure and entities in the `s` namespace as well. Its conventional extension is `.tvs`. These files shall never be used as components themselves.
+
+When importing or using a component which requires processing, its static dataset is used.
+
+### Examples
 
 ## Syntax
 
+
 ### Path expressions
+Expression are used to use elements and properties in the tree structure of the static dataset from the template. Their definition and usage is purposefully restricted to prevent arbitrary code to be run.  
+This is the list of all feasible value
 
-- String, for expressions starting with `#`
-- Integers, for expressions starting with a digit, `+`, `-` or `.`
-- Local paths, `$/.../`
-- Local paths ending with a property, `$/...~prop-name`
-- Paths with arbitrary prefix `{var-name}/.../` where `var-name`is searched for in symbols
-- As before, but ending with a property, `{var-name}/...~prop-name`
-- Absolute paths. `/.../`
-- Absolute paths resolving in a property `/...~prop-name`
-- Access to the text of an element: `...~!txt`
-- Access to the name of an element: `...~!tag`
+- String, automatically cast for expressions starting with `#`
+- Integers, automatically cast for expressions starting with a digit, `+`, `-` or `.`
+- Local paths, `$/.../`. `$` is used to mark the nearest named spope being visited.
+- Local paths leading to a property/attribute, `$/...~prop-name`
+- Paths with arbitrary prefix `{var-name}/.../` where `var-name`is searched for and resolved from the symbols' stack.
+- As before, but ending with a property/attribute, `{var-name}/...~prop-name`
+- Absolute paths. `/.../` starting with `/`.
+- Absolute paths resolving in a property/attribute `/...~prop-name`
 
-  No other combination or format is allowed.
+There are also two special properties:
+- Special access to the property`~!txt` to get the node text.
+- Special access to the element's name via `~!tag`
+
+No further combination or format is allowed, and if used they might lead to undefined behaviour. However the preprocessor should not result in exceptions.
 
 ### Operators for elements
+Operators acting over elements will use information from the current static data subpath to further generate a parametrized version of what shown in their children on the template tree.
 
 #### `for-range`
 
@@ -36,32 +49,33 @@ As a result, `vs` vendors its own XSLT-ish preprocessor that can be used as a bu
 - `to` final value.
 - `step` step of increment. It can be negative. If so `to<from` must hold true.
 
-Infinite cycles are detected before execution, in which case no cycle will run.
+Infinite cycles are detected before execution, in which case no cycle will run. Unlike other `for` variants, there is no header, footer or empty child. Anything inside a `for-range` is interpreted as `item`.
 
-#### `for` & `for-prop`
+#### `for` & `for-props`
 
-To iterate over elements and props of an element respectively.  
-Aside from that, they share the same interface.
+To iterate over children and props of an element respectively.  
+Aside from that, they mostly share the same interface.
 
 - `tag` the name of the symbol hosting the current xml node pointer. If empty, its default is `$`
 - `in` must be specified and is a path expression
-- `filter` if set it is a quickjs formula
+- `filter` ~~if set it is a quickjs formula~~ its actual definition has yet to be determined. I'd like to avoid qjs if possible.
 - `sort-by` (only available for `for`) list of comma separated path expressions. Elements will be sorted giving priority from left to right
-- `order-by` order preference for each field in the `sort-by` or the only default one for `for-prop`, comma separated. Each entry is a pair `type:comparator` with type either ASC, DESC or RANDOM. The comparator can be skipped, and it will be assumed default to be the default one.
-- `limit` maximum number of entries to be iterated
+- `order-by` order preference for each field in the `sort-by` or the only one implicit for `for-props`. Each entry is a pair `type:comparator` with type either ASC, DESC or RANDOM. If not provided, comparator is assumed to be the default one. As an alternative comparator we could have a one using `.` to separate values in tokens, and order them token by token.
+- `limit` maximum number of entries to be iterated. If 0 all of the will be considered, if positive that or the maximum number, if negative all but that number if possible o no contnet.
 - `offset` offset from start (of the filtered and ordered list of children)
 
-Both `for` & `for-prop` support the following list of children. You can use as many as you want with any order, they will be rearranged automatically.
+Both `for` & `for-props` support the following list of children. You can use as many instances of them as you want, in any order.
 
 - `header` shown at the top of a not-emtpy container
 - `footer` shown at the botton of a not-empty container
 - `empty` shown if a container is empty
 - `item` the main body
-- `error` shown if it was not possible to retrieve items because of an error in the path
+- `error` shown if it was not possible to retrieve items (because of an error in the path)
 
 ### `value`
 
-To introduce the value of an expression as text content of an element. It accept a path expression `src` as argument. By default, it is assumed to be `$`. It also supports an additional `format` argument, but at this stage it has no implementation.
+To introduce the value of an expression as text content of an element. It accept a path expression `src` as argument. By default, it is assumed to be `$`.  
+It also supports an additional `format` argument, but at this stage it has no implementation.
 
 ### `element`
 
@@ -77,11 +91,11 @@ Attributes for `is`:
 - `continue` default is `false`. If `true` it continues checking and executing even after a match. Else it will break.
 - `value` a path expression to compare against.
 
-The order of `case` is important and determines the overall flow.
+The order of `is` elements is important and determines the overall flow.
 
 ### Operators for properties
 
-### `for.FIELD.xxx` & `for-prop.FIELD.xxx`
+### `for.FIELD.xxx` & `for-props.FIELD.xxx`
 
 As prop, attribute variants of `for` and `for-props`. They add attributes to the node they are defined within.
 
@@ -98,7 +112,7 @@ To generate a new props whose name is determined by an expression.
 ### Component file
 
 ```xml
-<vs:component template="this://TableLike.xml">
+<vs:sdata template="this://TableLike.xml">
     <format>
         <field name="field-a" format="id"/>
         <field name="field-b" format="currency"/>
@@ -115,7 +129,7 @@ To generate a new props whose name is determined by an expression.
             <field-c>World</field-c>
         </entry>
     </data>
-</vs:component>
+</vs:sdata>
 ```
 
 ### Template file
