@@ -4,7 +4,7 @@
 - Support for script modules
 - Final implementation of the static xml builder
 - Full infrastructure for benchmarking & tests implemented
-- Support basic policies viagit  env flags
+- Support basic policies via env flags
 
 ## 0.2.x
 

@@ -280,9 +280,13 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         //Check if it is a module or single user; if module check for cache and use it.
         if(strcmp(root.attribute("type").as_string(""),"module")==0){
           is_module=true;
+          auto* cached_script = root.attribute("$cached.script").as_string(nullptr);
+          auto* cached_symbols = root.attribute("$cached.symbols").as_string(nullptr);
           if(root.attribute("$cached").as_string()!=nullptr){
-            //TODO: Recover the cached result and apply it to the current object.
-            //TODO it requires the basic memory cache to be implemented.
+            current->set_mode(frame_mode_t::NATIVE);
+            current->attach_script(globals::memstorage.get(cached_symbols)->ref,is_module);
+            //TODO: Check if this is ok with the delete!
+            current->set_symbols(std::static_pointer_cast<smap<symbol_t>>(globals::memstorage.get(cached_script)->ref));
             continue;
           }
         }
@@ -303,15 +307,19 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
 
         //I am ignoring the one of the tree. Mode is now widget based and not component based.
         auto mode =current->get_local_frame()->get_mode();
-        if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::VOID) {
+        if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::VOID) {          
           const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
           if (strcmp(lang, "c") == 0) {
             auto compiler = pipelines::tcc_c_pipeline_xml(true, is_module?nullptr:current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
             if(compiler!=nullptr){
               current->set_mode(frame_mode_t::NATIVE);
               current->attach_script(compiler,is_module);
-              current->set_symbols(pipelines::tcc_c_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::tcc_log_symbol_func_xml));
-              //TODO: If module, add the script,symbols pair to cache and record the action on DOM.
+              auto symbols = pipelines::tcc_c_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::tcc_log_symbol_func_xml);
+              current->set_symbols(symbols);
+              if(is_module){
+                root.append_attribute("$cached.symbols").set_value(globals::memstorage.fetch_from_shared(symbols));
+                root.append_attribute("$cached.script").set_value(globals::memstorage.fetch_from_shared(compiler));
+              }
             }
             continue;
           }
@@ -323,9 +331,13 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
               if(compiler!=nullptr){
                 current->set_mode(frame_mode_t::QUICKJS);
                 current->attach_script(compiler,is_module);
-                current->set_symbols(pipelines::qjs_js_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::qjs_log_symbol_func_xml));
-                //TODO: If module, add the script,symbols pair to cache and record the action on DOM.
-            }
+                auto symbols = pipelines::qjs_js_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::qjs_log_symbol_func_xml);
+                current->set_symbols(symbols);
+                if(is_module){
+                  root.append_attribute("$cached.symbols").set_value(globals::memstorage.fetch_from_shared(symbols));
+                  root.append_attribute("$cached.script").set_value(globals::memstorage.fetch_from_shared(compiler));
+                }
+             }
             continue;
           }
         }

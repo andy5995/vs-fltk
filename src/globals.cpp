@@ -5,6 +5,7 @@ namespace globals{
 policies_t  policy;
 path_env_t  path_env;
 js_rt_t     js_rt;
+cache::memstorage_t memstorage;
 
 }
 }

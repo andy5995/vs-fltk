@@ -13,21 +13,28 @@ namespace vs{
 
 namespace cache{
 
-class memstorage{
+/**
+    Special cache class to store arbitrary data as part of the current session.
+    Usually without a limited lifetime.
+    It is not designed to quickly search from the original name.
+ */
+class memstorage_t{
     struct entry_t{
-        std::string full_key;
+        //std::string full_key;   //Not defined for from_shared
         std::shared_ptr<void> ref;
     };
 
     std::unordered_map<std::string, entry_t> entries;
 
+    static std::string unique_name();
+
     public:
-        entry_t* fetch_from_fs(const char* path);
-        entry_t* fetch_from_http(const char* path);
-        entry_t* fetch_from_https(const char* path);
-        entry_t* fetch_from_gemini(const char* path);
-        entry_t* fetch_from_cache(const char* path);
-        entry_t* fetch_from_shared(const std::shared_ptr<void>& src);
+        const char* fetch_from_fs(const char* path);
+        const char* fetch_from_http(const char* path);
+        const char* fetch_from_https(const char* path);
+        const char* fetch_from_gemini(const char* path);
+        const char* fetch_from_cache(const char* path);
+        const char* fetch_from_shared(const std::shared_ptr<void>& src);
 
         void drop(const char* key);
         entry_t* get(const char* key);

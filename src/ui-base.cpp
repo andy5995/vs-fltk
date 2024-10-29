@@ -145,7 +145,7 @@ void ui_base::set_dispatcher(symbol_t value){
     local_frame->custom_dispatcher = value;
 }
 
-void ui_base::set_symbols(std::shared_ptr<smap<symbol_t>> ref){
+void ui_base::set_symbols(const std::shared_ptr<smap<symbol_t>>& ref){
   mk_frame();
   local_frame->symbols=ref;
   {auto it = ref->find("callback"); if(it!=ref->end()){this->apply_prop("on.callback","callback");}}

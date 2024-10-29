@@ -22,7 +22,7 @@ class ui_base{
     void set_access(frame_access_t);
     const std::string& get_name() const;
 
-    void set_symbols(std::shared_ptr<smap<symbol_t>> ref);
+    void set_symbols(const std::shared_ptr<smap<symbol_t>>& ref);
     void register_symbol(const char* name, symbol_t value);
     symbol_t get_symbol(const char* name);
     void unregister_symbol(const char* name);
