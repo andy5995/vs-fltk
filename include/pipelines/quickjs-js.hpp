@@ -31,23 +31,7 @@ struct quickjs_t{
 
     operator JSContext* (){return ctx;}
 
-    quickjs_t(JSRuntime* rt){
-        ctx=JS_NewContextRaw(rt);
-        JS_AddIntrinsicBaseObjects(ctx);
-        JS_AddIntrinsicDate(ctx);
-        JS_AddIntrinsicEval(ctx);
-        JS_AddIntrinsicRegExp(ctx);
-        JS_AddIntrinsicJSON(ctx);
-        JS_AddIntrinsicProxy(ctx);
-        JS_AddIntrinsicMapSet(ctx);
-        JS_AddIntrinsicTypedArrays(ctx);
-        JS_AddIntrinsicPromise(ctx);
-        JS_AddIntrinsicBigInt(ctx);
-        JS_AddIntrinsicWeakRef(ctx);
-
-        JS_AddPerformance(ctx);
-    
-    }
+    quickjs_t(JSRuntime* rt);
 
     virtual ~quickjs_t(){
         for(auto& i: handles){JS_FreeValue(ctx, std::get<2>(i));}

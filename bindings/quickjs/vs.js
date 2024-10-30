@@ -34,3 +34,13 @@ var $plotter = (fn) => { globalThis[`__EXPORT_DRW_${fn.name}`] = fn; };
 var $getter = (fn) => { globalThis[`__EXPORT_GET_${fn.name}`] = fn; };
 var $setter = (fn) => { globalThis[`__EXPORT_SET_${fn.name}`] = fn; };
 var $fn = (fn) => { globalThis[`__EXPORT_UKN_${fn.name}`] = fn; };
+
+
+/**
+ * Set widget:prt_t to vs_self and return the old value;
+ */
+vs_set_env(widget){
+    const t = globalThis.core.self;
+    globalThis.core.self=widget;
+    return t;
+}

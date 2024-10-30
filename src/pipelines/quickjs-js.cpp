@@ -165,6 +165,23 @@ static void dump_value_to_stream(JSContext* ctx, JSValueConst val, void(*error_f
 }
 
 
+quickjs_t::quickjs_t(JSRuntime* rt){
+    ctx=JS_NewContextRaw(rt);
+    JS_AddIntrinsicBaseObjects(ctx);
+    JS_AddIntrinsicDate(ctx);
+    JS_AddIntrinsicEval(ctx);
+    JS_AddIntrinsicRegExp(ctx);
+    JS_AddIntrinsicJSON(ctx);
+    JS_AddIntrinsicProxy(ctx);
+    JS_AddIntrinsicMapSet(ctx);
+    JS_AddIntrinsicTypedArrays(ctx);
+    JS_AddIntrinsicPromise(ctx);
+    JS_AddIntrinsicBigInt(ctx);
+    JS_AddIntrinsicWeakRef(ctx);
+
+    JS_AddPerformance(ctx);
+}
+
 
 std::shared_ptr<smap<symbol_t>> qjs_js_pipeline_apply(const std::shared_ptr<quickjs_t>& script,vs::ui_base* obj,void* node,void(*register_fn)(void*,const char*, const char*)){
     std::shared_ptr<smap<symbol_t>> symbols = std::make_shared<smap<symbol_t>>();
@@ -183,6 +200,9 @@ std::shared_ptr<smap<symbol_t>> qjs_js_pipeline_apply(const std::shared_ptr<quic
         else if(strcmp("dispatcher", name)==0){
             register_fn(node,  "Registering default dispatching symbol `%s`",name);
             symbols->emplace(name, symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::DISPATCHER,(void*)count});
+        }
+        else if(strcmp("vs_set_env", name)==0){
+            symbols->emplace(name, symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::UNKNOWN,(void*)count});
         }
         else{
             //TODO use the type to show it back again
