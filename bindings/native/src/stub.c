@@ -31,6 +31,5 @@ void* vs_set_env(void* ptr){
     vs_self=ptr;
     return t;
 }
-$fn(vs_set_env);
 
 node_t vs_self = 0;

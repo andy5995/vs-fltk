@@ -105,20 +105,12 @@ int ui_xml_tree::build(){
 
 
   ui_base* base;
-  const auto& type = xml_root.attribute("type").as_string("native");
-  if(strcmp(type,"native")==0){
-    if(is_app){base = (ui_base*)new ui_root_app(frame_mode_t::VOID);}
-    else base = caller_ui_node;//(ui_base*)new ui_root_component(frame_mode_t::DEFAULT);
-  }
-  else{
-    log(severety_t::CONTINUE, xml_root, "An unsupported type `%s` was requested.", fullname.as_string().c_str());
-    return 1;
-  }
+
+  if(is_app){base = (ui_base*)new ui_root_app(frame_mode_t::VOID);}
+  else base = caller_ui_node;
 
   _build(doc.child(is_app?"app":"component"),is_app?base:caller_ui_node);
   
-  //base->widget().end();
-  //base->widget().show();
   if(is_app)root=base;
   else root = nullptr;
   return 0;
@@ -133,7 +125,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         log(severety_t::CONTINUE,root,"<use/> must have a source");
       }
       else{
-        log(severety_t::INFO,root,"Loading component %s", src);
+        log(severety_t::INFO,root,"Loading component %s", src.as_string()); //TODO: How is it possible that this shows file:// in place of the actual one?
         ui_xml_tree component_tree; 
         if(component_tree.load(src.as_string(),false,&root,root_ui,&local)!=0){
           log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", src);
@@ -147,7 +139,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
       }
 
       //Collector of all failures
-      const auto& error =root.child("on-load.fail");
+      const auto& error =root.child("on.load-fail");
       if(!error.empty()){
         _build(error,root_ui);
         return;
@@ -240,7 +232,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
       }
 
     }
-    else if (strcmp(root.name(),"component")==0){/*skip*/}
+    else if (strcmp(root.name(),"component")==0){}
 
     //Basic widgets
     mkLeafWidget(,button,ui<Fl_Button>)
@@ -411,6 +403,15 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
 
       {auto tmp = current->compile_mixins(root.attribute("mixin").as_string("")); for(const auto& i: tmp)props.insert_or_assign(i.first,std::move(i.second));}
       */
+
+      //For components add to its direct children the attributes coming from above
+      if(strcmp(root.parent().name(),"component")==0){
+        for (const auto &i : this->caller_node->attributes()) {
+          props.insert_or_assign(i.name(), i.value());
+        }
+      }
+
+      
       for (const auto &i : root.attributes()) {
         props.insert_or_assign(i.name(), i.value());
       }
