@@ -1,3 +1,4 @@
+#include <iostream>
 #include <memory>
 #include <ostream>
 #include <sstream>
@@ -150,7 +151,7 @@ void ui_base::set_symbols(const std::shared_ptr<smap<symbol_t>>& ref){
   local_frame->symbols=ref;
   {auto it = ref->find("callback"); if(it!=ref->end()){this->apply_prop("on.callback","callback");}}
   {auto it = ref->find("draw"); if(it!=ref->end()){this->apply_prop("on.draw","draw");}}
-  {auto it = ref->find("draw"); if(it!=ref->end()){this->set_dispatcher(it->second);}}
+  {auto it = ref->find("dispatcher"); if(it!=ref->end()){this->set_dispatcher(it->second);}}
 }
 
 void ui_base::register_symbol(const char* name, symbol_t value){
@@ -275,17 +276,31 @@ int ui_base::use_setter(const symbol_ret_t& sym, const void * value){
   return 1;
 }
 int ui_base::use_callback(const symbol_ret_t& sym, ui_base * node){
+          std::cout<<">>>>>>>>....B\n"<<sym.found_at<<"\n";
+          std::cout<<">>>>>>>>....B\n"<<(int)sym.found_at->get_mode()<<"\n";
+
   void (*fn)(ui_base*)=(void (*)(ui_base*))sym.symbol.symbol;
+        std::cout<<">>>>>>>>....A\n";
 
   if(sym.found_at->get_mode()==frame_mode_t::NATIVE){
     if(sym.ctx_apply.symbol!=nullptr){
+        std::cout<<">>>>>>>>....0\n";
+
       const ui_base* (*ctx_apply)(const ui_base*) = ( const ui_base* (*)(const ui_base*) ) sym.ctx_apply.symbol;
+        std::cout<<">>>>>>>>....\n";
+
       const ui_base* tmp =ctx_apply(sym.found_at->widget());
+        std::cout<<">>>>>>>>...2.\n";
+
       fn(node);
+        std::cout<<">>>>>>>>...3.\n";
+
       ctx_apply(tmp);
       return 0;
     }
     else{
+              std::cout<<">>>>>>>>....Alt\n";
+
       fn(node);
       return 0;
     }

@@ -1,0 +1,11 @@
+<component>
+    <button label="Banana" box="0,0,100,100">
+        <script type="module" lang="c">
+            <![CDATA[
+            void callback(){
+                $prop("label","HELLO");
+            }
+            ]]>
+        </script>
+    </button>
+</component>

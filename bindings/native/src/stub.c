@@ -1,3 +1,5 @@
+#include <stub.h>
+
 char* itoa(int value, char* result, int base) {
     // check that the base if valid
     if (base < 2 || base > 36) { *result = '\0'; return result; }
@@ -23,3 +25,12 @@ char* itoa(int value, char* result, int base) {
     }
     return result;
 }
+
+void* vs_set_env(void* ptr){
+    void* t = vs_self;
+    vs_self=ptr;
+    return t;
+}
+$fn(vs_set_env);
+
+node_t vs_self = 0;

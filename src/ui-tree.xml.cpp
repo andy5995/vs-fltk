@@ -84,6 +84,18 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
 ui_xml_tree::~ui_xml_tree(){if(root!=nullptr)delete root;}
 
 int ui_xml_tree::build(){
+  //TODO: Static parsing is performed in here!
+  {
+    auto root_data = doc.child("sdata");
+
+    if(!root_data.empty()){
+      auto tplt = root_data.attribute("template");  //TODO: Adapt to use the proper syntax. I cannot remember which one was it
+      //Resolve it.
+
+      //TODO Apply parser
+      //Replace current root and continue as usual
+    }
+  }
 
   const auto& xml_root = doc.child(is_app?"app":"component");
   if(xml_root.empty()){
@@ -280,9 +292,10 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         //Check if it is a module or single user; if module check for cache and use it.
         if(strcmp(root.attribute("type").as_string(""),"module")==0){
           is_module=true;
+          //TODO: mode not currently handled... check if it is needed.
           auto* cached_script = root.attribute("$cached.script").as_string(nullptr);
           auto* cached_symbols = root.attribute("$cached.symbols").as_string(nullptr);
-          if(root.attribute("$cached").as_string()!=nullptr){
+          if(cached_script!=nullptr && cached_symbols!=nullptr){
             current->set_mode(frame_mode_t::NATIVE);
             current->attach_script(globals::memstorage.get(cached_symbols)->ref,is_module);
             //TODO: Check if this is ok with the delete!
@@ -334,6 +347,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
                 auto symbols = pipelines::qjs_js_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::qjs_log_symbol_func_xml);
                 current->set_symbols(symbols);
                 if(is_module){
+                  //root.append_attribute("$cached.mode").set_value(globals::memstorage.fetch_from_shared(symbols));
                   root.append_attribute("$cached.symbols").set_value(globals::memstorage.fetch_from_shared(symbols));
                   root.append_attribute("$cached.script").set_value(globals::memstorage.fetch_from_shared(compiler));
                 }

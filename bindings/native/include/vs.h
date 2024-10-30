@@ -54,33 +54,33 @@ typedef struct symbol_ret_t symbol_ret_t;
 
 extern int vs_log(int severety, node_t self, const char* string, ...);
 #define $$log(self,sev,string, ...) vs_log(sev,self,string, ##__VA_ARGS__)
-#define $log(sev,string, ...) vs_log(sev,&vs_self,string, ##__VA_ARGS__)
+#define $log(sev,string, ...) vs_log(sev,vs_self,string, ##__VA_ARGS__)
 
 
 extern node_t vs_resolve_name(node_t, const char* string);
 extern node_t vs_resolve_name_path(node_t, const char* string);
 #define $$(self,string) vs_resolve_name_path(self,string)
-#define $(string) vs_resolve_name_path(&vs_self,string)
+#define $(string) vs_resolve_name_path(vs_self,string)
 
 extern symbol_ret_t vs_resolve_symbol(node_t, const char* string);
 #define $$resolve_symbol(self,string) vs_resolve_symbol(self,string)
-#define $resolve_symbol(string) vs_resolve_symbol(&vs_self,string)
+#define $resolve_symbol(string) vs_resolve_symbol(vs_self,string)
 
 extern int vs_apply_prop(node_t, const char* k, const char* v);
 extern int vs_get_computed(node_t, const char* k, const char** v);
 #define $$prop(self,key,value) vs_apply_prop(self,key,value)
 #define $$computed(self,key,value) vs_get_computed(self,key,value)
 #define $$mixin(self,value) vs_apply_prop(self,"mixin",value)
-#define $prop(key,value) vs_apply_prop(&vs_self,key,value)
-#define $computed(key,value) vs_get_computed(&vs_self,key,value)
-#define $mixin(value) vs_apply_prop(&vs_self,"mixin",value)
+#define $prop(key,value) vs_apply_prop(vs_self,key,value)
+#define $computed(key,value) vs_get_computed(vs_self,key,value)
+#define $mixin(value) vs_apply_prop(vs_self,"mixin",value)
 
 extern int vs_set(node_t, const char* k, const char* v);
 #define $$set(self,k,v) vs_set(self,k,v)
-#define $set(k,v) vs_set(&vs_self,k,v)
+#define $set(k,v) vs_set(vs_self,k,v)
 extern int vs_get(node_t, const char* k, const char** v);
 #define $$get(self,k,v) vs_set(self,k,&v)
-#define $get(k,v) vs_set(&vs_self,k,&v)
+#define $get(k,v) vs_set(vs_self,k,&v)
 
 
 //Utility functions to export symbols

@@ -63,7 +63,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     }
 
     // Custom symbol
-    script->add_sym("vs_self", (void *)obj);
+    //script->add_sym("vs_self", (void *)obj==0?(void*)-1:obj);  //Needed as obj nullptr would remove the symbol for some stupid reason.
     script->add_sym("vs_log", (void *)vs_log);
     script->add_sym("vs_resolve_name", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return (const ui_base*)nullptr;return  w->resolve_name(s); });
     script->add_sym("vs_resolve_name_path", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return (const ui_base*)nullptr;return  w->resolve_name_path(s); });
@@ -125,6 +125,10 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
 
     auto on_compiled = (uint64_t(*)())script->get_sym("on_compiled");
     if(on_compiled!=nullptr)on_compiled();
+    if(obj!=nullptr){
+        auto vs_set_env = (void(*)(void*))script->get_sym("vs_set_env");
+        vs_set_env(obj);
+    }
     return script;
 }
 

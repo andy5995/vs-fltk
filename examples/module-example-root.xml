@@ -1,0 +1,7 @@
+<app>
+    <window box="0,0,600,200">
+        <use src="this://module-example-btn.xml"/>
+        <use src="this://module-example-btn.xml" box.x="100"/>
+        <use src="this://module-example-btn.xml" box.x="200"/>
+    </window>
+</app>
