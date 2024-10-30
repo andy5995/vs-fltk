@@ -12,6 +12,10 @@ In addition to that, this repo makes use of:
 At the moment only Linux is supported, probably on any of the major CPU architecture. Possibly some more UNIX-like systems.  
 This is just temporary limitation, as all dependencies are portable, but my own code is not.
 
+### Optional features
+
+TODO: LSP link.
+
 ## Building process
 
 Start by installing all the `bun` dependencies needed:

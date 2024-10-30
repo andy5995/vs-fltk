@@ -1,47 +1,71 @@
 ## General questions
 
-> But C is unsafe!
+While `vs` shares many of its technologies and ideas with modern SFC frameworks, its design is significantly more opinionated and less free.  
+This document addresses several of these issues and provides some of the implied rationale.
 
-Yes, you are basically giving the keys to the XML provider to run arbitrary code on your machine.  
-Even if `vs` is not exposing direct access to the fs or network, arbitrary C code compiled in there will be able to do arbitrary things still.  
+### Can we have something like `<canvas>`?
+
+No. You are free to add or use a custom native component if you really want. And there is support for arbitrary SVG files already as part of the `fltk` library. But canvas-like components are not and will never be part of the core components shipped with `vs`. Because of that such capabilities are not meant to be universally accessible.  
+The reason is that canvas-like components can be abused to replace UI primitives, and as a result break the semantics on which accessibility tools and robots are based on. Furthermore, to be useful we should also allow arbitrary execution of code in embedded scripts that is generally discouraged.
+
+### Can we have a webgpu, opengl, vulkan context?
+
+No, same as for `<canvas>`.
+
+### Why C in embedded scrips? It is unsafe!
+
+Yes, you are basically giving all keys to the XML provider to run arbitrary code on your machine.  
+Even if `vs` is not exposing direct access to the fs or network to embedded scripts, arbitrary C code compiled in there will be able to do arbitrary things still.  
 It is understandable that from the point of view of "web development" this idea is absurd. But `vs` is not about web development, it is designed to provide native UIs. You can load XML components and resources from the internet & gemini, but you should only do that for trusted sources, quite possibly some you have control over.  
 And still, it would be not less safe than just compiling and running some random code from github.  
-Still, QuickJS and especially WAMR do offer a much more sandboxed experience. In the future it will be possible to set up robust policies based on domains to determine which type of scripts should be allowed if any.  
-For now there are some [environment variables]() you can set to fully disable certain features.
+In comparison, QuickJS, Lua and especially WAMR do offer a much more sandboxed experience.  
+In the future it will be possible to set up robust policies based on domains to determine which type of scripts should be allowed if any.
 
-> Can it be used for fully standalone applications?
+For now there are some coarse [environment variables]() that can be set fully disable certain features.
+
+### Can it be used for fully standalone applications?
 
 Ideally yes. Broadly speaking there are three "modes" in which `vs` can operate:
 
-- As a standalone application. The main issue being the limited selection of functions which are made available to your scripts, and their sandboxed nature. Keep in mind that even when working with C, while unsafe, you are not given full access to the standard library, and this is by design.
-- As the front end of a dynamically linked library which embeds all the complex functionalities and provides hooks for the UI to attach. Events triggered in the UI will reflect as calls to features exposed in your library. Useful for event driven applications, like providing a simple front end to your CLI.
-- As the front end of a separate process, sharing information via UNIX Domain Sockets. Useful for multi-client applications, or those where the bulk of the operations are not event driven. It also avoids the need to compile your codebase into a dynamic library, allowing it to interoperate with virtually any runtime.
+- As a fully standalone application. The main issue being the limited selection of functions which are made available in embedded scripts, and their sandboxed nature which only allows specific types of symbols to be exposed and shared.  
+  Keep in mind that even while working in C, as unsafe as it is you are not given direct full access to the standard library, and this is a design choice to limit the scope of custom code in scripts.
+- As the front end of a dynamically linked library which embeds all complex functionalities and provides hooks for the UI in `vs`. Events triggered from UI will reflect as calls to features exposed in your library. Useful for event driven applications, like providing a simple visual front end to your CLI.
+- As the front end of a separate process, sharing information via UNIX Domain Sockets. Useful for multi-client applications, or those in which the bulk of the operations are not event driven. It also avoids the need to compile your codebase into a dynamic library, allowing it to interoperate with virtually any runtime.
 
-For now, most of the efforts in development are focused on the first two options, with the third one is planned for later.
+For now, most efforts are focused in making the first two options viable. The third one is planned for later.
 
-> How do traditional concepts from SFC and front-end development map in here?
+### How to map SFC concepts in here?
 
-XML in place of HTML, `mixin` elements in place of CSS, `script` for scripting. In addition, there is `data` to explicitly manage datasets and any related event.  
-All flow control features like `if` or `for-each` blocks which are typical in frameworks like [vue](https://vuejs.org/) are performed either:
+| Concept            | **Web**                            | **VS**                          |
+| ------------------ | ---------------------------------- | ------------------------------- |
+| Components         | XML or HTML template               | XML                             |
+| Static templating  | XSLT or JSX                        | XSLT-like approach              |
+| Dynamic templating | alpine, htmx, jquery, ...          | Restricted, standard components |
+| Style              | XSLT and/or CSS and transpilation  | Mixins                          |
+| Scripting          | JS, WASM and transpilation         | C/JS/Lua/WASM                   |
+| Data handling      | Limited via forms, JSON/XML via JS | Native `data` component         |
+
+All flow control features and templating like `if` or `for-each` blocks which are typical in frameworks like [vue](https://vuejs.org/) are performed either:
 
 - As a build step for components if they can be evaluated statically.
 - Via custom elements and are not part of basic `vs` for a dynamic behaviour.  
-  This comparison is just meant to provide some basic understanding of how things are matched.  
-  Still, the design patterns between `vs` and more traditional SFC frameworks are quite different.
 
-> But I want a CSS-like experience!
+This comparison is just meant to provide some basic understanding of how things are matched.  
+Still, the design patterns between `vs` and more traditional SFC frameworks are quite different.
+
+### But I want a CSS-like experience!
 
 In theory there is nothing preventing `vs` to integrate some style equivalent with mixins being rewritten as CSS-like classes.  
 If you want to do that feel free to send a PR, I am more than willing to see it integrated.
 
-> Theming and colors schemes. What can I do?
+### Theming and colors schemes. What can I do?
 
 FLTK, the toolkit on which `vs` is based, has limited capabilities in this respect. Out of the box, it makes opinionated choices on what and how to render boxes, with a limited collection of variants embedded in the engine. So, indexed colors and frame types have their semantics enforced by FLTK itself and are globally shared in the process.  
 Within these constraints one can specify any color or any rendering function for the different frame types. But they cannot define new classes out of thin air.
 
 If you need a granular level of control, this is likely not the right framework for you; it is possible to define custom draw functions and adopt mixins to override the default style, but doing it more than occasionally would result in a messy codebase. If that is a typical requirement for your application, you would be better served by other frameworks.
 
-> Don't we have fluid already for FLTK?
+### Don't we have fluid already for FLTK?
 
 [fluid](https://www.fltk.org/doc-1.4/fluid.html) is an excellent tool, but in my opinion it has few problems:
 
@@ -54,7 +78,7 @@ If you need a granular level of control, this is likely not the right framework 
 
 Unlike other runtimes adopting DOM-like structures, `vs` is not using XML nor its parsed version in memory as the actual UI representation.  
 The XML source is statically compiled into a UI tree, a wrapper/superset of the tree structure that FLTK internally implements, enabling all the higher level features of `vs`.  
-This means that at runtime the source XML will we deallocated from memory right after the UI tree is built, and it cannot be trivially referenced again.  
+This means that at runtime the source XML will we de-allocated from memory right after the UI tree is built, and it cannot be trivially referenced again.  
 We also plan in a not so far distant future to use the XML file to generate the equivalent C++ code, and use that to speed up the component instantiation even further.
 
 > How do I create a list which can spawn multiple copies of some component based on runtime data in XML then?
@@ -107,11 +131,11 @@ What is left out:
 
 ## Technical details
 
-> How does the rendering work?
+### How does the rendering work?
 
 It is a process in two stages for each component:
 
-- The first pass checks for all resources needed and scripts to compile. These sub-tasks are added to a pool and run in parallel. If cached, these results are retrieved. If cacheable, they are stored after computation.
+- The first pass checks for all resources needed and scripts to compile. These sub-tasks are added to a pool and run in parallel. If cached, these results are retrieved. If cache-able, they are stored after computation.
 - Once all resources for a component are resolved, the UI tree is constructed visiting the XML again with a depth-first pass.
 
 At the end of this process the XML is freed.  

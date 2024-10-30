@@ -27,7 +27,7 @@
 
 # Static XML builder
 
-- [ ] Add support for element.text() in query.
+- [x] Add support for element.text() in query.
 - [ ] Replace the current split implementation with something not requiring these many allocations
 
 ## Block based:
