@@ -13,6 +13,7 @@
 #include <cstdarg>
 
 #include <iostream>
+#include <memory>
 #include <ui.hpp>
 #include <components/containers.hpp>
 #include <ui-tree.xml.hpp>
@@ -251,6 +252,12 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     return;
   }
 
+  struct script_t{
+    std::shared_ptr<void> script;
+    std::shared_ptr<smap<symbol_t>> symbols;
+    frame_mode_t mode;
+  };
+
   void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, ui_base* current) {
 
     for (auto &root : root.children()) {
@@ -284,15 +291,15 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         //Check if it is a module or single user; if module check for cache and use it.
         if(strcmp(root.attribute("type").as_string(""),"module")==0){
           is_module=true;
-          //TODO: mode not currently handled... check if it is needed.
-          auto* cached_script = root.attribute("$cached.script").as_string(nullptr);
-          auto* cached_symbols = root.attribute("$cached.symbols").as_string(nullptr);
-          if(cached_script!=nullptr && cached_symbols!=nullptr){
-            auto filename = this->fullname.as_string();
-            current->set_mode(frame_mode_t::NATIVE);
-            current->attach_script(globals::memstorage.get({filename.c_str(),cached_symbols})->ref,is_module);
-            //TODO: Check if this is ok with the delete!
-            current->set_symbols(std::static_pointer_cast<smap<symbol_t>>(globals::memstorage.get({filename.c_str(),cached_symbols})->ref));
+          auto filename = this->fullname.as_string();
+
+          auto found = globals::memstorage.get({filename.c_str(),std::to_string(this->local_unique_counter+1).c_str()});
+          if(found!=nullptr){
+            current->set_mode(((script_t*)found->ref.get())->mode);
+            current->attach_script(((script_t*)found->ref.get())->script,is_module);
+            current->set_symbols(((script_t*)found->ref.get())->symbols);
+
+            //All done, precomputed and rightfully applied!
             continue;
           }
         }
@@ -323,9 +330,11 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
               auto symbols = pipelines::tcc_c_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::tcc_log_symbol_func_xml);
               current->set_symbols(symbols);
               if(is_module){
-                auto filename = this->fullname.as_string();
-                root.append_attribute("$cached.symbols").set_value(globals::memstorage.fetch_from_shared(filename.c_str(),symbols).local_id);
-                root.append_attribute("$cached.script").set_value(globals::memstorage.fetch_from_shared(filename.c_str(),compiler).local_id);
+                auto tmp = std::make_shared<script_t>(script_t{
+                  compiler, symbols, frame_mode_t::NATIVE
+                });
+                globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),std::to_string(local_unique_counter+1).c_str()}, tmp);
+                local_unique_counter++;
               }
             }
             continue;
@@ -341,10 +350,11 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
                 auto symbols = pipelines::qjs_js_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::qjs_log_symbol_func_xml);
                 current->set_symbols(symbols);
                 if(is_module){
-                  auto filename = this->fullname.as_string();
-                  //root.append_attribute("$cached.mode").set_value(globals::memstorage.fetch_from_shared(symbols));
-                  root.append_attribute("$cached.symbols").set_value(globals::memstorage.fetch_from_shared(filename.c_str(),symbols).local_id);
-                  root.append_attribute("$cached.script").set_value(globals::memstorage.fetch_from_shared(filename.c_str(),compiler).local_id);
+                  auto tmp = std::make_shared<script_t>(script_t{
+                    compiler, symbols, frame_mode_t::QUICKJS
+                  });
+                  globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),std::to_string(local_unique_counter+1).c_str()}, tmp);
+                  local_unique_counter++;
                 }
              }
             continue;
@@ -410,7 +420,8 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
       //For components add to its direct children the attributes coming from above
       if(strcmp(root.parent().name(),"component")==0){
         for (const auto &i : this->caller_node->attributes()) {
-          props.insert_or_assign(i.name(), i.value());
+          //Exclude src as it was consumed in here.
+          if(strcmp(i.name(),"src")!=0)props.insert_or_assign(i.name(), i.value());
         }
       }
 

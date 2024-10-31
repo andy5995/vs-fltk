@@ -33,26 +33,25 @@ memstorage_t::ckey_t memstorage_t::fetch_from_shared(const char* path, const std
     else return {nullptr,nullptr};
 }
 
-template<typename T> memstorage_t::ckey_t memstorage_t::fetch_from(const char* path, const T& src){
-    auto shared = std::make_shared(src);
-    auto it = entries.emplace(unique_name(path),shared);
+memstorage_t::ckey_t memstorage_t::fetch_from_shared(const ckey_t& key, const std::shared_ptr<void>& src){
+    key_t k = {key.location,key.local_id};
+    auto it = entries.emplace(k,src);
     if(it.second==true)return {it.first->first.location.c_str(),it.first->first.local_id.c_str()};
     else return {nullptr,nullptr};
 }
-
 
 void memstorage_t::drop(memstorage_t::ckey_t key){
     entries.erase({key.location,key.local_id});
 }
 
-//Search fragment into document
+//Search fragment inside document
 memstorage_t::entry_t* memstorage_t::get(memstorage_t::ckey_t key){
     auto it = entries.find({key.location,key.local_id});
     if(it!=entries.end())return &it->second;
     else return nullptr;
 }
 
-//Search document
+//Search full document
 memstorage_t::entry_t* memstorage_t::get(const char* key){
     auto it = entries.find({key,""});
     if(it!=entries.end())return &it->second;
@@ -63,7 +62,7 @@ memstorage_t::key_t memstorage_t::unique_name(const char* ctx){
     //TODO: Apply a more robust way to handle unique names with some degree of hashing.
     static std::unordered_map<std::string, int> counter = {};
     auto it =counter.find(ctx);
-    if(it!=counter.end())*it++;
+    if(it!=counter.end())it->second++;
     else it=counter.insert({ctx,0}).first;
     return {ctx, std::to_string(it->second)};
 }

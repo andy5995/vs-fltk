@@ -81,11 +81,16 @@ class memstorage_t{
         ckey_t fetch_from_gemini(const char* path);
         ckey_t fetch_from_cache(const char* path);
         ckey_t fetch_from_shared(const char* path, const std::shared_ptr<void>& src);
-        template<typename T> ckey_t fetch_from(const char* path, const T& src);
+        ckey_t fetch_from_shared(const ckey_t& key, const std::shared_ptr<void>& src);
+
 
         void drop(ckey_t);
+        
         entry_t* get(ckey_t);
         entry_t* get(const char* doc);
+
+        //template<typename T> std::optional<T> get_as(ckey_t);
+        //emplate<typename T> std::optional<T> get_as(const char* doc);
 };
 
 

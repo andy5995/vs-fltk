@@ -110,6 +110,7 @@ struct scoped_rpath_t{
     rpath_type_t::t type;
     std::string location;
 
+    //TODO: Slow operation often used but not recorded
     std::string as_string() const{
         return std::string(rpath_type_t::prefixes[type])+location;
     }
@@ -119,7 +120,6 @@ struct scoped_rpath_t{
         else rprefix(rpath_type_t::HTTP)
         else rprefix(rpath_type_t::HTTPS)
         else rprefix(rpath_type_t::GEMINI)
-
         else {type=rpath_type_t::FS;location=src;}
     }
 
