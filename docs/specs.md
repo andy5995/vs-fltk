@@ -83,4 +83,9 @@ There is also `vs:viewport` which does something similar, but in this case a new
 
 # Templating
 
-Templating is based on a `vs` custom XML preprocessor. Details about its syntax can be found [here](./static-templates.md)
+Templating is based on a `vs` custom XML preprocessor. Details about its syntax can be found [here](https://github.com/karurochori/vs-templ).  
+In `vs-fltk` its usage usually involves two files:
+- the static dataset contains any data needed for the generation of the final component. For vs, its root must be `<vs:sdata>` and provide a `s:template` attribute pointing to the actual component template. The conventional extension, like normal components, is `.vs`.
+- the template itself, containing a `vs` tree structure and entities in the `s` namespace as well. Its conventional extension is `.tvs`. These files shall never be used as components themselves.
+
+When importing or using a component which requires processing, its static dataset is used.

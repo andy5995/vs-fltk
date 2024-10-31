@@ -8,3 +8,4 @@ subprojects/*
 /dist/
 /node_modules/
 /bun.lockb
+/private

@@ -56,6 +56,10 @@ hashlib_dep = hashlib_proj.get_variable('hashlib_dep')
 pugixml_proj = subproject('pugixml')
 pugixml_dep = pugixml_proj.get_variable('pugixml_dep')
 
+vs_templ_proj = subproject('vs-templ')
+vs_templ_dep = vs_templ_proj.get_variable('vs_templ_dep')
+
+
 treesitter_proj = subproject('tree-sitter')
 treesitter_dep = treesitter_proj.get_variable('tree_sitter_dep')
 

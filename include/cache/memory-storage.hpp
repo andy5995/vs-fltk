@@ -52,14 +52,14 @@ class memstorage_t{
         static key_t unique_name(const char* ctx);
 
     public:
+        //TODO: Include the resource class as metainformation
         enum class resource_t{
             NONE,
-            DATA_CACHE,
-            VS,                 //Assumed immutable
-            TVS,                //Assumed immutable
-            DYNLIB,             //Assumed immutable
-            RESOURCE,           //Assumed immutable
-            EMBEDDED_SCRIPT,    //Assumed immutable
+            XML_TREE,
+            SCRIPT,
+            DYNAMIC_LIB,
+            OTHER_RESOURCE,
+            BUFFER,
         };
 
         struct entry_t{
@@ -88,9 +88,6 @@ class memstorage_t{
         
         entry_t* get(ckey_t);
         entry_t* get(const char* doc);
-
-        //template<typename T> std::optional<T> get_as(ckey_t);
-        //emplate<typename T> std::optional<T> get_as(const char* doc);
 };
 
 

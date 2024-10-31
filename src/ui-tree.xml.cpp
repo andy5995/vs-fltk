@@ -12,7 +12,6 @@
 #include "utils/paths.hpp"
 #include <cstdarg>
 
-#include <iostream>
 #include <memory>
 #include <ui.hpp>
 #include <components/containers.hpp>
@@ -251,12 +250,6 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     for(auto& i : root.children()){_build(i,root_ui);}
     return;
   }
-
-  struct script_t{
-    std::shared_ptr<void> script;
-    std::shared_ptr<smap<symbol_t>> symbols;
-    frame_mode_t mode;
-  };
 
   void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, ui_base* current) {
 

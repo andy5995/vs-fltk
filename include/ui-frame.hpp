@@ -43,8 +43,8 @@ struct symbol_ret_t{
   typedef ui_base*(*ctx_apply_fn)(ui_base*);
   typedef void(*cb_fn)(ui_base*);
   typedef void(*draw_fn)(); //TODO: to be defined
-  typedef int(*set_fn)(void* src);
-  typedef int(*get_fn)(void** src);
+  typedef int(*set_fn)(const uint8_t* src);
+  typedef int(*get_fn)(uint8_t** src);
 };
 
 enum class frame_type_t{
@@ -61,6 +61,11 @@ enum class frame_access_t{
 
 typedef  symbol_mode_t frame_mode_t;
 
+struct script_t{
+  std::shared_ptr<void> script;
+  std::shared_ptr<smap<symbol_t>> symbols;
+  frame_mode_t mode;
+};
 
 class frame{
   template<std::derived_from<Fl_Widget> T, int SubType>
@@ -77,9 +82,10 @@ class frame{
     typedef bool(*resolver_t)(message_t*);
 
   protected:
+    std::shared_ptr<void> script;
+    std::shared_ptr<smap<symbol_t>> symbols = nullptr;  //For symbol resolution on function calling 
     frame_mode_t mode = frame_mode_t::VOID;
 
-    std::shared_ptr<void> script;
     bool is_script_module = false;
 
     std::string name;
@@ -88,7 +94,6 @@ class frame{
 
     smap<frame*> children;
     symbol_t custom_dispatcher = symbol_t::VOID;
-    std::shared_ptr<smap<symbol_t>> symbols = nullptr;  //For symbol resolution on function calling 
     smap<filter_t> filters;                           //To prevent top/down propagation of messages
     smap<resolver_t> resolvers;                       //To catch messages coming from bottom up
 

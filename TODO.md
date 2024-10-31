@@ -61,11 +61,12 @@
 ## TCC
 
 - [x] Add basic support for TCC
-- [ ] Provide extensive bindings for TCC
+- [x] Provide extensive bindings for TCC
   - [x] Stage 0
   - [x] Stage 1 Full subset of libc
   - [x] Stage 2 Full interface for ui tree operations
-  - [ ] UI base support of getters/setters.
+  - [x] UI base support of module scripts
+  - [x] UI base support of getters/setters.
 - [ ] Add an alternative backend like Cello
 - [ ] Add an alternative backend like Vala (?)
 
@@ -92,7 +93,7 @@ https://wasmer.io/taybenlor/runno-clang
 - [x] Add quickjs to the repo
 - [x] Add basic support for quickjs embedded scripts.
 - [ ] UI base support of module scripts
-- [ ] Suppor of getters and setters
+- [ ] Support of getters and setters
 
 ## LUA
 
