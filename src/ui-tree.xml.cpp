@@ -288,10 +288,11 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
           auto* cached_script = root.attribute("$cached.script").as_string(nullptr);
           auto* cached_symbols = root.attribute("$cached.symbols").as_string(nullptr);
           if(cached_script!=nullptr && cached_symbols!=nullptr){
+            auto filename = this->fullname.as_string();
             current->set_mode(frame_mode_t::NATIVE);
-            current->attach_script(globals::memstorage.get(cached_symbols)->ref,is_module);
+            current->attach_script(globals::memstorage.get({filename.c_str(),cached_symbols})->ref,is_module);
             //TODO: Check if this is ok with the delete!
-            current->set_symbols(std::static_pointer_cast<smap<symbol_t>>(globals::memstorage.get(cached_script)->ref));
+            current->set_symbols(std::static_pointer_cast<smap<symbol_t>>(globals::memstorage.get({filename.c_str(),cached_symbols})->ref));
             continue;
           }
         }
@@ -322,8 +323,9 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
               auto symbols = pipelines::tcc_c_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::tcc_log_symbol_func_xml);
               current->set_symbols(symbols);
               if(is_module){
-                root.append_attribute("$cached.symbols").set_value(globals::memstorage.fetch_from_shared(symbols));
-                root.append_attribute("$cached.script").set_value(globals::memstorage.fetch_from_shared(compiler));
+                auto filename = this->fullname.as_string();
+                root.append_attribute("$cached.symbols").set_value(globals::memstorage.fetch_from_shared(filename.c_str(),symbols).local_id);
+                root.append_attribute("$cached.script").set_value(globals::memstorage.fetch_from_shared(filename.c_str(),compiler).local_id);
               }
             }
             continue;
@@ -339,9 +341,10 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
                 auto symbols = pipelines::qjs_js_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::qjs_log_symbol_func_xml);
                 current->set_symbols(symbols);
                 if(is_module){
+                  auto filename = this->fullname.as_string();
                   //root.append_attribute("$cached.mode").set_value(globals::memstorage.fetch_from_shared(symbols));
-                  root.append_attribute("$cached.symbols").set_value(globals::memstorage.fetch_from_shared(symbols));
-                  root.append_attribute("$cached.script").set_value(globals::memstorage.fetch_from_shared(compiler));
+                  root.append_attribute("$cached.symbols").set_value(globals::memstorage.fetch_from_shared(filename.c_str(),symbols).local_id);
+                  root.append_attribute("$cached.script").set_value(globals::memstorage.fetch_from_shared(filename.c_str(),compiler).local_id);
                 }
              }
             continue;

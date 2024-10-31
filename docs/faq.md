@@ -36,7 +36,7 @@ For now, most efforts are focused in making the first two options viable. The th
 
 ### How to map SFC concepts in here?
 
-| Concept            | **Web**                            | **VS**                          |
+| Concept            | Web                                | VS                              |
 | ------------------ | ---------------------------------- | ------------------------------- |
 | Components         | XML or HTML template               | XML                             |
 | Static templating  | XSLT or JSX                        | XSLT-like approach              |

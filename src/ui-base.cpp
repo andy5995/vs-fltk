@@ -268,11 +268,11 @@ void ui_base::refresh_style(const char* local_mixins){
   }
 }
 
-int ui_base::use_getter(const symbol_ret_t& sym, void ** value){
+int ui_base::use_getter(const symbol_ret_t& sym, uint8_t ** value){
   *value=nullptr;
   return 1;
 }
-int ui_base::use_setter(const symbol_ret_t& sym, const void * value){
+int ui_base::use_setter(const symbol_ret_t& sym, const uint8_t * value){
   return 1;
 }
 int ui_base::use_callback(const symbol_ret_t& sym, ui_base * node){

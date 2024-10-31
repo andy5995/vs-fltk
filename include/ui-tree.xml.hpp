@@ -9,9 +9,16 @@ namespace vs{
 
 struct ui_xml_tree : ui_tree {
 private:
-    const char* vs_ns;      //Namespace for vs basic components (default none, suggested vs: if needed)
-    const char* fltk_ns;    //Namespace for fltk specific components (default fl:)
-    const char* s_ns;       //Namespace for static xml operations (default s:)
+    struct ns_t{
+        const char* vs = "";             //Namespace for vs basic components (default none, suggested vs: if needed)
+        const char* fltk = "fl:";      //Namespace for fltk specific components (default fl:)
+        const char* s = "s:";            //Namespace for static xml operations (default s:)
+    }ns;
+
+
+    enum namespaces_t{
+        vs, fltk, s
+    };
 
     const pugi::xml_node *caller_node = nullptr;
     ui_base* caller_ui_node=nullptr;
@@ -25,6 +32,11 @@ private:
     bool is_app;
 
 public:
+    void set_namespace(namespaces_t n, const char* prefix){
+        if(n==namespaces_t::vs)ns.vs=prefix;
+        else if(n==namespaces_t::fltk)ns.fltk=prefix;
+        else if(n==namespaces_t::s)ns.s=prefix;
+    }
 
     template <std::derived_from<ui_base> T>
     T *build_base_widget(const pugi::xml_node &root, ui_base * root_ui = nullptr);

@@ -31,8 +31,8 @@ class ui_base{
 
     //This is to centralize implementations in one place instead of having them spread all across for no good reason.
     //Return 0 if success, 1 if failure for all of them.
-    static int use_getter(const symbol_ret_t& sym, void ** value);
-    static int use_setter(const symbol_ret_t& sym, const void * value);
+    static int use_getter(const symbol_ret_t& sym, uint8_t ** value);
+    static int use_setter(const symbol_ret_t& sym, const uint8_t * value);
     static int use_callback(const symbol_ret_t& sym, ui_base * node);
     //use_draw, use_function. use_dispatched does not exist as its usage is extremely constrained.
     //TODO: Add vs_event or something like that to let scripts access the global event queue information.

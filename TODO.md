@@ -24,6 +24,7 @@
       Maybe code generation starting from a schema might be a better option.
 - [x] Simplify codegen for all computed/props types which are not `raw` by writing more or the boilerplate.
 - [ ] Basic LSP for the vs syntax. Implementation @ https://github.com/KaruroChori/vs-fltk-lsp
+- [ ] Add special `inherit` value to props to remove the current one and let it be computed based on its parents? I have to decide if we want this one.
 
 # Static XML builder
 
@@ -56,6 +57,7 @@
 
 # Supported environments
 
+
 ## TCC
 
 - [x] Add basic support for TCC
@@ -63,6 +65,7 @@
   - [x] Stage 0
   - [x] Stage 1 Full subset of libc
   - [x] Stage 2 Full interface for ui tree operations
+  - [ ] UI base support of getters/setters.
 - [ ] Add an alternative backend like Cello
 - [ ] Add an alternative backend like Vala (?)
 
@@ -88,6 +91,8 @@ https://wasmer.io/taybenlor/runno-clang
 
 - [x] Add quickjs to the repo
 - [x] Add basic support for quickjs embedded scripts.
+- [ ] UI base support of module scripts
+- [ ] Suppor of getters and setters
 
 ## LUA
 
