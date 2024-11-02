@@ -28,32 +28,8 @@
 
 # Static XML builder
 
-- [x] Add support for element.text() in query.
-- [ ] Replace the current split implementation with something not requiring these many allocations
-
-## Block based:
-
-- [x] for-range
-- [ ] for
-  - [x] base structure
-  - [ ] filter
-  - [x] sort & order
-  - [x] limit & offset
-- [x] for-prop (mostly cpy&paste from `for`)
-- [x] value
-- [x] element
-- [x] when/is
-
-## Props based
-
-- [ ] for
-  - [ ] base structure
-  - [ ] filter
-  - [ ] sort & order
-  - [ ] limit & offset
-- [ ] for-prop (cpy&paste from `for`)
-- [ ] value
-- [ ] prop (dual of element)
+- [x] Move it on a separate repo
+- [ ] Link it in the current basecode.
 
 # Supported environments
 
