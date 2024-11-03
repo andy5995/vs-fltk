@@ -1,0 +1,7 @@
+<app>
+    <window label="Hello world">
+        <s:for tag="entry" in="/static-data/items/">
+            <s:item><label label="A"/></s:item>
+        </s:for>
+    </window>
+</app>

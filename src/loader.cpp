@@ -50,7 +50,10 @@ int app_loader::run(){
     root=nullptr;
     return t;
   }
-  else return 0;
+  else{
+    //for(;;);
+    return 0;
+  }
 }
 
     app_loader::~app_loader(){if(root!=nullptr)delete root;}

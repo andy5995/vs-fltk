@@ -4,6 +4,8 @@ project(
     default_options: ['c_std=gnu23', 'cpp_std=c++23'],
 )
 
+#Used by pugi to enable compact mode. I might want to disable execption too.
+add_global_arguments('-DPUGIXML_COMPACT', language : ['cpp','c'])
 
 cmake = import('cmake')
 
@@ -95,6 +97,8 @@ vs_fltk_deps = [
     uv_dep,
     hashlib_dep,
     md4c_dep,
+
+    vs_templ_dep
 ]
 
 vs_fltk_flags = []
@@ -104,6 +108,8 @@ if curl.found()
     vs_fltk_flags += '-DHAS_CURL'
 else
 endif
+
+vs_fltk_flags += '-DPUGIXML_COMPACT'
 
 subdir('./src/components/autogen')
 

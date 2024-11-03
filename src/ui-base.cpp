@@ -19,7 +19,7 @@
 
 namespace vs{
 
-inline void ui_base::mk_frame(const char* name, frame_mode_t mode){
+void ui_base::mk_frame(const char* name, frame_mode_t mode){
   if(local_frame==nullptr){
     auto tmp = (frame*)resolve_namespace();
     local_frame=new frame(name, mode , this, tmp, default_frame_type(), frame_access_t::PRIVATE);

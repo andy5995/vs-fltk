@@ -1,5 +1,8 @@
 # Current
 
+The memory footprint (RSS) went up from 4.5MB from two weeks ago or so, to about 19MB in this latest version. There is no good reason for that. for no good reason while implementing internal features.  
+There is no clear reason why this happened out of nowhere, and the overall memory usage by heap/stack is still quite small. What is causing this massive increase?
+
 - [x] Enable codegen
 - [ ] and port the current code over
 - [ ] Viewport tag
@@ -25,6 +28,7 @@
 - [x] Simplify codegen for all computed/props types which are not `raw` by writing more or the boilerplate.
 - [ ] Basic LSP for the vs syntax. Implementation @ https://github.com/KaruroChori/vs-fltk-lsp
 - [ ] Add special `inherit` value to props to remove the current one and let it be computed based on its parents? I have to decide if we want this one.
+- [ ] Make some dependencies and their related features toggable (tcc, quickjs, lua, wamr).
 
 # Static XML builder
 

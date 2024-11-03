@@ -7,6 +7,8 @@
 #include "components/markdown-view.hpp"
 #include "pipelines/quickjs-js.hpp"
 #include "resolvers/fs.hpp"
+#include <iostream>
+#include <vs-templ.hpp>
 #include "ui-frame.hpp"
 #include "pipelines/tcc-c.hpp"
 #include "utils/paths.hpp"
@@ -86,14 +88,24 @@ ui_xml_tree::~ui_xml_tree(){if(root!=nullptr)delete root;}
 int ui_xml_tree::build(){
   //TODO: Static parsing is performed in here!
   {
-    auto root_data = doc.child("sdata");
+    auto root_data = doc.child("static-data");
 
     if(!root_data.empty()){
+      pugi::xml_document datadoc;
       auto tplt = root_data.attribute("template");  //TODO: Adapt to use the proper syntax. I cannot remember which one was it
+
+      resolve_path resolver(policies,globals::path_env,this->local);
+      auto computed_path = resolver(resolve_path::from_t::NATIVE_CODE,tplt.as_string());
+
+      auto buffer = fs_fetch_to_new(computed_path.second,pugi::get_memory_allocation_function());
+      pugi::xml_parse_result val =  datadoc.load_buffer_inplace_own(buffer.first, buffer.second);
+
+      templ::preprocessor processor(doc,datadoc);
       //Resolve it.
 
-      //TODO Apply parser
-      //Replace current root and continue as usual
+      auto& result  = processor.parse();
+
+      doc.reset(result);
     }
   }
 
