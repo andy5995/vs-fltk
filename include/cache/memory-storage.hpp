@@ -5,6 +5,8 @@
 
 //Once the build process of an app is completed, this cache is fully released before running.
 //This cache is going to be global.
+#include <utils/strings.hpp>
+#include <ui-frame-public.hpp>
 #include <cstddef>
 #include <memory>
 #include <string>
@@ -13,6 +15,17 @@
 
 namespace vs{
 namespace cache{
+
+struct script_t{
+  std::shared_ptr<void> script;
+  std::shared_ptr<smap<symbol_t>> symbols;
+  frame_mode_t mode;
+};
+
+struct buffer_t{
+    const uint8_t* data;
+    size_t size;
+};
 
 enum class resource_t{
             NONE,
@@ -60,26 +73,27 @@ namespace cache{
  */
 class memstorage_t{
     public: 
-        struct entry_t;
-        
+        struct entry_t{
+            std::shared_ptr<void> ref;
+        };
+        typedef std::unordered_map<key_t, entry_t>::const_iterator entry_it;
     private:
         std::unordered_map<key_t, entry_t> entries;
         static key_t unique_name(const char* ctx);
 
     public:
-        struct entry_t{
-            std::shared_ptr<void> ref;
-        };
-
+        inline entry_it end() {return entries.end();}
         static inline key_t empty_key = {"",0,resource_t::NONE};
     public:
 
-        const key_t& fetch_from_fs(const key_t& path);
-        const key_t& fetch_from_http(const key_t& path);
-        const key_t& fetch_from_https(const key_t& path);
-        const key_t& fetch_from_gemini(const key_t& path);
-        const key_t& fetch_from_cache(const key_t& path);
-        const key_t& fetch_from_shared(const key_t& key, const std::shared_ptr<void>& src);
+        entry_it fetch_from_fs(const key_t& path);
+#       ifdef HAS_CURL
+            entry_it fetch_from_http(const key_t& path);
+            entry_it fetch_from_https(const key_t& path);
+            entry_it fetch_from_gemini(const key_t& path);
+#       endif
+        entry_it fetch_from_cache(const key_t& path);
+        entry_it fetch_from_shared(const key_t& key, const std::shared_ptr<void>& src);
 
 
         void drop(const key_t&);

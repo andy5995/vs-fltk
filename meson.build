@@ -1,7 +1,7 @@
 project(
     'vs-fltk',
     ['c', 'cpp', 'swift'],
-    default_options: ['c_std=gnu23', 'cpp_std=c++23'],
+    default_options: ['c_std=gnu23', 'cpp_std=gnu++23'],
 )
 
 #Used by pugi to enable compact mode. I might want to disable execption too.
@@ -125,8 +125,7 @@ vs_fltk = shared_library(
         './src/utils/policies.internal.cpp',
         './src/utils/tcc-wrap.cpp',
 
-        './src/resolvers/fs.cpp',
-        './src/resolvers/network.cpp',
+        './src/fetcher.cpp',
 
         './src/loader.cpp',
 
@@ -170,6 +169,7 @@ vs_fltk = shared_library(
     include_directories: include_dirs,
     override_options: ['c_std=gnu23', 'cpp_std=gnu++23'],
     cpp_args: vs_fltk_flags,
+    c_args: vs_fltk_flags
 )
 
 vs_fltk_dep = declare_dependency(

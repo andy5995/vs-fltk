@@ -4,8 +4,15 @@
 #include <loader.hpp>
 #include <globals.hpp>
 
+#ifdef HAS_CURL
+#include <curl/curl.h>
+#endif
+
 namespace vs{
 app_loader::app_loader(const char *profile, const char* path){
+#   ifdef HAS_CURL
+    curl_global_init(CURL_GLOBAL_ALL);
+#   endif
     pugi::xml_document doc;
     
     if(profile!=nullptr){
@@ -57,6 +64,11 @@ int app_loader::run(){
   }
 }
 
-    app_loader::~app_loader(){if(root!=nullptr)delete root;}
+app_loader::~app_loader(){
+#  ifdef HAS_CURL
+    curl_global_cleanup();
+#  endif
+   if(root!=nullptr)delete root;
+}
 
 }

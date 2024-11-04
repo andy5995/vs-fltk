@@ -31,6 +31,12 @@ There is no clear reason why this happened out of nowhere, and the overall memor
 - [ ] Decide what to do about swift.
 - [ ] Fix building process of tcc to generate the minimal libraries needed.
 
+- [ ] Caching
+  - [ ] Source files
+    - [x] From fs
+    - [ ] From network
+  - [ ] Pugi XML documents
+  - [x] Scripts 
 
 # Supported environments
 

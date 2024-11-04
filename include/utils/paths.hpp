@@ -15,9 +15,9 @@
 namespace vs{
 
 
-#define tkn(a,b) memcmp((a),(b),std::char_traits<char>::length(b))==0
-#define vprefix(b) if(memcmp((src),vpath_type_t::as_string(b),std::char_traits<char>::length(vpath_type_t::as_string(b)))==0){type=b;location=src+std::char_traits<char>::length(vpath_type_t::as_string(b));}
-#define rprefix(b) if(memcmp((src),rpath_type_t::as_string(b),std::char_traits<char>::length(rpath_type_t::as_string(b)))==0){type=b;location=src+std::char_traits<char>::length(rpath_type_t::as_string(b));}
+#define tkn(a,b) strncmp((a),(b),std::char_traits<char>::length(b))==0
+#define vprefix(b) if(strncmp((src),vpath_type_t::as_string(b),std::char_traits<char>::length(vpath_type_t::as_string(b)))==0){type=b;location=src+std::char_traits<char>::length(vpath_type_t::as_string(b));}
+#define rprefix(b) if(strncmp((src),rpath_type_t::as_string(b),std::char_traits<char>::length(rpath_type_t::as_string(b)))==0){type=b;location=src+std::char_traits<char>::length(rpath_type_t::as_string(b));}
 
 
 struct vpath_type_t{

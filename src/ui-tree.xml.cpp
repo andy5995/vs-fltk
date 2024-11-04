@@ -6,8 +6,8 @@
 #include "FL/Fl_Widget.H"
 #include "cache/memory-storage.hpp"
 #include "components/markdown-view.hpp"
+#include "fetcher.hpp"
 #include "pipelines/quickjs-js.hpp"
-#include "resolvers/fs.hpp"
 #include <vs-templ.hpp>
 #include "ui-frame.hpp"
 #include "pipelines/tcc-c.hpp"
@@ -63,22 +63,30 @@ void ui_xml_tree::log(int severety, const void* _ctx, const char* str, ...){
 int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* caller_node, ui_base* caller_ui_node, const scoped_rpath_t* caller_path)
 {
   resolve_path resolver(policies,globals::path_env,(caller_path==nullptr)?globals::path_env.cwd:*caller_path);
-  auto computed_path = resolver(resolve_path::from_t::NATIVE_CODE,file);
-  if(computed_path.first!=resolve_path::reason_t::OK)return 2;
-  this->local=computed_path.second.base_dir();
-  this->fullname=computed_path.second;
+  auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,file);
+
+  if(std::get<0>(buffer)==resolve_path::reason_t::OK){
+    this->local=std::get<2>(buffer).base_dir();
+    this->fullname=std::get<2>(buffer);
+  }
 
   this->is_app = is_app;
   this->caller_node=caller_node;
   this->caller_ui_node=caller_ui_node;
-  vs_log(severety_t::INFO, nullptr, "Requested loading of file `%s`", computed_path.second.as_string().data());
+  vs_log(severety_t::INFO, nullptr, "Requested loading of file `%s`", std::get<2>(buffer).as_string().data());
 
   //TODO: Move this to cache later on, but for now just dump the result into a buffer
 
-  auto buffer = fs_fetch_to_new(computed_path.second,pugi::get_memory_allocation_function());
-  pugi::xml_parse_result result =  doc.load_buffer_inplace_own(buffer.first, buffer.second); // doc.load_file(file);
-  if (!result){
-      return 1;
+  if(std::get<0>(buffer)!=resolve_path::reason_t::OK){
+    //TODO: error handling
+    return 2;
+  }
+  else{
+    //TODO: register XMl tree?
+    pugi::xml_parse_result result =  doc.load_buffer(std::get<1>(buffer).data, std::get<1>(buffer).size); // doc.load_file(file);
+    if (!result){
+        return 1;
+    }
   }
   return 0;
 }
@@ -95,10 +103,19 @@ int ui_xml_tree::build(){
       auto tplt = root_data.attribute("template");  //TODO: Adapt to use the proper syntax. I cannot remember which one was it
 
       resolve_path resolver(policies,globals::path_env,this->local);
-      auto computed_path = resolver(resolve_path::from_t::NATIVE_CODE,tplt.as_string());
 
-      auto buffer = fs_fetch_to_new(computed_path.second,pugi::get_memory_allocation_function());
-      pugi::xml_parse_result val =  datadoc.load_buffer_inplace_own(buffer.first, buffer.second);
+      auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,tplt.as_string());
+      if(std::get<0>(buffer)!=resolve_path::reason_t::OK){
+        //TODO: error handling
+        return 2;
+      }
+      else{
+        //TODO: register XMl tree?
+        pugi::xml_parse_result result =  doc.load_buffer(std::get<1>(buffer).data, std::get<1>(buffer).size); // doc.load_file(file);
+        if (!result){
+            return 1;
+        }
+      }
 
       templ::preprocessor processor(doc,datadoc);
       //Resolve it.
@@ -300,9 +317,9 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
 
           auto found = globals::memstorage.get({filename.c_str(),this->local_unique_counter+1,cache::resource_t::SCRIPT});
           if(found!=nullptr){
-            current->set_mode(((script_t*)found->ref.get())->mode);
-            current->attach_script(((script_t*)found->ref.get())->script,is_module);
-            current->set_symbols(((script_t*)found->ref.get())->symbols);
+            current->set_mode(((cache::script_t*)found->ref.get())->mode);
+            current->attach_script(((cache::script_t*)found->ref.get())->script,is_module);
+            current->set_symbols(((cache::script_t*)found->ref.get())->symbols);
 
             //All done, precomputed and rightfully applied!
             continue;
@@ -335,7 +352,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
               auto symbols = pipelines::tcc_c_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::tcc_log_symbol_func_xml);
               current->set_symbols(symbols);
               if(is_module){
-                auto tmp = std::make_shared<script_t>(script_t{
+                auto tmp = std::make_shared<cache::script_t>(cache::script_t{
                   compiler, symbols, frame_mode_t::NATIVE
                 });
                 globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
@@ -355,7 +372,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
                 auto symbols = pipelines::qjs_js_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::qjs_log_symbol_func_xml);
                 current->set_symbols(symbols);
                 if(is_module){
-                  auto tmp = std::make_shared<script_t>(script_t{
+                  auto tmp = std::make_shared<cache::script_t>(cache::script_t{
                     compiler, symbols, frame_mode_t::QUICKJS
                   });
                   globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
