@@ -74,7 +74,8 @@ memstorage_t::entry_it memstorage_t::fetch_from_http(const key_t& path){
             return entries.end();
         }
         else{
-            auto it = entries.emplace(path, std::make_shared<buffer_t>(buffer_t{buffer,fsize}));
+            auto w =std::shared_ptr<buffer_t>(new buffer_t{buffer,fsize}, +[](buffer_t* p){free((void*) p->data);delete p;});
+            auto it = entries.emplace(path, w);
             curl_easy_cleanup(curl);
             if(it.second==true)return it.first;
             else return entries.end();
@@ -118,7 +119,8 @@ memstorage_t::entry_it memstorage_t::fetch_from_http(const key_t& path){
             return entries.end();
         }
         else{
-            auto it = entries.emplace(path, std::make_shared<buffer_t>(buffer_t{buffer,fsize}));
+            auto w =std::shared_ptr<buffer_t>(new buffer_t{buffer,fsize}, +[](buffer_t* p){free((void*)p->data);delete p;});
+            auto it = entries.emplace(path, w);
             curl_easy_cleanup(curl);
             if(it.second==true)return it.first;
             else return entries.end();
