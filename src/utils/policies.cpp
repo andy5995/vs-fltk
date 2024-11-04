@@ -61,8 +61,11 @@ policies_t policies_t::from_env(){
 }
 
 void policies_t::debug() const{
-    std::cout<<"Policy-----------\n";
-    std::cout<<"headless:         "<<headless<<"\n";
+    std::cout<<"Policy-------------\n";
+    std::cout<<"headless:          "<<headless<<"\n";
+    std::cout<<"networking.http:   "<<networking.allow_http<<"\n";
+    std::cout<<"networking.https:  "<<networking.allow_https<<"\n";
+    std::cout<<"networking.gemini: "<<networking.allow_gemini<<"\n";
 }
 
 

@@ -25,6 +25,7 @@ using namespace vs;
 
 int run(const char* path, const char *entry, const char* profile){
    globals::policy.inherit(policies_t::from_env());
+   globals::policy.debug();
    globals::path_env = mk_env(path, entry);
         std::cout<<"\n--------- paths ---------\n";
         std::cout <<"cwd:      "<<globals::path_env.cwd.as_string()<<"\n"
