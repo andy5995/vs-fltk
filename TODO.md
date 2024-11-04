@@ -28,11 +28,9 @@ There is no clear reason why this happened out of nowhere, and the overall memor
 - [ ] Basic LSP for the vs syntax. Implementation @ https://github.com/KaruroChori/vs-fltk-lsp
 - [ ] Add special `inherit` value to props to remove the current one and let it be computed based on its parents? I have to decide if we want this one.
 - [ ] Make some dependencies and their related features toggable (tcc, quickjs, lua, wamr).
+- [ ] Decide what to do about swift.
+- [ ] Fix building process of tcc to generate the minimal libraries needed.
 
-# Static XML builder
-
-- [x] Move it on a separate repo
-- [x] Link it in the current basecode.
 
 # Supported environments
 

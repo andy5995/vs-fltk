@@ -123,8 +123,7 @@ vs_fltk = shared_library(
         './src/utils/env.cpp',
         './src/utils/policies.cpp',
         './src/utils/policies.internal.cpp',
-
-        './src/tcc-wrap.cpp',
+        './src/utils/tcc-wrap.cpp',
 
         './src/resolvers/fs.cpp',
         './src/resolvers/network.cpp',

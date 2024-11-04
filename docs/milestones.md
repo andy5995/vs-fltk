@@ -1,10 +1,11 @@
 ## 0.1.5
 
-- Move all components to the new codegen format
-- Support for script modules
-- Final implementation of the static xml builder
-- Full infrastructure for benchmarking & tests implemented
-- Support basic policies via env flags
+- [ ] Move all components to the new codegen format
+- [x] Support for script modules
+- [ ] Full support for getters and setters
+- [x] Final implementation of the static xml builder (now external dependency)
+- [ ] Full infrastructure for benchmarking & tests implemented
+- [x] Support basic policies via env flags
 
 ## 0.2.x
 
@@ -20,9 +21,9 @@
 
 ## 0.3.x
 
-- Caching engine.
-- Permanent storage.
-- Session storage.
+- [x] Caching engine.
+- [ ] Permanent storage.
+- [ ] Session storage.
 
 ## 0.4.x
 

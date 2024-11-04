@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <ui.hpp>
-#include <tcc-wrap.hpp>
 #include <pugixml.hpp>
 
 namespace vs{
