@@ -2,7 +2,6 @@
 var $$ = (string, base = this.core.self) => {
     let self = (string === undefined ? base : this.core.resolve_name_path(base, string));
     return {
-
         __self: self,
         $: (string) => $$(string, self),
         prop: (key, value) => this.core.apply_prop(self, key, value),
@@ -17,7 +16,6 @@ var $$ = (string, base = this.core.self) => {
 var $$2 = (string, base = this.core.self) => {
     let self = (string === undefined ? base : this.core.resolve_name_path(base, string));
     return {
-
         __self: self,
         $: (string) => $$2(string, self),
         prop: new Proxy(this,{

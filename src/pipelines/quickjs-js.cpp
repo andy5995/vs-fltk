@@ -233,12 +233,13 @@ std::shared_ptr<quickjs_t> qjs_js_pipeline(bool is_runtime, vs::ui_base* obj, co
     init_c_hooks(ctx, obj, is_runtime);
 
     const char prefix[] = {
-#embed "../../bindings/quickjs/vs.js"       
+#embed "../../bindings/quickjs/vs.js" suffix(, 0)      
     };
 
     //Parse prefix script/library
     {
-        auto result = JS_Eval(ctx, prefix, sizeof(prefix), "<input>", JS_EVAL_TYPE_GLOBAL);
+        //Size requires the -1 to avoid counting the last 0 character.
+        auto result = JS_Eval(ctx, prefix, sizeof(prefix)-1, "<input>", JS_EVAL_TYPE_GLOBAL);
         if (JS_IsException(result)) {
             JSValue exception = JS_GetException(ctx);
             JS_BOOL is_error = JS_IsError(ctx, exception);
