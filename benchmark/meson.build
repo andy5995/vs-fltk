@@ -1,3 +1,11 @@
+vg = find_program('valgrind', required: false)
+if vg.found()
+    add_test_setup(
+        'massif',
+        exe_wrapper: [join_paths(meson.current_source_dir(), 'massif_wrap.sh')],
+    )
+endif
+
 benchmark_cases = ['test']
 
 foreach case : benchmark_cases

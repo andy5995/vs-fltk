@@ -9,7 +9,36 @@ var $$ = (string, base = this.core.self) => {
         computed: (key) => this.core.get_computed(self, key),
         mixin: (value) => this.core.apply_prop(self, "mixin", value),
         call: (name, ...args) => this.core.call(self, name, ...args),
-        log: (sev, string, ...args) => this.core.log(sev, self, string, ...args)
+        log: (sev, string, ...args) => this.core.log(sev, self, string, ...args),
+    }
+};
+
+//TODO: decide what to do with this and which interface is best.
+var $$2 = (string, base = this.core.self) => {
+    let self = (string === undefined ? base : this.core.resolve_name_path(base, string));
+    return {
+
+        __self: self,
+        $: (string) => $$2(string, self),
+        prop: new Proxy(this,{
+            get(target,prop,receiver){
+                globalThis.core.get_computed(target.__self, prop);
+            },
+            set(target,prop,value,receiver){
+                globalThis.core.apply_prop(target.__self, prop, value);
+            }
+        }),
+        state: new Proxy(this,{
+            get(target,prop,receiver){
+                globalThis.core.getter(target.__self, prop);
+            },
+            set(target,prop,value,receiver){
+                globalThis.core.setter(target.__self, prop, value);
+            }
+        }),
+        mixin: (value) => this.core.apply_prop(self, "mixin", value),
+        call: (name, ...args) => this.core.call(self, name, ...args),
+        log: (sev, string, ...args) => this.core.log(sev, self, string, ...args),
     }
 };
 
@@ -39,7 +68,7 @@ var $fn = (fn) => { globalThis[`__EXPORT_UKN_${fn.name}`] = fn; };
 /**
  * Set widget:prt_t to vs_self and return the old value;
  */
-vs_set_env(widget){
+function vs_set_env(widget){
     const t = globalThis.core.self;
     globalThis.core.self=widget;
     return t;

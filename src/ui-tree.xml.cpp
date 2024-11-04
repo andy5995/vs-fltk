@@ -4,6 +4,7 @@
 #include "FL/Fl_Input.H"
 #include "FL/Fl_Toggle_Button.H"
 #include "FL/Fl_Widget.H"
+#include "cache/memory-storage.hpp"
 #include "components/markdown-view.hpp"
 #include "pipelines/quickjs-js.hpp"
 #include "resolvers/fs.hpp"
@@ -298,7 +299,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
           is_module=true;
           auto filename = this->fullname.as_string();
 
-          auto found = globals::memstorage.get({filename.c_str(),std::to_string(this->local_unique_counter+1).c_str()});
+          auto found = globals::memstorage.get({filename.c_str(),this->local_unique_counter+1,cache::resource_t::SCRIPT});
           if(found!=nullptr){
             current->set_mode(((script_t*)found->ref.get())->mode);
             current->attach_script(((script_t*)found->ref.get())->script,is_module);
@@ -338,7 +339,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
                 auto tmp = std::make_shared<script_t>(script_t{
                   compiler, symbols, frame_mode_t::NATIVE
                 });
-                globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),std::to_string(local_unique_counter+1).c_str()}, tmp);
+                globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,true}, tmp);
                 local_unique_counter++;
               }
             }
@@ -358,7 +359,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
                   auto tmp = std::make_shared<script_t>(script_t{
                     compiler, symbols, frame_mode_t::QUICKJS
                   });
-                  globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),std::to_string(local_unique_counter+1).c_str()}, tmp);
+                  globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,true}, tmp);
                   local_unique_counter++;
                 }
              }

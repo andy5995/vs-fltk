@@ -1,5 +1,6 @@
 #include <cache/memory-storage.hpp>
 #include <memory>
+#include <sys/types.h>
 #include <unordered_map>
 
 namespace vs{
@@ -7,67 +8,44 @@ namespace vs{
 namespace cache{
 
 
-memstorage_t::ckey_t  memstorage_t::fetch_from_fs(const char* path){
-
+const key_t&  memstorage_t::fetch_from_fs(const key_t& path){
+    return empty_key;
 }
 
-memstorage_t::ckey_t  memstorage_t::fetch_from_http(const char* path){
-
+const key_t&  memstorage_t::fetch_from_http(const key_t& path){
+    return empty_key;
 }
 
-memstorage_t::ckey_t memstorage_t::fetch_from_https(const char* path){
-
+const key_t& memstorage_t::fetch_from_https(const key_t& path){
+    return empty_key;
 }
 
-memstorage_t::ckey_t  memstorage_t::fetch_from_gemini(const char* path){
-
+const key_t&  memstorage_t::fetch_from_gemini(const key_t& path){
+    return empty_key;
 }
 
-memstorage_t::ckey_t memstorage_t::fetch_from_cache(const char* path){
-
+const key_t& memstorage_t::fetch_from_cache(const key_t& path){
+    return empty_key;
 }
 
-memstorage_t::ckey_t memstorage_t::fetch_from_shared(const char* path, const std::shared_ptr<void>& src){
-    auto it = entries.emplace(unique_name(path),src);
-    if(it.second==true)return {it.first->first.location.c_str(),it.first->first.local_id.c_str()};
-    else return {nullptr,nullptr};
-}
-
-memstorage_t::ckey_t memstorage_t::fetch_from_shared(const ckey_t& key, const std::shared_ptr<void>& src){
+const key_t& memstorage_t::fetch_from_shared(const key_t& key, const std::shared_ptr<void>& src){
     key_t k = {key.location,key.local_id};
     auto it = entries.emplace(k,src);
-    if(it.second==true)return {it.first->first.location.c_str(),it.first->first.local_id.c_str()};
-    else return {nullptr,nullptr};
+    if(it.second==true)return it.first->first;
+    else return empty_key;
+;
 }
 
-void memstorage_t::drop(memstorage_t::ckey_t key){
+void memstorage_t::drop(const key_t& key){
     entries.erase({key.location,key.local_id});
 }
 
 //Search fragment inside document
-memstorage_t::entry_t* memstorage_t::get(memstorage_t::ckey_t key){
-    auto it = entries.find({key.location,key.local_id});
+memstorage_t::entry_t* memstorage_t::get(const key_t& key){
+    auto it = entries.find({key.location,key.local_id, key.resource});
     if(it!=entries.end())return &it->second;
     else return nullptr;
 }
-
-//Search full document
-memstorage_t::entry_t* memstorage_t::get(const char* key){
-    auto it = entries.find({key,""});
-    if(it!=entries.end())return &it->second;
-    else return nullptr;
-}
-
-memstorage_t::key_t memstorage_t::unique_name(const char* ctx){
-    //TODO: Apply a more robust way to handle unique names with some degree of hashing.
-    static std::unordered_map<std::string, int> counter = {};
-    auto it =counter.find(ctx);
-    if(it!=counter.end())it->second++;
-    else it=counter.insert({ctx,0}).first;
-    return {ctx, std::to_string(it->second)};
-}
-
-
 
 }
 

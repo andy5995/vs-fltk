@@ -31,7 +31,7 @@ private:
     //std::vector<uint8_t> filebuffer;
     bool is_app;
 
-    int local_unique_counter = 0;
+    size_t local_unique_counter = 0;
 
 public:
     void set_namespace(namespaces_t n, const char* prefix){

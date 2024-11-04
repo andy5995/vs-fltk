@@ -5,27 +5,43 @@
 
 //Once the build process of an app is completed, this cache is fully released before running.
 //This cache is going to be global.
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <sys/types.h>
 #include <unordered_map>
 
-namespace detail{
-    struct key_t{
-        std::string location;   //Location in fs or URI of the requested resource
-        std::string local_id;   //Unique local id identifying the position of this resource in location. If left "" it represents the full file.
+namespace vs{
+namespace cache{
 
-        bool operator==(const key_t &other) const {
-            return (location == other.location
-                    && local_id == other.local_id);
-        }
-    };
+enum class resource_t{
+            NONE,
+            BUFFER,                     //uint8_t[]
+            XML_TREE,                   //pugi::xml_document
+            SCRIPT,                     //struct script_t
+            DYNAMIC_LIB,                //?
+            OTHER_RESOURCE,             //?
+};
+
+struct key_t{
+    std::string location;   //Location in fs or URI of the requested resource
+    size_t local_id:16=0;     //Unique local id identifying the position of this resource in location. If left "" it represents the full file.
+    resource_t resource:4=resource_t::NONE;
+    size_t to_promote:1=false;      //Consider for promotion to higher tier cache
+    size_t to_keep:1=true;         //To be kept at runtime.
+
+    bool operator==(const key_t &other) const {
+        return (location == other.location
+                && local_id == other.local_id && resource==other.resource);
+    }
+};
+}
 }
 
 template <>
-struct std::hash<detail::key_t>
+struct std::hash<vs::cache::key_t>
 {
-std::size_t operator()(const detail::key_t& k) const
+std::size_t operator()(const vs::cache::key_t& k) const
 {
     return (std::hash<std::string>()(k.location)
             ^ std::hash<std::string>()(k.location));
@@ -44,7 +60,6 @@ namespace cache{
  */
 class memstorage_t{
     public: 
-        using key_t =  detail::key_t;
         struct entry_t;
         
     private:
@@ -52,42 +67,25 @@ class memstorage_t{
         static key_t unique_name(const char* ctx);
 
     public:
-        //TODO: Include the resource class as metainformation
-        enum class resource_t{
-            NONE,
-            XML_TREE,
-            SCRIPT,
-            DYNAMIC_LIB,
-            OTHER_RESOURCE,
-            BUFFER,
-        };
-
         struct entry_t{
             //std::string full_key;   //Not defined for from_shared
             std::shared_ptr<void> ref;
         };
 
-        //struct key_t : detail::key_t{};
-
-        struct ckey_t{
-            const char* location;   //Location in fs or URI of the requested resource
-            const char* local_id;   //Unique local id identifying the position of this resource in location. If left "" it represents the full file.
-        };
-
+        static inline key_t empty_key = {"",0,resource_t::NONE};
     public:
-        ckey_t fetch_from_fs(const char* path);
-        ckey_t fetch_from_http(const char* path);
-        ckey_t fetch_from_https(const char* path);
-        ckey_t fetch_from_gemini(const char* path);
-        ckey_t fetch_from_cache(const char* path);
-        ckey_t fetch_from_shared(const char* path, const std::shared_ptr<void>& src);
-        ckey_t fetch_from_shared(const ckey_t& key, const std::shared_ptr<void>& src);
+
+        const key_t& fetch_from_fs(const key_t& path);
+        const key_t& fetch_from_http(const key_t& path);
+        const key_t& fetch_from_https(const key_t& path);
+        const key_t& fetch_from_gemini(const key_t& path);
+        const key_t& fetch_from_cache(const key_t& path);
+        const key_t& fetch_from_shared(const key_t& key, const std::shared_ptr<void>& src);
 
 
-        void drop(ckey_t);
+        void drop(const key_t&);
         
-        entry_t* get(ckey_t);
-        entry_t* get(const char* doc);
+        entry_t* get(const key_t&);
 };
 
 

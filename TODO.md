@@ -4,12 +4,11 @@ The memory footprint (RSS) went up from 4.5MB from two weeks ago or so, to about
 There is no clear reason why this happened out of nowhere, and the overall memory usage by heap/stack is still quite small. What is causing this massive increase?
 
 - [x] Enable codegen
-- [ ] and port the current code over
-- [ ] Viewport tag
-- [ ] Fix on.failure and on.loading to match with `use`
-- [x] Add properties on containers to set their type/mode whatever
-- [x] Add some documentation plz
-- [x] Extend support for more virtual paths (all but those based on sqlite)
+- [ ] and port the current code over the new codegen architecture.
+- [ ] Viewport element.
+- [ ] Fix on.failure and on.loading to match specs in `use` element.
+- [x] Add properties on containers to set their type/mode whatever.
+- [x] Extend support for more virtual paths (all but those based on sqlite which will be handled later on)
 - [ ] Add namespaces for vs elements and fltk elements
 - [ ] Add support for more widgets to make this thing usable
 - [ ] Add support of loading of so/dylib/dll modules
@@ -33,7 +32,7 @@ There is no clear reason why this happened out of nowhere, and the overall memor
 # Static XML builder
 
 - [x] Move it on a separate repo
-- [ ] Link it in the current basecode.
+- [x] Link it in the current basecode.
 
 # Supported environments
 
@@ -72,7 +71,7 @@ https://wasmer.io/taybenlor/runno-clang
 
 - [x] Add quickjs to the repo
 - [x] Add basic support for quickjs embedded scripts.
-- [ ] UI base support of module scripts
+- [x] UI base support of module scripts
 - [ ] Support of getters and setters
 
 ## LUA
@@ -96,6 +95,8 @@ https://wasmer.io/taybenlor/runno-clang
 - [ ] For speed of development, many operations are written recursively.
       The stack is pretty limited, so either there is tail recursion or stacks in heap must be used.
 - [ ] Add caching & preloading to avoid making the process of building UI dog slow.
+  - [x] Partial implementation to support modules
+  - [ ] Partial implementation to load resources in memory within the session (they might be promoted once SQLITE gets integrated)
 
 ## References for FFI & Lua
 
