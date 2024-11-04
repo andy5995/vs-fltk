@@ -65,6 +65,7 @@ memstorage_t::entry_it memstorage_t::fetch_from_http(const key_t& path){
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, stream);
         res = curl_easy_perform(curl);
+        fclose (stream);
 
         /* Check for errors */
         if(res != CURLE_OK){
@@ -87,21 +88,43 @@ memstorage_t::entry_it memstorage_t::fetch_from_http(const key_t& path){
     CURL *curl;
     CURLcode res;
 
+    FILE *stream;
+    unsigned char* buffer = nullptr;
+    size_t fsize = 0;
+    stream = open_memstream ((char**)&buffer, &fsize);
+
     curl = curl_easy_init();
     if(curl) {
+        auto write_data = +[](void *ptr, size_t size, size_t nmemb, FILE *stream) {
+            size_t written = fwrite(ptr, size, nmemb, stream);
+            return written;
+        };
+
         //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L); to skip CA bundle checks
         //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L); to skip name validation
+
         curl_easy_setopt(curl, CURLOPT_URL, path.location.c_str());
         curl_easy_setopt(curl, CURLOPT_CA_CACHE_TIMEOUT, 604800L);
 
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, stream);
         res = curl_easy_perform(curl);
+        fclose (stream);
+
         /* Check for errors */
         if(res != CURLE_OK){
             fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+            curl_easy_cleanup(curl);
+            return entries.end();
         }
-        curl_easy_cleanup(curl);
+        else{
+            auto it = entries.emplace(path, std::make_shared<buffer_t>(buffer_t{buffer,fsize}));
+            curl_easy_cleanup(curl);
+            if(it.second==true)return it.first;
+            else return entries.end();
+        }
     }
-    
+    curl_easy_cleanup(curl);
     return entries.end();
 }
 
