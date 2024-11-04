@@ -47,6 +47,13 @@ memstorage_t::entry_t* memstorage_t::get(const key_t& key){
     else return nullptr;
 }
 
+void memstorage_t::cleanup(){
+    for(auto i =this->entries.begin();i!=this->entries.end();){
+        if(i->first.to_keep==false) i = this->entries.erase(i);
+        else i++;
+    }
+}
+
 }
 
 }

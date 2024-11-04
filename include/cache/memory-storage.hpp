@@ -68,7 +68,6 @@ class memstorage_t{
 
     public:
         struct entry_t{
-            //std::string full_key;   //Not defined for from_shared
             std::shared_ptr<void> ref;
         };
 
@@ -86,6 +85,9 @@ class memstorage_t{
         void drop(const key_t&);
         
         entry_t* get(const key_t&);
+
+        //Remove all entries which are no longer needed (be it because already consumed, or because copies of shared_ptr are all in place)
+        void cleanup();
 };
 
 

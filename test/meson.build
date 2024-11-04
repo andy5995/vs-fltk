@@ -7,11 +7,17 @@ if vg.found()
 endif
 
 to_pass = [
-    'tcc-integration',
-    'quickjs-integration',
+    'integration-tcc',
+    'integration-qjs',
+    'integration-lua',
+
+    'resolver-paths',
+    'resolver-fs',
+    'resolver-networking',
+    
     'static-xml',
 ]
-to_fail = ['path-resolver']
+to_fail = []
 
 foreach case : to_pass
     exe = executable(

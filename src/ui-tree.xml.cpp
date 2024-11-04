@@ -8,7 +8,6 @@
 #include "components/markdown-view.hpp"
 #include "pipelines/quickjs-js.hpp"
 #include "resolvers/fs.hpp"
-#include <iostream>
 #include <vs-templ.hpp>
 #include "ui-frame.hpp"
 #include "pipelines/tcc-c.hpp"
@@ -339,7 +338,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
                 auto tmp = std::make_shared<script_t>(script_t{
                   compiler, symbols, frame_mode_t::NATIVE
                 });
-                globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,true}, tmp);
+                globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
                 local_unique_counter++;
               }
             }
@@ -359,7 +358,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
                   auto tmp = std::make_shared<script_t>(script_t{
                     compiler, symbols, frame_mode_t::QUICKJS
                   });
-                  globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,true}, tmp);
+                  globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
                   local_unique_counter++;
                 }
              }
@@ -390,6 +389,9 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         if (!tmp.empty()) {
           if(strcmp(tmp.as_string(),"native")==0)current->set_mode(frame_mode_t::NATIVE);
           else if(strcmp(tmp.as_string(),"quickjs")==0)current->set_mode(frame_mode_t::QUICKJS);
+          else if(strcmp(tmp.as_string(),"lua")==0)current->set_mode(frame_mode_t::LUA);
+          else if(strcmp(tmp.as_string(),"wasm")==0)current->set_mode(frame_mode_t::WASM);
+          else if(strcmp(tmp.as_string(),"external")==0)current->set_mode(frame_mode_t::EXTERNAL);
           else{current->set_mode(frame_mode_t::VOID);}
         }
       }
