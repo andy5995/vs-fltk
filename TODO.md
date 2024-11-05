@@ -1,39 +1,57 @@
 # Current
 
-The memory footprint (RSS) went up from 4.5MB from two weeks ago or so, to about 19MB in this latest version. There is no good reason for that. for no good reason while implementing internal features.  
-There is no clear reason why this happened out of nowhere, and the overall memory usage by heap/stack is still quite small. What is causing this massive increase?
+~~The memory footprint (RSS) went up from 4.5MB from two weeks ago or so, to about 19MB in this latest version.~~  
+~~There is no clear reason why this happened out of nowhere, and the overall memory usage by heap/stack is still quite small.~~    
+What is causing this massive increase?  
 
+**Answer:** thank you libcurl. Actually libgnutls and libcrypto. While some choices like having an `unordered_map` for the global cache and some buffer optimization I had to dial back led to some increase, it is all mostly justified by me installing `libcurl-dev` and so enabling it in the build process. Even if not in use it will claim some space.
+
+### Infrastructural
+- [ ] Add namespaces for vs elements and fltk elements
+- [x] Expose some sort of inverse for apply_prop, where selected fields can be read from a widget.
+- [ ] Add special `inherit` value to props to remove the current one and let it be computed based on its parents? I have to decide if we want this one.
+- [ ] Add pipelines for compilation & testing on github/gitea
+- [ ] Basic LSP for the vs syntax. Implementation @ https://github.com/KaruroChori/vs-fltk-lsp
+- [ ] Make some dependencies and their related features toggable at buildtime (tcc, quickjs, lua, wamr).
+- [ ] Decide what to do about swift.
+
+### Scripting
+- [ ] Expose path and the fetcher to embedded script at some level.
+
+### Components
 - [x] Enable codegen
+- [x] Simplify codegen for all computed/props types which are not `raw` by writing more or the boilerplate.
 - [ ] and port the current code over the new codegen architecture.
 - [ ] Viewport element.
 - [ ] Fix on.failure and on.loading to match specs in `use` element.
 - [x] Add properties on containers to set their type/mode whatever.
-- [x] Extend support for more virtual paths (all but those based on sqlite which will be handled later on)
-- [ ] Add namespaces for vs elements and fltk elements
-- [ ] Add support for more widgets to make this thing usable
-- [ ] Add support of loading of so/dylib/dll modules
-  - [x] Test linking
-  - [ ] On http/s & gemini
-  - [ ] Without libc?
-  - [ ] If nobuiltin is not usable, I need to add more of libtcc to meson targets.
 - [x] Split align property
 - [ ] Split font property
-- [x] Expose some sort of inverse for apply_prop, where selected fields can be read from a widget.
+
+### Paths
+- [x] Extend support for more virtual paths (all but those based on sqlite which will be handled later on)
+
+
+### Dynamic Library linking
+
+- [ ] Add support of loading of so/dylib/dll modules
+  - [x] Test linking
+  - [x] On http/s & gemini (the cache is now generic)
+  - [ ] Without libc?
+  - [ ] If nobuiltin is not usable, I need to add more of libtcc to meson targets.
+- [ ] Fix building process of tcc to generate the minimal libraries needed.
+
+### Policies
+
 - [x] Add support for env variables to fully disable native code, internet access and to run headless.  
        Once profiles are ready this will be obsoleted, but for now I need for testing and to let people use it "safely"
-- [ ] Add pipelines for compilation & testing on github/gitea
 - [ ] Policies are so complex to write manually and very easy to mess them up.
       Maybe code generation starting from a schema might be a better option.
-- [x] Simplify codegen for all computed/props types which are not `raw` by writing more or the boilerplate.
-- [ ] Basic LSP for the vs syntax. Implementation @ https://github.com/KaruroChori/vs-fltk-lsp
-- [ ] Add special `inherit` value to props to remove the current one and let it be computed based on its parents? I have to decide if we want this one.
-- [ ] Make some dependencies and their related features toggable at buildtime (tcc, quickjs, lua, wamr).
-- [ ] Decide what to do about swift.
-- [ ] Fix building process of tcc to generate the minimal libraries needed.
 - [ ] Support basic embedded script policies.
-- [ ] Expose path and the fetcher to embedded script at some level.
 
-- [ ] Caching
+### Caching
+
+- [ ] Caching all done (no SQLITE)
   - [x] Source files
     - [x] From fs
     - [x] From network

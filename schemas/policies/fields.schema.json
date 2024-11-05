@@ -12,7 +12,7 @@
         "allow-gemini":{
             "type": "flag",
             "safety": 4,
-            "invert": false,
+            "invert": false
         }
     }
 }
