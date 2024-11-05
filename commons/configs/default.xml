@@ -4,10 +4,9 @@ configuration -->
 <vs-profile display-name="" version="1.0">
     <runtime>
         <logging verbosity="" file=""></logging>
-        <default-scene></default-scene>
-        <default-theme></default-theme>
-        <parsing fastmode="true">
-            <limits threads="8" />
+        <initial-scene src="app://commons/hub.xml"/>
+        <base-theme src="default"/>
+        <parsing mode="fast" max-threads="8">
         </parsing>
     </runtime>
     <policies>
@@ -29,12 +28,12 @@ configuration -->
         </group>
 
         <domain extends="test-1">
-            <match>
+            <matches>
                 <glob>file://</glob>
                 <glob>https://</glob>
                 <glob>http://</glob>
-            </match>
-            <exclude></exclude>
+            </matches>
+            <excludes></excludes>
         </domain>
 
         <app id="" extends="test-1">

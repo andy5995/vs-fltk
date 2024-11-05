@@ -63,6 +63,8 @@ void ui_xml_tree::log(int severety, const void* _ctx, const char* str, ...){
 //TODO: The caller node is a design flaw. We need to be given the list of props and slots. Not the full node which might not even exist.
 int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* caller_node, ui_base* caller_ui_node, const scoped_rpath_t* caller_path, const policies_t& base_policies)
 {
+  //TODO: As part of this process, policies should be aligned with what defined in the base config, 
+  //and not just one single set of options, so that we can pattern match paths.
   policies.inherit(base_policies);
 
   resolve_path resolver(policies,globals::path_env,(caller_path==nullptr)?globals::path_env.cwd:*caller_path);
