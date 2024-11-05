@@ -16,7 +16,7 @@
   - Constrained operations on files.
   - Constrained fetch requests.
 - Loading of native components.
-- HTTP/HTTPS & gemini
+- HTTP/HTTPS ~~& gemini~~
 - A good coverage of basic fltk components via codegen.
 
 ## 0.3.x

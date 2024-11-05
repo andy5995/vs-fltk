@@ -1,0 +1,18 @@
+{
+    "networking":{
+        "allow-http": {
+            "type": "flag",
+            "safety": 0
+        },
+        "allow-https":{
+            "type": "flag",
+            "safety": 4,
+            "invert": false
+        },
+        "allow-gemini":{
+            "type": "flag",
+            "safety": 4,
+            "invert": false,
+        }
+    }
+}
