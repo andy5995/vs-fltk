@@ -4,6 +4,7 @@
 #include "utils/policies.hpp"
 #include <ui-tree.hpp>
 #include <pugixml.hpp>
+#include <globals.hpp>
 
 namespace vs{
 
@@ -49,7 +50,7 @@ public:
     int build();
 
 
-    int load(const char* file, bool app, const pugi::xml_node* caller_node=nullptr, ui_base* caller_ui_node=nullptr, const scoped_rpath_t* caller_path=nullptr);
+    int load(const char* file, bool app, const pugi::xml_node* caller_node=nullptr, ui_base* caller_ui_node=nullptr, const scoped_rpath_t* caller_path=nullptr, const policies_t& base_policies=globals::policy);
 
     ~ui_xml_tree();
 

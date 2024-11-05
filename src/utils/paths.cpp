@@ -1,3 +1,4 @@
+#include <iostream>
 #include <utils/paths.hpp>
 
 namespace vs{
@@ -122,8 +123,9 @@ std::pair<resolve_path::reason_t::t,scoped_rpath_t> resolve_path::operator()(fro
         else return {reason_t::POLICY_VIOLATION, {rpath_type_t::NONE, ""}};
     }
     else if(tmp.type==vpath_type_t::HTTPS){
-        if(((from==from_t::NATIVE_CODE) || (from==from_t::EMBEDDED_SCRIPT && policies.scripts.allow_networking)) && policies.networking.allow_https)
+        if(((from==from_t::NATIVE_CODE) || (from==from_t::EMBEDDED_SCRIPT && policies.scripts.allow_networking)) && policies.networking.allow_https){
             return {reason_t::OK, {rpath_type_t::HTTPS, tmp.location}};
+        }
         else return {reason_t::POLICY_VIOLATION, {rpath_type_t::NONE, ""}};
     }
     else if(tmp.type==vpath_type_t::GEMINI){

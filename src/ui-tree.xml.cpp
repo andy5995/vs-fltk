@@ -12,6 +12,7 @@
 #include "ui-frame.hpp"
 #include "pipelines/tcc-c.hpp"
 #include "utils/paths.hpp"
+#include "utils/policies.hpp"
 #include <cstdarg>
 
 #include <memory>
@@ -60,8 +61,10 @@ void ui_xml_tree::log(int severety, const void* _ctx, const char* str, ...){
 
 //General XML loader for apps and components.
 //TODO: The caller node is a design flaw. We need to be given the list of props and slots. Not the full node which might not even exist.
-int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* caller_node, ui_base* caller_ui_node, const scoped_rpath_t* caller_path)
+int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* caller_node, ui_base* caller_ui_node, const scoped_rpath_t* caller_path, const policies_t& base_policies)
 {
+  policies.inherit(base_policies);
+
   resolve_path resolver(policies,globals::path_env,(caller_path==nullptr)?globals::path_env.cwd:*caller_path);
   auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,file);
 
@@ -156,7 +159,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
       else{
         log(severety_t::INFO,root,"Loading component %s", src.as_string()); //TODO: How is it possible that this shows file:// in place of the actual one?
         ui_xml_tree component_tree; 
-        if(component_tree.load(src.as_string(),false,&root,root_ui,&local)!=0){
+        if(component_tree.load(src.as_string(),false,&root,root_ui,&local, policies)!=0){
           log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", src);
         }
         else{
