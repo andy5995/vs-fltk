@@ -180,6 +180,18 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
       }
       return;
     }
+    //IMPORT
+    //TODO: restrict to direct children of the base app/component
+    else if(strcmp(root.name(),"import")==0){
+      const auto& src = root.attribute("src").as_string(nullptr);
+      const auto& as = root.attribute("as").as_string(nullptr);
+
+      if(src!=nullptr){
+        if(as!=nullptr){
+          this->imports.emplace(as,src);
+        }
+      }
+    }    
     //SLOT
     else if(strcmp(root.name(),"slot")==0){
       //Copy the content provided by the parent in place of the slot, or render its content if the parent has none.
@@ -279,6 +291,28 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
 #   endif
 
 
+    else if(imports.contains(root.name())){
+      auto it = imports.find(root.name());
+      log(severety_t::INFO,root,"Loading component %s", it->second.c_str()); //TODO: How is it possible that this shows file:// in place of the actual one?
+      ui_xml_tree component_tree; 
+      if(component_tree.load(it->second.c_str(),false,&root,root_ui,&local, policies)!=0){
+        log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", it->second.c_str());
+      }
+      else{
+        component_tree.build();
+        nodes.insert(nodes.end(),component_tree.nodes.begin(),component_tree.nodes.end());
+        component_tree.nodes.clear();
+        return;
+      }
+
+      //Collector of all failures
+      const auto& error =root.child("on.load-fail");
+      if(!error.empty()){
+        _build(error,root_ui);
+        return;
+      }
+
+    }
     else{return;}
 
     for(auto& i : root.children()){_build(i,root_ui);}

@@ -29,6 +29,8 @@ private:
     policies_t policies;            //Computed policies for this tree
     scoped_rpath_t local;            //Full path for the location of this component.
     scoped_rpath_t fullname;            //Full path for the location of this component.
+
+    std::map<std::string,std::string> imports;
     //std::vector<uint8_t> filebuffer;
     bool is_app;
 
