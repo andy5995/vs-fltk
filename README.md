@@ -138,14 +138,23 @@ Unless a file comes with a custom licence in its header, they will inherit the o
 
 This project is based on the following dependencies:
 
+### Core features
 - [fltk](https://www.fltk.org/) the UI toolkit library used.
+- [fmt](https://github.com/fmtlib/fmt) to format strings and as printf replacement.
+- [pugixml](https://pugixml.org/) to parse xml.
+- [hashlib](https://github.com/KaruroChori/hash-library) for cryptographic functions (and not).
+- [libuv](https://libuv.org/) for me not to care about portable code.
+- [vs.templ](https://github.com/karurochori/vs-templ) a library to parse markdown (not just to HTML).
+
+
+### For embedded scripts
+- [libffi](https://github.com/libffi/libffi) to simplify symbol sharing between languages.
 - [tcc](https://github.com/KaruroChori/tcc-vs) the embeddable C compiler used for C scripts.
 - [quickjs](https://github.com/quickjs-ng) the embeddable JS runtime used for JS scripts.
-- [wamr](https://github.com/bytecodealliance/wasm-micro-runtime) the embeddable WASM runtime used for scripts, portable compiled components & compilers.
-- [hashlib](https://github.com/KaruroChori/hash-library) for cryptographic functions (and not).
-- [pugixml](https://pugixml.org/) to parse xml.
-- [md4c](https://github.com/mity/md4c) a library to parse markdown (not just to HTML).
-- [libuv](https://libuv.org/) for me not to care about portable code.
-- [libffi](https://github.com/libffi/libffi) to simplify symbol sharing between languages.
-- [treesitter](https://tree-sitter.github.io/tree-sitter/) to handle parsing of languages (used for some components and the self-hosted editor).
+- [lua](https://www.lua.org/) and [luajit](http://luajit.org/) to support Lua scripts.
 - [cello](https://libcello.org) an unholy macro machine for C to transform it into a dynamic language.
+- [wamr](https://github.com/bytecodealliance/wasm-micro-runtime) the embeddable WASM runtime used for scripts, portable compiled components & compilers.
+
+### For custom components
+- [treesitter](https://tree-sitter.github.io/tree-sitter/) to handle parsing of languages (used for some components and the self-hosted editor).
+- [md4c](https://github.com/mity/md4c) a library to parse markdown (not just to HTML).

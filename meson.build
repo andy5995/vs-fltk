@@ -52,6 +52,16 @@ quickjs_dep = quickjs_proj.dependency('qjs')
 md4c_proj = cmake.subproject('md4c')
 md4c_dep = md4c_proj.dependency('md4c')
 
+opt_fmt = cmake.subproject_options()
+opt_fmt.add_cmake_defines(
+    {
+        'CMAKE_POSITION_INDEPENDENT_CODE': true,
+        'BUILD_SHARED_LIBS': false
+    },
+)
+fmt_proj = cmake.subproject('fmt', options: opt_fmt)
+fmt_dep = fmt_proj.dependency('fmt')
+
 hashlib_proj = subproject('hashlib')
 hashlib_dep = hashlib_proj.get_variable('hashlib_dep')
 
@@ -89,16 +99,18 @@ vs_fltk_deps = [
     libfltk_forms_dep,
 
     pugixml_dep,
-    treesitter_dep,
+    vs_templ_dep,
+    fmt_dep,
+    uv_dep,
+    hashlib_dep,
+
     libtcc_dep,
     quickjs_dep,
     sqlite_dep,
     sqlitecpp_dep,
-    uv_dep,
-    hashlib_dep,
-    md4c_dep,
 
-    vs_templ_dep
+    md4c_dep,
+    treesitter_dep
 ]
 
 vs_fltk_flags = []
