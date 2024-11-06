@@ -68,7 +68,7 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
   policies.inherit(base_policies);
 
   resolve_path resolver(policies,globals::path_env,(caller_path==nullptr)?globals::path_env.cwd:*caller_path);
-  auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,file);
+  auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,file, cache::resource_t::BUFFER);
 
   if(std::get<0>(buffer)==resolve_path::reason_t::OK){
     this->local=std::get<2>(buffer).base_dir();
@@ -84,6 +84,7 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
 
   if(std::get<0>(buffer)!=resolve_path::reason_t::OK){
     //TODO: error handling
+    vs_log(severety_t::PANIC, nullptr, "Oh no! Loading failed `%s` for %d", std::get<2>(buffer).as_string().data(),std::get<0>(buffer));
     return 2;
   }
   else{
@@ -92,6 +93,38 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
     if (!result){
         return 1;
     }
+
+    //TODO: Static parsing is performed in here!
+    {
+    auto root_data = doc.child("static-data");
+
+      if(!root_data.empty()){
+        pugi::xml_document datadoc;
+        auto tplt = root_data.attribute("template");  //TODO: Adapt to use the proper syntax. I cannot remember which one was it
+
+        resolve_path resolver(policies,globals::path_env,this->local);
+
+        auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,tplt.as_string());
+        if(std::get<0>(buffer)!=resolve_path::reason_t::OK){
+          //TODO: error handling
+          return 2;
+        }
+        else{
+          //TODO: register XMl tree?
+          pugi::xml_parse_result result =  doc.load_buffer(std::get<1>(buffer).data, std::get<1>(buffer).size); // doc.load_file(file);
+          if (!result){
+              return 1;
+          }
+        }
+
+        templ::preprocessor processor(doc,datadoc);
+        //Resolve it.
+
+        auto& result  = processor.parse();
+
+        doc.reset(result);
+      }
+    }
   }
   return 0;
 }
@@ -99,38 +132,6 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
 ui_xml_tree::~ui_xml_tree(){if(root!=nullptr)delete root;}
 
 int ui_xml_tree::build(){
-  //TODO: Static parsing is performed in here!
-  {
-    auto root_data = doc.child("static-data");
-
-    if(!root_data.empty()){
-      pugi::xml_document datadoc;
-      auto tplt = root_data.attribute("template");  //TODO: Adapt to use the proper syntax. I cannot remember which one was it
-
-      resolve_path resolver(policies,globals::path_env,this->local);
-
-      auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,tplt.as_string());
-      if(std::get<0>(buffer)!=resolve_path::reason_t::OK){
-        //TODO: error handling
-        return 2;
-      }
-      else{
-        //TODO: register XMl tree?
-        pugi::xml_parse_result result =  doc.load_buffer(std::get<1>(buffer).data, std::get<1>(buffer).size); // doc.load_file(file);
-        if (!result){
-            return 1;
-        }
-      }
-
-      templ::preprocessor processor(doc,datadoc);
-      //Resolve it.
-
-      auto& result  = processor.parse();
-
-      doc.reset(result);
-    }
-  }
-
   const auto& xml_root = doc.child(is_app?"app":"component");
   if(xml_root.empty()){
     log(severety_t::CONTINUE, xml_root, "Unable to find a valid root in `%s`", fullname.as_string().c_str());

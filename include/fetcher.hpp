@@ -6,6 +6,6 @@
 
 namespace vs{
 
-std::tuple<resolve_path::reason_t::t,cache::buffer_t, scoped_rpath_t> fetcher(resolve_path& base, resolve_path::from_t from,const char* src, bool promote=false, bool preserve=false);
+std::tuple<resolve_path::reason_t::t,cache::buffer_t, scoped_rpath_t> fetcher(resolve_path& base, resolve_path::from_t from,const char* src,  cache::resource_t restype=cache::resource_t::BUFFER, bool promote=false, bool preserve=false);
 
 }
