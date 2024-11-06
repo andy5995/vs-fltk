@@ -39,7 +39,7 @@ For now, most efforts are focused in making the first two options viable. The th
 | Concept            | Web                                | VS                              |
 | ------------------ | ---------------------------------- | ------------------------------- |
 | Components         | XML or HTML template               | XML                             |
-| Static templating  | XSLT or JSX                        | XSLT-like approach              |
+| Static templating  | XSLT or JSX                        | vs-templ (XSLT-like)            |
 | Dynamic templating | alpine, htmx, jquery, ...          | Restricted, standard components |
 | Style              | XSLT and/or CSS and transpilation  | Mixins                          |
 | Scripting          | JS, WASM and transpilation         | C/JS/Lua/WASM                   |
@@ -89,6 +89,8 @@ The XML source is statically compiled into a UI tree, a wrapper/superset of the 
 This means that at runtime the source XML will we de-allocated from memory right after the UI tree is built, and it cannot be trivially referenced again.  
 We also plan in a not so far distant future to use the XML file to generate the equivalent C++ code, and use that to speed up the component instantiation even further.
 
+### I want my todo list!
+
 > How do I create a list which can spawn multiple copies of some component based on runtime data in XML then?
 
 You don't. Components based on XML have several limitations on which mutations are allowed during runtime. A basic principle of this framework is to keep arbitrary code as far away as possible from the final user, and what one sees in code should perfectly match what one visually gets. Making the tree mostly immutable and restricting which operations are allowed in the embedded scripts vibes with this vision of simplicity.  
@@ -98,10 +100,14 @@ Realistically, once this software gets stable enough, the standard library shoul
 
 This way any dynamic behaviour requiring arbitrary code execution is kept outside the XML tree, in a native codebase which is not controlled by any single developer (unless the final user decides to enable certain native components distributed by third parties). This fits with the design philosophy that there should only one good way to implement a certain feature on the UI frontend.
 
+### What about templates?
+
 > Ok, but being forced to manually write the code for 5x5 buttons on a widget is not really clever.
 
 This is what build steps are for! You can generate your xml in [react](https://react.dev/) or [xslt](https://www.w3schools.com/xml/xsl_intro.asp) for example.  
 We are also implementing our [own xml preprocessor](https://github.com/KaruroChori/vs-templ) to statically generate components within the `vs` viewer itself. Right now `vs.templ` is working in `vs`, but not every feature has been implemented yet.
+
+### How to handle state & state changes?
 
 > If the XML is lost, how to I know & query the state of widgets?
 
