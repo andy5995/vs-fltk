@@ -104,7 +104,7 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
 
         resolve_path resolver(policies,globals::path_env,this->local);
 
-        auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,tplt.as_string());
+        auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,tplt.as_string(), cache::resource_t::BUFFER);
         if(std::get<0>(buffer)!=resolve_path::reason_t::OK){
           //TODO: error handling
           return 2;
@@ -117,7 +117,7 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
           }
         }
 
-        templ::preprocessor processor(doc,datadoc);
+        templ::preprocessor processor(datadoc,doc);
         //Resolve it.
 
         auto& result  = processor.parse();
@@ -137,7 +137,6 @@ int ui_xml_tree::build(){
     log(severety_t::CONTINUE, xml_root, "Unable to find a valid root in `%s`", fullname.as_string().c_str());
     return 1;
   }
-
 
   ui_base* base;
 
