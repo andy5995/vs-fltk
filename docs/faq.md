@@ -60,19 +60,27 @@ If you want to do that feel free to send a PR, I am more than willing to see it 
 
 ### Theming and colors schemes. What can I do?
 
-FLTK, the toolkit on which `vs` is based, has limited capabilities in this respect. Out of the box, it makes opinionated choices on what and how to render boxes, with a limited collection of variants embedded in the engine. So, indexed colors and frame types have their semantics enforced by FLTK itself and are globally shared in the process.  
-Within these constraints one can specify any color or any rendering function for the different frame types. But they cannot define new classes out of thin air.
+FLTK, the toolkit on which `vs` is based, has limited capabilities in this respect.  
+Out of the box, it makes opinionated choices on what and how to render boxes based on its class, and of there are just a few embedded in the engine.  
+Hence, both indexed colors and frame types have their semantics enforced by FLTK and are globally shared within each process.  
+Given these constraints, one can specify any color or any rendering function for the different frame types (even SVG images). Yet it is not possible to introduce new classes out of thin air.
 
-If you need a granular level of control, this is likely not the right framework for you; it is possible to define custom draw functions and adopt mixins to override the default style, but doing it more than occasionally would result in a messy codebase. If that is a typical requirement for your application, you would be better served by other frameworks.
+It is possible to define custom draw functions and adopt mixins to override the default style, but doing it more than occasionally would result in some quite messy code. If you need fine and frequent control over your UI, `vs` is likely not the right framework for you.
 
 ### Don't we have fluid already for FLTK?
 
 [fluid](https://www.fltk.org/doc-1.4/fluid.html) is an excellent tool, but in my opinion it has few problems:
 
-- The visual editor is nice, but it does not really allow the definition of custom widgets as standalone and reusable components. At least, not as easily.
+- The visual editor is nice, but it does not really allow the definition of custom widgets as standalone and reusable components. At least, not easily enough.
 - It integrates C/C++ code only to "fill in" the missing parts of the application, in a way which I don't find particularly ergonomic.
-- It does nothing to provide runtime capabilities for the UI beyond what FLTK offers.
-- It is restricted to C/C++, unless you linked your own dynamic library written in your language of choice.
+- It does nothing to provide runtime capabilities for the UI beyond what FLTK offers, which is a bit too basic.
+- It is restricted to C/C++, unless you linked your own dynamic library written with a language of choice.
+
+### Is there any plan to support alternative backends to fltk?
+
+Short answer, no. However, most of the infrastructure and code of this repo has only minimal reliance over fltk.  
+It is possible for more and more of this code to be exported in a generic `vs` repo, and promote alternative backends from there.  
+One scenario which might be interesting to consider is [lgvl](https://lvgl.io/) for example.  
 
 ## Likely pitfalls
 
@@ -83,9 +91,9 @@ We also plan in a not so far distant future to use the XML file to generate the 
 
 > How do I create a list which can spawn multiple copies of some component based on runtime data in XML then?
 
-You don't. Components based on XML have several limitations on which mutation are allowed during runtime. The principle of this framework is to keep arbitrary code as far away as possible from the final user, and what you see in code is what you get visually. Making the tree mostly immutable and restricting which operations are allowed in the embedded scripts fits in this vision of simplicity.  
-In addition to XML components `vs` also allows native ones. Native components are written in C++ (or any language with bindings to `vs`) & built dynamically against the full library.  
-Native components can perform what the XML builder does and more. There is (will be) a library of base native components designed to cover all most common scenarios where dynamic data is driving UI changes, but if yours does not fit you will have to write a custom one.
+You don't. Components based on XML have several limitations on which mutations are allowed during runtime. A basic principle of this framework is to keep arbitrary code as far away as possible from the final user, and what one sees in code should perfectly match what one visually gets. Making the tree mostly immutable and restricting which operations are allowed in the embedded scripts vibes with this vision of simplicity.  
+In addition to XML components, native ones are also allowed in `vs`. Native components are written in C++ (or any language which can work with our C bindings) & built dynamically against the full library.  
+Native components cover the same features provided by the XML builder and much more. There is (will be) a library of base native components designed to cover all most common scenarios where dynamic data is driving UI changes, but if yours does not fit you will have to write a custom one.
 Realistically, once this software gets stable enough, the standard library should be plenty for virtually any developer.
 
 This way any dynamic behaviour requiring arbitrary code execution is kept outside the XML tree, in a native codebase which is not controlled by any single developer (unless the final user decides to enable certain native components distributed by third parties). This fits with the design philosophy that there should only one good way to implement a certain feature on the UI frontend.
@@ -93,21 +101,23 @@ This way any dynamic behaviour requiring arbitrary code execution is kept outsid
 > Ok, but being forced to manually write the code for 5x5 buttons on a widget is not really clever.
 
 This is what build steps are for! You can generate your xml in [react](https://react.dev/) or [xslt](https://www.w3schools.com/xml/xsl_intro.asp) for example.  
-We are also implementing our [own xml preprocessor](../experiments/preprocessor.cpp) to statically generate components in the `vs` viewer.
+We are also implementing our [own xml preprocessor](https://github.com/KaruroChori/vs-templ) to statically generate components within the `vs` viewer itself. Right now `vs.templ` is working in `vs`, but not every feature has been implemented yet.
 
 > If the XML is lost, how to I know & query the state of widgets?
 
-You generally don't. In theory FLTK provides an interface to get the current value of its properties, however we decided not to expose it fully.  
-Still, widgets can provide some selected computed properties. It should be remembered that props in the XML and keys used by FLTK are not a 1-to-1 match; some complex processing can take place at both compile time and runtime, none of which would be reflected in the state shown by the FLTK widgets.
+You generally don't. In theory FLTK provides an interface to get the current value of its properties from its own widgets, however we decided not to expose it fully.  
+Still, vs widgets can provide some selected computed properties. It should be considered that props in the XML and keys used by FLTK are not a 1-to-1 match, even if we try to keep them as close as possible if reasonable; some complex processing on the input expressions can take place both at compile time and at runtime. None of that is directly reflected in the state of an FLTK widget.
 
-Aside from these considerations, can still keep state, just not within widgets. There are three main ways, each best suited for different scenarios:
+Aside from these considerations, can still keep state, just not within vs widgets. There are three main ways, and different scenarions will call for different approaches:
 
-- As variables in single user scripts. They can also be exported and accessed via `setters` and `getters`.  
-  This approach is quite general, but also more powerful than what is needed for most of the UI properties.
-- In a self mixin, whose content is fully populated during compilation but still readable at runtime.
-- As entries in cache (which are possibly persisted beyond the session).
+- As variables in single user scripts (modules would require some tricks to achieve the same result).  
+  They can be exported and accessed via `setters` and `getters`.  
+  This approach is quite general, but also more powerful than what one would generally need.
+- In a self mixin, whose content is fully populated during compilation, yet readable at runtime.
+- As part of a `data`.
+- As entries in cache (which are possibly persisted beyond the current session's lifetime).
 
-I would like to provide an example which shows a typical pitfall when handling state:
+I would like to close with an example showing a typical pitfall in handling state:
 
 ```xml
 <component-a prop-1="value-1">
@@ -115,7 +125,7 @@ I would like to provide an example which shows a typical pitfall when handling s
 </compoent-a>
 ```
 
-`component-a` will be built with its own `prop-1` and `prop-2` inherited from the self mixin. However, the content of `prop-1` is applied & lost after compilation, while `prop-2` can be queried during runtime. Mixins can be mutated at runtime as well, but an explicit update request must be triggered onto a component for it to be updated & reflect such changes.
+`component-a` will be built with its own `prop-1` and `prop-2` inherited from the self mixin. However, the content of `prop-1` is applied & lost after compilation, while `prop-2` can be queried at runtime. Mixins can be mutated at runtime as well, but an explicit update request must be triggered onto a component for it to be updated & reflect such changes. (TODO: Carefully consider this)
 
 > What is mutable in a runtime instance?
 
