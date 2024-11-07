@@ -68,7 +68,7 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
   policies.inherit(base_policies);
 
   resolve_path resolver(policies,globals::path_env,(caller_path==nullptr)?globals::path_env.cwd:*caller_path);
-  auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,file, cache::resource_t::BUFFER);
+  auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,file);
 
   if(std::get<0>(buffer)==resolve_path::reason_t::OK){
     this->local=std::get<2>(buffer).base_dir();
@@ -104,7 +104,7 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
 
         resolve_path resolver(policies,globals::path_env,this->local);
 
-        auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,tplt.as_string(), cache::resource_t::BUFFER);
+        auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,tplt.as_string());
         if(std::get<0>(buffer)!=resolve_path::reason_t::OK){
           //TODO: error handling
           return 2;

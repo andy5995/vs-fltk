@@ -1,10 +1,14 @@
 # Current
 
+### Annoying memory consumption
+
 ~~The memory footprint (RSS) went up from 4.5MB from two weeks ago or so, to about 19MB in this latest version.~~  
 ~~There is no clear reason why this happened out of nowhere, and the overall memory usage by heap/stack is still quite small.~~    
 What is causing this massive increase?  
 
 **Answer:** thank you libcurl. Actually libgnutls and libcrypto. While some choices like having an `unordered_map` for the global cache and some buffer optimization I had to dial back led to some increase, it is all mostly justified by me installing `libcurl-dev` and so enabling it in the build process. Even if not in use it will claim some space.
+
+### XSD -> RNG?
 
 XSD as an xml schema format is not that good. RelaxNG better captures the flexible nature of vs files, so I would be better to consider it as it was for `vs.templ`.
 
@@ -18,6 +22,8 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
 - [ ] Decide what to do about swift.
 - [ ] I probably want https://github.com/fmtlib/fmt
 - [ ] Signal/event propagation mechanisms
+- [ ] Add special logging to generate output used by more complex tests. They must also be exposed to scripts.  
+      These logs are only recorded if VS_TESTING is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test. 
 
 ### Scripting
 - [ ] Expose path and the fetcher to embedded script at some level.
