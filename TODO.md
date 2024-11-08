@@ -20,7 +20,7 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
 - [ ] Basic LSP for the vs syntax. Implementation @ https://github.com/KaruroChori/vs-fltk-lsp
 - [ ] Make some dependencies and their related features toggable at build-time (tcc, quickjs, lua, wamr).
 - [ ] Decide what to do about swift.
-- [ ] I probably want https://github.com/fmtlib/fmt
+- [x] I probably want https://github.com/fmtlib/fmt
 - [ ] Signal/event propagation mechanisms
 - [ ] Add special logging to generate output used by more complex tests. They must also be exposed to scripts.  
       These logs are only recorded if VS_TESTING is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test. 

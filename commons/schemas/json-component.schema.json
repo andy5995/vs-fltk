@@ -11,6 +11,10 @@
         "name": {
             "type": "string"
         },
+        "usable": {
+            "default": true,
+            "type": "boolean"
+        },
         "description": {
             "type": "string"
         },
@@ -154,13 +158,22 @@
                             "type": "string"
                         },
                         "code": {
-                            "type": "string"
+                            "default": null,
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
                         },
                         "description": {
                             "type": "string"
                         },
                         "alias": {
                             "description": "alias names",
+                            "default": [],
                             "type": "array",
                             "items": {
                                 "type": "string"
@@ -169,8 +182,7 @@
                     },
                     "required": [
                         "type",
-                        "code",
-                        "alias"
+                        "code"
                     ]
                 }
             }
@@ -219,13 +231,22 @@
                             "type": "string"
                         },
                         "code": {
-                            "type": "string"
+                            "default": null,
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
                         },
                         "description": {
                             "type": "string"
                         },
                         "alias": {
                             "description": "alias names",
+                            "default": [],
                             "type": "array",
                             "items": {
                                 "type": "string"
@@ -234,8 +255,7 @@
                     },
                     "required": [
                         "type",
-                        "code",
-                        "alias"
+                        "code"
                     ]
                 }
             }

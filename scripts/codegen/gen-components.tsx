@@ -29,6 +29,7 @@ function gen_cpp(data: Static<typeof widget_schema>) {
 #pragma once
 
 #include <ui.hpp>
+#include <ui-tree.hpp>
 ${data.headers ? data.headers.map(x => `#include <${x}>\n`) : ``}
 
 namespace vs{
@@ -66,11 +67,11 @@ int ${data.ns}_${data.name}::_apply_prop(${data.ns}_${data.name}* that, const ch
     bool ok = true;
     if(false){}
     ${Object.entries(data.props).map(x => {
-        x[1].alias.push(x[0]);
-        return x[1].alias.map(y => `
+        x[1].alias?.push(x[0]);
+        return x[1].alias?.map(y => `
     ${x[1].description ? `//${x[1].description}` : ``}
     else if(strcmp(prop,"${y}")==0){
-        ${make_type_code(x[1].type, x[1].subtype ?? "", x[1].code)}
+        ${make_type_code(x[1].type, x[1].subtype ?? "", x[1].code??"")}
     }`).join('\n')
     }
     ).join('\n')
@@ -83,8 +84,8 @@ int ${data.ns}_${data.name}:: _get_computed(${data.ns}_${data.name} * that, cons
     bool ok = true;
     if(false){}
     ${Object.entries(data.computed).map(x => {
-            x[1].alias.push(x[0]);
-            return x[1].alias.map(y => `
+            x[1].alias?.push(x[0]);
+            return x[1].alias?.map(y => `
     ${x[1].description ? `//${x[1].description}` : ``}
     else if(strcmp(prop,"${y}")==0){
         ${x[1].code}
@@ -100,7 +101,7 @@ int ${data.ns}_${data.name}:: _get_computed(${data.ns}_${data.name} * that, cons
 
     let parser_selector =
         data.type === 'leaf' ? `mkLeafWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
-            data.type === 'node' ? `mkNodeWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name}); ` :
+            data.type === 'node' ? `mkNodeWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name}) ` :
                 data.type === 'container' ? `mkContainerWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
                     data.type === 'slot' ? `mkSlotWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
                         data.type === 'slot-contaiener' ? `mkSlotContainerWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` : `sss`;

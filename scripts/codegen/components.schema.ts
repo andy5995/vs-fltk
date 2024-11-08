@@ -5,15 +5,16 @@ export const type_schema = t.Union([t.TemplateLiteral('enum'), t.Literal('raw'),
 const entries_schema = t.Record(t.String(), t.Object({
     type: type_schema,
     subtype: t.Optional(t.String()),
-    code: t.String(),
+    code: t.Union([t.String(),t.Null()], {default:null}),   //TODO: If left empty, hide it since it is only ther for internal usage but has no real code assigned.
     description: t.Optional(t.String()),
-    alias: t.Array(t.String(), { description: "alias names" })
+    alias: t.Optional(t.Array(t.String(), { description: "alias names" , default:[]}))
 }))
 
 export const widget_schema = t.Object({
     $schema: t.Optional(t.String()),
     ns: t.Optional(t.String()),
     name: t.Optional(t.String()),
+    usable: t.Optional(t.Boolean({default:true})), //TODO: implement, if false you can only use it for inheritance, but it will not be exposed.
     description: t.Optional(t.String()),
     use_main_header: t.Union([t.Null(), t.String()], { default: null }),
     headers: t.Optional(t.Array(t.String())),

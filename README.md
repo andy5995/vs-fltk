@@ -87,17 +87,17 @@ And now we are required to waste at least 100MB of RAM just for the privilege of
 
 It is sad to see that most of the modern native toolkits followed this same trend: QT & GTK both became a bloated mess over the last few years.  
 For many desktop applications, any UI is just an overlay to give easy and intuitive access to the complex application below. And to make features discoverable. We don't need transparency, animations or a super complex logic to determine the state of a widget.  
-And oftentimes, we want to run them on very low spec linux system, without resorting to something as bare bone as [lvgl](https://lvgl.io/).
+And oftentimes, we want to run them on very low spec Linux system, without resorting to something as bare bone as [lvgl](https://lvgl.io/).
 
 `vs` is an attempt to bring together the best of the techniques and patterns we learned in modern UI frameworks & web technologies onto a native runtime with a miniscule footprint.
 
-Compared to other approaches, `vs` is extremely opinionated and tries to force just one way to make things right. It does not mean it is inflexible, just that it makes clear where complexity should be (spoiler, not in the UI). If you are coming from a less restrictive context you might find these limitations unpleasant at first, so I compiled a list of [frequently asked questions](./docs/faq.md) no one asked to make things easier.
+Compared to other approaches, `vs` is extremely opinionated and tries to force just one way to make things right. It does not mean it is inflexible, just that it makes clear where complexity should be (spoiler, not in the UI). If you are coming from a less restrictive context you might find these limitations unpleasant at first, so I compiled a list of [frequently asked questions](./docs/faq.md) no one asked for, to make things easier.
 
 ## Planned Features
 
 - [ ] FLTK UI elements properly mapped into XML.
   - [ ] A set of better themes
-  - [ ] A markdown component to render it directly (replacing the ancient HTML2.0 webview fltk offers)
+  - [ ] A markdown component to render it directly (replacing the ancient HTML2.0 webview FLTK offers)
 - [ ] A simple tree model to handle scoping, events and queries
 - [ ] Native support for datasets & data models
 - [ ] Custom components

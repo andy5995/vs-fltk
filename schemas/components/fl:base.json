@@ -1,0 +1,158 @@
+{
+    "$schema": "../../commons/schemas/json-component.schema.json",
+    "description": "Base element to provide basic props/computed for all those which are derived from `fltk_widget`",
+    "usable": false,
+    "type": "node",
+    "headers": ["FL/Fl_Group.H"],
+    "codegen": {"extends": "ui<Fl_Group>"},
+    "props":{
+        "name":{
+            "type": "raw",
+            "description": "Not handled",
+            "code": ""
+        },
+        "frame.type":{
+            "type": "raw",
+            "description": "Not handled",
+            "code": ""
+        },
+        "frame.access":{
+            "type": "raw",
+            "description": "Not handled",
+            "code": null
+        },
+        "frame.mode":{
+            "type": "raw",
+            "description": "Not handled",
+            "code": null
+        },
+        "xsml":{
+            "type": "raw",
+            "description": "Not handled",
+            "code": null
+        },
+        "xsml:":{
+            "type": "raw",
+            "description": "Not handled. TODO: This should capture all based on xsml:prefix",
+            "code": null
+        },
+        "mixin":{
+            "type": "string",
+            "description": "Apply mixins to this object",
+            "code": "that->refresh_style(value);"
+        },
+        "label":{
+            "type": "string",
+            "alias": ["label.txt"],
+            "code": "w.copy_label(value);"
+        },
+        "label.align.pos":{
+            "type": "raw",
+            "subtype": "fl_align_pos",
+            "code": "int t=ui_tree::fl_align_pos_i(value);if((ok=(t!=-1)))w.align((w.align()&(!FL_ALIGN_POSITION_MASK))|t);"
+        },
+        "label.align.img":{
+            "type": "raw",
+            "subtype": "fl_align_image",
+            "code": "int t=ui_tree::fl_align_image_i(value);if((ok=(t!=-1)))w.align((w.align()&(!FL_ALIGN_IMAGE_MASK))|t);"
+        },
+        "label.align.wrap":{
+            "type": "raw",
+            "subtype": "fl_align_wrap",
+            "code": "int t=ui_tree::fl_align_wrap_i(value);if((ok=(t!=-1)))w.align((w.align()&(!FL_ALIGN_WRAP))|t);"
+        },
+        "label.align.clip":{
+            "type": "raw",
+            "subtype": "fl_align_clip",
+            "code": "int t=ui_tree::fl_align_clip_i(value);if((ok=(t!=-1)))w.align((w.align()&(!FL_ALIGN_CLIP))|t);"
+        },
+        "label.align.inside":{
+            "type": "raw",
+            "subtype": "fl_align_inside",
+            "code": "int t=ui_tree::fl_align_inside_i(value);if((ok=(t!=-1)))w.align((w.align()&(!FL_ALIGN_INSIDE))|t);"
+        },
+        "label.size":{
+            "type": "raw",
+            "description": "A simple integer value to determine the font size, or 'default' to set the default one.",
+            "code": "if(strcmp(value,\"default\")==0){w.labelsize(FL_NORMAL_SIZE);}else{size_t size; if((ok=ui_tree::h_px(1,&size,value,that))) w.labelsize(size);}"
+        },
+        "label.colour":{
+            "type": "color",
+            "alias": ["label.color"],
+            "code": "w.labelcolor(computed);"
+        },
+        "label.margin":{
+            "type":"scalar-2",
+            "description": "Horizontal and vertical margins for the label.",
+            "code": "w.horizontal_label_margin(computed[0]); w.vertical_label_margin(computed[1]);"
+        },
+        "label.margin.x":{
+            "type":"scalar-1",
+            "description": "Horizontal margin for the label.",
+            "code": "w.horizontal_label_margin(computed[0]);"
+        },
+        "label.margin.y":{
+            "type":"scalar-1",
+            "description": "Vertical margin for the label.",
+            "code": "w.vertical_label_margin(computed[0]);"
+        },
+        "tooltip":{
+            "type": "string",
+            "alias": ["tooltip.txt"],
+            "code": "w.copy_tooltip(value);"
+        },
+        "box":{
+            "type": "scalar-4",
+            "description": "Origin offset (0,1) and size (2,3) for the box.",
+            "code": "w.position(computed[0],computed[1]);w.size(computed[2],computed[3]);"
+        },
+        "box.x":{
+            "type": "scalar-1",
+            "code": "w.position(computed[0], w.y());"
+        },
+        "box.y":{
+            "type": "scalar-1",
+            "code": "w.position(w.x(), computed[0]);"
+        },
+        "box.w":{
+            "type": "scalar-1",
+            "alias": ["box.width"],
+            "code": "w.size(computed[0], w.h());"
+        },
+        "box.h":{
+            "type": "scalar-1",
+            "alias": ["box.height"],
+            "code": "w.size(w.w(), computed[0]);"
+        },
+        "box.style":{
+            "type": "raw",
+            "subtype": "fl_boxtype",
+            "code": "w.box(ui_tree::fl_boxtype_i(value));"
+        },
+        "bg.colour":{
+            "type":"color",
+            "alias": ["bg.color"],
+            "description": "Colour for both relaxed and selected states",
+            "code": "w.color(computed);w.selection_color(computed);"
+        },
+        "bg.colour.relaxed":{
+            "type":"color",
+            "alias": ["bg.color.relaxed"],
+            "description": "Colour for the relaxed state",
+            "code": "w.color(computed);"
+        },
+        "bg.colour.selected":{
+            "type":"color",
+            "alias": ["bg.color.selected"],
+            "description": "Colour for the selected state",
+            "code": "w.selection_color(computed);"
+        },
+        "on.callback":{
+            "type":"raw",
+            "subtype": "$symbol",
+            "description": "Empty string to unset.",
+            "code": "if(strcmp(value,\"\")==0)w.callback((Fl_Callback*)nullptr);else{auto result = that->resolve_symbol(value);if(result.symbol.symbol==nullptr){vs_log(severety_t::CONTINUE,that,\"Unable to find symbol `%s` for callback.\",value);}else{ui_callback_t* payload = new ui_callback_t();payload->caller=that;payload->sym=result;w.callback(ui_callback_handler,payload,true);}"
+        }
+    },
+    "computed":{}
+}
