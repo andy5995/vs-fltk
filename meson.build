@@ -155,8 +155,6 @@ vs_fltk = shared_library(
         './src/ui-frame.cpp',
         './src/ui.cpp',
         './src/ui-base.cpp',
-        './src/ui.template-builders.cpp', #TODO: Deprecate
-        './src/ui.props-dispatchers.cpp', #TODO: Deprecate
 
         './src/xml2native.cpp',
 

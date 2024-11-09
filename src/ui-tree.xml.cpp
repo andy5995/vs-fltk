@@ -239,25 +239,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
 
     return;
   }
-  //GROUP
-  else if(strcmp(root.name(),"group")==0){
-    auto tmp = build_base_widget<ui<Fl_Group>>(root);
-    tmp->set_access(frame_access_t::PUBLIC);
-    root_ui = tmp;
-    for(auto& i : root.children()){_build(i,root_ui);}
-    tmp->widget().end();
-
-    return;
-  }
-    //GROUP
-  /*else if(strcmp(root.name(),"namespace")==0){
-    auto tmp = build_base_widget<ui_namespace>(root);
-    tmp->set_access(frame_access_t::PUBLIC);
-    root_ui = tmp;
-    for(auto& i : root.children()){_build(i,root_ui);}
-    //tmp->widget().end();
-    return;
-  }*/
+  //NAMESPACE
   else if(strcmp(root.name(),"namespace")==0){
     auto tmp = build_base_widget<ui_namespace>(root);
     tmp->set_access(frame_access_t::PUBLIC);
@@ -291,9 +273,6 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
 
   }
   else if (strcmp(root.name(),"component")==0){}
-
-  //Basic widgets
-  mkLeafWidget(,input,ui<Fl_Input>)
 
 #   if __has_include("./ui.xml-widgets.autogen.cpp")
 #   include "./ui.xml-widgets.autogen.cpp"
