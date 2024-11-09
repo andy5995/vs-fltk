@@ -30,6 +30,6 @@ std::tuple<resolve_path::reason_t::t,cache::buffer_t, scoped_rpath_t> fetcher(re
  * @param preserve if true, this entry should be preserved after the build process is done
  * @return std::tuple<resolve_path::reason_t::t,cache::xml_tree_t, scoped_rpath_t> the return code, a buffer and the new base path derived from src
  */
-std::tuple<resolve_path::reason_t::t,pugi::xml_document, scoped_rpath_t> fetcher_xml(resolve_path& base, resolve_path::from_t scope,const char* src, bool promote=false, bool preserve=false);
+std::tuple<resolve_path::reason_t::t,const pugi::xml_document* , scoped_rpath_t> fetcher_xml(resolve_path& base, resolve_path::from_t scope,const char* src, bool promote=false, bool preserve=false);
 
 }

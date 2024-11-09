@@ -54,7 +54,7 @@ std::tuple<resolve_path::reason_t::t,cache::buffer_t, scoped_rpath_t> fetcher(re
     else return {ret.first,{nullptr,0},ret.second};
 }
 
-std::tuple<resolve_path::reason_t::t,pugi::xml_document, scoped_rpath_t> fetcher_xml(resolve_path& base, resolve_path::from_t from,const char* src, bool promote, bool preserve){
+std::tuple<resolve_path::reason_t::t,const pugi::xml_document*, scoped_rpath_t> fetcher_xml(resolve_path& base, resolve_path::from_t from,const char* src, bool promote, bool preserve){
     //TODO: implement
 }
 
