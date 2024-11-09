@@ -100,11 +100,11 @@ int ${data.ns}_${data.name}:: _get_computed(${data.ns}_${data.name} * that, cons
 `;
 
     let parser_selector =
-        data.type === 'leaf' ? `mkLeafWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
-            data.type === 'node' ? `mkNodeWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name}) ` :
-                data.type === 'container' ? `mkContainerWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
-                    data.type === 'slot' ? `mkSlotWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
-                        data.type === 'slot-contaiener' ? `mkSlotContainerWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` : `sss`;
+        data.type === 'leaf' ? `mkNSLeafWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
+            data.type === 'node' ? `mkNSNodeWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name}) ` :
+                data.type === 'container' ? `mkNSContainerWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
+                    data.type === 'slot' ? `mkNSSlotWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
+                        data.type === 'slot-contaiener' ? `mkNSSlotContainerWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` : `sss`;
 
     return [class_decl, class_impl, parser_selector]
 }

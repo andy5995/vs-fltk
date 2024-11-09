@@ -37,26 +37,40 @@
 //TODO: Avoid parsing its head                                                 
 #define mkLeafWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$name)==0){build_base_widget<$class_name>(root,root_ui); }                                                  
 
+#define mkNSNodeWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$ns ":" #$name)==0){\
+  auto t=build_base_widget<$class_name>(root,root_ui);\
+  t->set_type(frame_type_t::NODE);\
+  root_ui = t;\
+  for(auto& i : root.children()){_build(i,root_ui);}\
+  t->widget().end();\
+} 
+
+#define mkNSLeafWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$ns ":" #$name)==0){\
+  build_base_widget<$class_name>(root,root_ui);\
+}                                                  
+
+
 namespace vs{
 
 void ui_xml_tree::log(int severety, const void* _ctx, const char* str, ...){
-    static const char* severity_table[] = {
+  static const char* severity_table[] = {
     "\033[34;1m[INFO]\033[0m     : ",
     "\033[32;1m[OK]\033[0m       : ",
     "\033[33;1m[WARNING]\033[0m  : ",
     "\033[37;1m[CONTINUE]\033[0m : ",
     "\033[31;1m[PANIC]\033[0m    : ",
   };
-    const pugi::xml_node& ctx = *(const pugi::xml_node*)_ctx;
-    std::string rstr = std::string("\n")+std::string(severity_table[(int)severety%5]) + std::string(str) + " @ [\033[93;3m" + (_ctx!=nullptr?ctx.path():"???") + "\033[0m]";
-    
-    va_list args;
-    va_start(args, str);
-    vfprintf(log_device,rstr.c_str(), args);
-    va_end(args);
+  
+  const pugi::xml_node& ctx = *(const pugi::xml_node*)_ctx;
+  std::string rstr = std::string("\n")+std::string(severity_table[(int)severety%5]) + std::string(str) + " @ [\033[93;3m" + (_ctx!=nullptr?ctx.path():"???") + "\033[0m]";
+  
+  va_list args;
+  va_start(args, str);
+  vfprintf(log_device,rstr.c_str(), args);
+  va_end(args);
 
-    fflush(stdout);
-  }
+  fflush(stdout);
+}
 
 
 //General XML loader for apps and components.
@@ -144,159 +158,25 @@ int ui_xml_tree::build(){
   else base = caller_ui_node;
 
   _build(doc.child(is_app?"app":"component"),is_app?base:caller_ui_node);
-  
+
   if(is_app)root=base;
   else root = nullptr;
   return 0;
 }
 
 void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
-    //std::cout<<root.name()<<root.text()<<root.value()<<'\n';
-    //USE
-    if(strcmp(root.name(),"use")==0){
-      const auto& src =root.attribute("src");
-      if(src.empty()){
-        log(severety_t::CONTINUE,root,"<use/> must have a source");
-      }
-      else{
-        log(severety_t::INFO,root,"Loading component %s", src.as_string()); //TODO: How is it possible that this shows file:// in place of the actual one?
-        ui_xml_tree component_tree; 
-        if(component_tree.load(src.as_string(),false,&root,root_ui,&local, policies)!=0){
-          log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", src);
-        }
-        else{
-          component_tree.build();
-          nodes.insert(nodes.end(),component_tree.nodes.begin(),component_tree.nodes.end());
-          component_tree.nodes.clear();
-          return;
-        }
-      }
-
-      //Collector of all failures
-      const auto& error =root.child("on.load-fail");
-      if(!error.empty()){
-        _build(error,root_ui);
-        return;
-      }
-      return;
+  //std::cout<<root.name()<<root.text()<<root.value()<<'\n';
+  //USE
+  if(strcmp(root.name(),"use")==0){
+    const auto& src =root.attribute("src");
+    if(src.empty()){
+      log(severety_t::CONTINUE,root,"<use/> must have a source");
     }
-    //IMPORT
-    //TODO: restrict to direct children of the base app/component
-    else if(strcmp(root.name(),"import")==0){
-      const auto& src = root.attribute("src").as_string(nullptr);
-      const auto& as = root.attribute("as").as_string(nullptr);
-
-      if(src!=nullptr){
-        if(as!=nullptr){
-          this->imports.emplace(as,src);
-        }
-      }
-    }    
-    //SLOT
-    else if(strcmp(root.name(),"slot")==0){
-      //Copy the content provided by the parent in place of the slot, or render its content if the parent has none.
-      const auto& name = root.attribute("tag").as_string("default");
-      //The default slot.
-      if(this->caller_node!=nullptr){
-        const auto& match = this->caller_node->find_child([&name](const pugi::xml_node& node){
-          return (strcmp(node.name(),"inject")==0) && (strcmp(node.attribute("tag").as_string("default"),name)==0);
-          });
-          
-        if(!match.empty()){
-          for(auto& i : match.children()){_build(i,root_ui);}
-          return;
-        }
-      }
-      //Catch all slot not found.
-      if(!root.attribute("required").empty()){
-        log(severety_t::WARNING,root,"The `%s` slot was set as required but no override available.", name);
-      }
-      for(auto& i : root.children()){_build(i,root_ui);}
-      
-    }
-    //WINDOW
-    else if(strcmp(root.name(),"window")==0){
-      auto tmp = build_base_widget<ui<Fl_Window>>(root,root_ui);
-      tmp->set_type(frame_type_t::NODE);
-
-      root_ui = tmp;
-      for(auto& i : root.children()){_build(i,root_ui);}
-      tmp->widget().end();
-      tmp->widget().show();
-      return;
-    }
-    //VIEWPORT
-    else if(strcmp(root.name(),"viewport")==0){
-      auto tmp = build_base_widget<ui_viewport>(root,root_ui);
-      root_ui = tmp;
-      for(auto& i : root.children()){_build(i,root_ui);}
-      tmp->widget().end();
-
-      return;
-    }
-    //GROUP
-    else if(strcmp(root.name(),"group")==0){
-      auto tmp = build_base_widget<ui<Fl_Group>>(root);
-      tmp->set_access(frame_access_t::PUBLIC);
-      root_ui = tmp;
-      for(auto& i : root.children()){_build(i,root_ui);}
-      tmp->widget().end();
-
-      return;
-    }
-      //GROUP
-    else if(strcmp(root.name(),"namespace")==0){
-      auto tmp = build_base_widget<ui_namespace>(root);
-      tmp->set_access(frame_access_t::PUBLIC);
-      root_ui = tmp;
-      for(auto& i : root.children()){_build(i,root_ui);}
-      tmp->widget().end();
-
-      return;
-    }
-    else if (strcmp(root.name(),"app")==0){
-
-      _build_base_widget_extended_attr(root, (ui_base *)root_ui);
-    
-      //TODO: Optimize copies
-      smap<std::string> props;
-
-      for (const auto &i : root.attributes()) {
-        props.insert_or_assign(i.name(), i.value());
-      }
-
-      for (const auto &i : props) {
-        int v = root_ui->apply_prop(i.first.data(), i.second.data());
-        if (v == 1) {
-          log(severety_t::WARNING, root, "Unable to use property `%s` on ",
-              i.first.data());
-        } else if (v == 2) {
-          log(severety_t::WARNING, root,
-              "Unable to assign value `%s` to property `%s on", i.second.data(),
-              i.first.data());
-        }
-      }
-
-    }
-    else if (strcmp(root.name(),"component")==0){}
-
-    //Basic widgets
-    mkLeafWidget(,button,ui<Fl_Button>)
-    mkLeafWidget(,label,ui<Fl_Box>)
-    mkLeafWidget(,input,ui<Fl_Input>)
-    mkLeafWidget(,button.toggle,ui<Fl_Toggle_Button>)
-
-#   if __has_include("./ui.xml-widgets.autogen.cpp")
-#   include "./ui.xml-widgets.autogen.cpp"
-#   endif
-
-
-    else if(imports.contains(root.name())){
-      auto it = imports.find(root.name());
-      log(severety_t::INFO,root,"Loading component %s", it->second.c_str()); //TODO: How is it possible that this shows file:// in place of the actual one?
+    else{
+      log(severety_t::INFO,root,"Loading component %s", src.as_string()); //TODO: How is it possible that this shows file:// in place of the actual one?
       ui_xml_tree component_tree; 
-      if(component_tree.load(it->second.c_str(),false,&root,root_ui,&local, policies)!=0){
-        log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", it->second.c_str());
+      if(component_tree.load(src.as_string(),false,&root,root_ui,&local, policies)!=0){
+        log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", src);
       }
       else{
         component_tree.build();
@@ -304,210 +184,348 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
         component_tree.nodes.clear();
         return;
       }
-
-      //Collector of all failures
-      const auto& error =root.child("on.load-fail");
-      if(!error.empty()){
-        _build(error,root_ui);
-        return;
-      }
-
     }
-    else{return;}
 
-    for(auto& i : root.children()){_build(i,root_ui);}
+    //Collector of all failures
+    const auto& error =root.child("on.load-fail");
+    if(!error.empty()){
+      _build(error,root_ui);
+      return;
+    }
     return;
   }
+  //IMPORT
+  //TODO: restrict to direct children of the base app/component
+  else if(strcmp(root.name(),"import")==0){
+    const auto& src = root.attribute("src").as_string(nullptr);
+    const auto& as = root.attribute("as").as_string(nullptr);
 
-  void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, ui_base* current) {
-
-    for (auto &root : root.children()) {
-
-      // MIXIN
-      if (strcmp(root.name(), "mixin") == 0) {
-        smap<std::string> tmp;
-        for (const auto &i : root.attributes()) {
-          tmp.insert_or_assign(i.name(), i.value());
-        }
-        {auto it = tmp.find("name");if (it != tmp.end())tmp.erase(it);}
-        {auto it = tmp.find("frame.type");if (it != tmp.end())tmp.erase(it);}
-        {auto it = tmp.find("frame.access");if (it != tmp.end())tmp.erase(it);}
-        {auto it = tmp.find("frame.mode");if (it != tmp.end())tmp.erase(it);}
+    if(src!=nullptr){
+      if(as!=nullptr){
+        this->imports.emplace(as,src);
+      }
+    }
+  }    
+  //SLOT
+  else if(strcmp(root.name(),"slot")==0){
+    //Copy the content provided by the parent in place of the slot, or render its content if the parent has none.
+    const auto& name = root.attribute("tag").as_string("default");
+    //The default slot.
+    if(this->caller_node!=nullptr){
+      const auto& match = this->caller_node->find_child([&name](const pugi::xml_node& node){
+        return (strcmp(node.name(),"inject")==0) && (strcmp(node.attribute("tag").as_string("default"),name)==0);
+        });
         
-        current->add_mixin(root.attribute("name").as_string(""), tmp);
-        // Always remove the `name` attribute from mixins.
+      if(!match.empty()){
+        for(auto& i : match.children()){_build(i,root_ui);}
+        return;
+      }
+    }
+    //Catch all slot not found.
+    if(!root.attribute("required").empty()){
+      log(severety_t::WARNING,root,"The `%s` slot was set as required but no override available.", name);
+    }
+    for(auto& i : root.children()){_build(i,root_ui);}
+    
+  }
+  //WINDOW
+  else if(strcmp(root.name(),"window")==0){
+    auto tmp = build_base_widget<ui<Fl_Window>>(root,root_ui);
+    tmp->set_type(frame_type_t::NODE);
+
+    root_ui = tmp;
+    for(auto& i : root.children()){_build(i,root_ui);}
+    tmp->widget().end();
+    tmp->widget().show();
+    return;
+  }
+  //VIEWPORT
+  else if(strcmp(root.name(),"viewport")==0){
+    auto tmp = build_base_widget<ui_viewport>(root,root_ui);
+    root_ui = tmp;
+    for(auto& i : root.children()){_build(i,root_ui);}
+    tmp->widget().end();
+
+    return;
+  }
+  //GROUP
+  else if(strcmp(root.name(),"group")==0){
+    auto tmp = build_base_widget<ui<Fl_Group>>(root);
+    tmp->set_access(frame_access_t::PUBLIC);
+    root_ui = tmp;
+    for(auto& i : root.children()){_build(i,root_ui);}
+    tmp->widget().end();
+
+    return;
+  }
+    //GROUP
+  else if(strcmp(root.name(),"namespace")==0){
+    auto tmp = build_base_widget<ui_namespace>(root);
+    tmp->set_access(frame_access_t::PUBLIC);
+    root_ui = tmp;
+    for(auto& i : root.children()){_build(i,root_ui);}
+    tmp->widget().end();
+
+    return;
+  }
+  else if (strcmp(root.name(),"app")==0){
+
+    _build_base_widget_extended_attr(root, (ui_base *)root_ui);
+  
+    //TODO: Optimize copies
+    smap<std::string> props;
+
+    for (const auto &i : root.attributes()) {
+      props.insert_or_assign(i.name(), i.value());
+    }
+
+    for (const auto &i : props) {
+      int v = root_ui->apply_prop(i.first.data(), i.second.data());
+      if (v == 1) {
+        log(severety_t::WARNING, root, "Unable to use property `%s` on ",
+            i.first.data());
+      } else if (v == 2) {
+        log(severety_t::WARNING, root,
+            "Unable to assign value `%s` to property `%s on", i.second.data(),
+            i.first.data());
+      }
+    }
+
+  }
+  else if (strcmp(root.name(),"component")==0){}
+
+  //Basic widgets
+  mkLeafWidget(,button,ui<Fl_Button>)
+  mkLeafWidget(,label,ui<Fl_Box>)
+  mkLeafWidget(,input,ui<Fl_Input>)
+  mkLeafWidget(,button.toggle,ui<Fl_Toggle_Button>)
+
+#   if __has_include("./ui.xml-widgets.autogen.cpp")
+#   include "./ui.xml-widgets.autogen.cpp"
+#   endif
+
+
+  else if(imports.contains(root.name())){
+    auto it = imports.find(root.name());
+    log(severety_t::INFO,root,"Loading component %s", it->second.c_str()); //TODO: How is it possible that this shows file:// in place of the actual one?
+    ui_xml_tree component_tree; 
+    if(component_tree.load(it->second.c_str(),false,&root,root_ui,&local, policies)!=0){
+      log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", it->second.c_str());
+    }
+    else{
+      component_tree.build();
+      nodes.insert(nodes.end(),component_tree.nodes.begin(),component_tree.nodes.end());
+      component_tree.nodes.clear();
+      return;
+    }
+
+    //Collector of all failures
+    const auto& error =root.child("on.load-fail");
+    if(!error.empty()){
+      _build(error,root_ui);
+      return;
+    }
+
+  }
+  else{return;}
+
+  for(auto& i : root.children()){_build(i,root_ui);}
+  return;
+}
+
+void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, ui_base* current) {
+
+  for (auto &root : root.children()) {
+
+    // MIXIN
+    if (strcmp(root.name(), "mixin") == 0) {
+      smap<std::string> tmp;
+      for (const auto &i : root.attributes()) {
+        tmp.insert_or_assign(i.name(), i.value());
+      }
+      {auto it = tmp.find("name");if (it != tmp.end())tmp.erase(it);}
+      {auto it = tmp.find("frame.type");if (it != tmp.end())tmp.erase(it);}
+      {auto it = tmp.find("frame.access");if (it != tmp.end())tmp.erase(it);}
+      {auto it = tmp.find("frame.mode");if (it != tmp.end())tmp.erase(it);}
+      
+      current->add_mixin(root.attribute("name").as_string(""), tmp);
+      // Always remove the `name` attribute from mixins.
+    }
+
+    // SCRIPT
+    else if (strcmp(root.name(), "script") == 0) {
+      //Check uniqueness
+      current->mk_frame();
+      if(current->get_local_frame()->has_script()){
+        log(severety_t::WARNING, root, "Only one `script` is allowed per frame.");
+        continue;
       }
 
-      // SCRIPT
-      else if (strcmp(root.name(), "script") == 0) {
-        //Check uniqueness
-        current->mk_frame();
-        if(current->get_local_frame()->has_script()){
-          log(severety_t::WARNING, root, "Only one `script` is allowed per frame.");
+      bool is_module=false;
+
+      //Check if it is a module or single user; if module check for cache and use it.
+      if(strcmp(root.attribute("type").as_string(""),"module")==0){
+        is_module=true;
+        auto filename = this->fullname.as_string();
+
+        auto found = globals::memstorage.get({filename.c_str(),this->local_unique_counter+1,cache::resource_t::SCRIPT});
+        if(found!=nullptr){
+          current->set_mode(((cache::script_t*)found->ref.get())->mode);
+          current->attach_script(((cache::script_t*)found->ref.get())->script,is_module);
+          current->set_symbols(((cache::script_t*)found->ref.get())->symbols);
+
+          //All done, precomputed and rightfully applied!
           continue;
         }
+      }
 
-        bool is_module=false;
-
-        //Check if it is a module or single user; if module check for cache and use it.
-        if(strcmp(root.attribute("type").as_string(""),"module")==0){
-          is_module=true;
-          auto filename = this->fullname.as_string();
-
-          auto found = globals::memstorage.get({filename.c_str(),this->local_unique_counter+1,cache::resource_t::SCRIPT});
-          if(found!=nullptr){
-            current->set_mode(((cache::script_t*)found->ref.get())->mode);
-            current->attach_script(((cache::script_t*)found->ref.get())->script,is_module);
-            current->set_symbols(((cache::script_t*)found->ref.get())->symbols);
-
-            //All done, precomputed and rightfully applied!
-            continue;
-          }
+      //Information for linking
+      auto link_with = doc.first_child().attribute("link-with").as_string(nullptr);
+      std::string tmp_link;
+      if(link_with!=nullptr){
+        resolve_path resolver(policies,globals::path_env,local);
+        auto computed_path = resolver(resolve_path::from_t::NATIVE_CODE,link_with);
+        if(computed_path.first==resolve_path::reason_t::OK){
+          //TODO: For now I am assuming it is on the fs. I should resolve it to tmp if remote for example
+          tmp_link=computed_path.second.location;
+          log(severety_t::INFO, root, "Requested linking with `%s`", link_with);
         }
+      }
 
-        //Information for linking
-        auto link_with = doc.first_child().attribute("link-with").as_string(nullptr);
-        std::string tmp_link;
-        if(link_with!=nullptr){
-          resolve_path resolver(policies,globals::path_env,local);
-          auto computed_path = resolver(resolve_path::from_t::NATIVE_CODE,link_with);
-          if(computed_path.first==resolve_path::reason_t::OK){
-            //TODO: For now I am assuming it is on the fs. I should resolve it to tmp if remote for example
-            tmp_link=computed_path.second.location;
-            log(severety_t::INFO, root, "Requested linking with `%s`", link_with);
+
+      //I am ignoring the one of the tree. Mode is now widget based and not component based.
+      auto mode =current->get_local_frame()->get_mode();
+      if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::VOID) {          
+        const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
+        if (strcmp(lang, "c") == 0) {
+          auto compiler = pipelines::tcc_c_pipeline_xml(true, is_module?nullptr:current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
+          if(compiler!=nullptr){
+            current->set_mode(frame_mode_t::NATIVE);
+            current->attach_script(compiler,is_module);
+            auto symbols = pipelines::tcc_c_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::tcc_log_symbol_func_xml);
+            current->set_symbols(symbols);
+            if(is_module){
+              auto tmp = std::make_shared<cache::script_t>(cache::script_t{
+                compiler, symbols, frame_mode_t::NATIVE
+              });
+              globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
+              local_unique_counter++;
+            }
           }
+          continue;
         }
-
-
-        //I am ignoring the one of the tree. Mode is now widget based and not component based.
-        auto mode =current->get_local_frame()->get_mode();
-        if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::VOID) {          
-          const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
-          if (strcmp(lang, "c") == 0) {
-            auto compiler = pipelines::tcc_c_pipeline_xml(true, is_module?nullptr:current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
+      }
+      if (mode == frame_mode_t::QUICKJS || mode == frame_mode_t::VOID) {
+        const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::QUICKJS?"js":"");
+        if (strcmp(lang, "js") == 0) {
+          auto compiler = pipelines::qjs_js_pipeline_xml(true, is_module?nullptr:current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
             if(compiler!=nullptr){
-              current->set_mode(frame_mode_t::NATIVE);
+              current->set_mode(frame_mode_t::QUICKJS);
               current->attach_script(compiler,is_module);
-              auto symbols = pipelines::tcc_c_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::tcc_log_symbol_func_xml);
+              auto symbols = pipelines::qjs_js_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::qjs_log_symbol_func_xml);
               current->set_symbols(symbols);
               if(is_module){
                 auto tmp = std::make_shared<cache::script_t>(cache::script_t{
-                  compiler, symbols, frame_mode_t::NATIVE
+                  compiler, symbols, frame_mode_t::QUICKJS
                 });
                 globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
                 local_unique_counter++;
               }
             }
-            continue;
-          }
+          continue;
         }
-        if (mode == frame_mode_t::QUICKJS || mode == frame_mode_t::VOID) {
-          const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::QUICKJS?"js":"");
-          if (strcmp(lang, "js") == 0) {
-            auto compiler = pipelines::qjs_js_pipeline_xml(true, is_module?nullptr:current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
-              if(compiler!=nullptr){
-                current->set_mode(frame_mode_t::QUICKJS);
-                current->attach_script(compiler,is_module);
-                auto symbols = pipelines::qjs_js_pipeline_apply(compiler, current, (void*)&root, (void(*)(void*,const char*, const char*))pipelines::qjs_log_symbol_func_xml);
-                current->set_symbols(symbols);
-                if(is_module){
-                  auto tmp = std::make_shared<cache::script_t>(cache::script_t{
-                    compiler, symbols, frame_mode_t::QUICKJS
-                  });
-                  globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
-                  local_unique_counter++;
-                }
-             }
-            continue;
-          }
+      }
+      {
+          log(severety_t::CONTINUE, root,
+              "Unsupported language `%s` for frame type `%i`. The script will not be handled.",
+              root.attribute("lang").as_string(), mode);
+      }
+    }
+  }
+}
+
+
+  template <std::derived_from<ui_base> T>
+  T *ui_xml_tree::build_base_widget(const pugi::xml_node &root, ui_base* root_ui) {
+    auto *current = new T(root_ui);
+    nodes.push_back(current);
+
+    {
+      const auto& tmp = root.attribute("name");
+      if (!tmp.empty()) {current->set_name(tmp.as_string());}
+    }
+    {
+      const auto& tmp = root.attribute("frame.mode");
+      if (!tmp.empty()) {
+        if(strcmp(tmp.as_string(),"native")==0)current->set_mode(frame_mode_t::NATIVE);
+        else if(strcmp(tmp.as_string(),"quickjs")==0)current->set_mode(frame_mode_t::QUICKJS);
+        else if(strcmp(tmp.as_string(),"lua")==0)current->set_mode(frame_mode_t::LUA);
+        else if(strcmp(tmp.as_string(),"wasm")==0)current->set_mode(frame_mode_t::WASM);
+        else if(strcmp(tmp.as_string(),"external")==0)current->set_mode(frame_mode_t::EXTERNAL);
+        else{current->set_mode(frame_mode_t::VOID);}
+      }
+    }
+
+    _build_base_widget_extended_attr(root, (ui_base *)current);
+    
+
+    if(strcmp(root.parent().name(),"app")==0){
+      current->reparent_frame(root_ui);
+    }
+
+    //TODO: Optimize copies
+    smap<std::string> props = current->compute_refresh_style(root.attribute("mixin").as_string(""));
+    /*{auto tmp = current->compile_mixins((std::string("+")+root.name()).data()); for(const auto& i: tmp)props.insert_or_assign(i.first,std::move(i.second));}
+
+      const auto &self_mixin = (root.find_child([](const auto &i) {
+        return (strcmp(i.name(), "mixin") == 0) &&
+              (strcmp(i.attribute("name").as_string(""), "") == 0);
+      }));
+      if (!self_mixin.empty()) {
+        for (const auto &i : self_mixin.attributes()) {
+          props.insert_or_assign(i.name(), i.value());
         }
         {
-            log(severety_t::CONTINUE, root,
-                "Unsupported language `%s` for frame type `%i`. The script will not be handled.",
-                root.attribute("lang").as_string(), mode);
+          auto it = props.find("name");
+          if (it != props.end())
+            props.erase(it);
         }
+    }
+
+    {auto tmp = current->compile_mixins(root.attribute("mixin").as_string("")); for(const auto& i: tmp)props.insert_or_assign(i.first,std::move(i.second));}
+    */
+
+    //For components add to its direct children the attributes coming from above
+    if(strcmp(root.parent().name(),"component")==0){
+      for (const auto &i : this->caller_node->attributes()) {
+        //Exclude src as it was consumed in here.
+        if(strcmp(i.name(),"src")!=0)props.insert_or_assign(i.name(), i.value());
       }
     }
-  }
 
-
-    template <std::derived_from<ui_base> T>
-    T *ui_xml_tree::build_base_widget(const pugi::xml_node &root, ui_base* root_ui) {
-      auto *current = new T(root_ui);
-      nodes.push_back(current);
-
-      {
-        const auto& tmp = root.attribute("name");
-        if (!tmp.empty()) {current->set_name(tmp.as_string());}
-      }
-      {
-        const auto& tmp = root.attribute("frame.mode");
-        if (!tmp.empty()) {
-          if(strcmp(tmp.as_string(),"native")==0)current->set_mode(frame_mode_t::NATIVE);
-          else if(strcmp(tmp.as_string(),"quickjs")==0)current->set_mode(frame_mode_t::QUICKJS);
-          else if(strcmp(tmp.as_string(),"lua")==0)current->set_mode(frame_mode_t::LUA);
-          else if(strcmp(tmp.as_string(),"wasm")==0)current->set_mode(frame_mode_t::WASM);
-          else if(strcmp(tmp.as_string(),"external")==0)current->set_mode(frame_mode_t::EXTERNAL);
-          else{current->set_mode(frame_mode_t::VOID);}
-        }
-      }
-
-      _build_base_widget_extended_attr(root, (ui_base *)current);
-      
-  
-      if(strcmp(root.parent().name(),"app")==0){
-        current->reparent_frame(root_ui);
-      }
-
-      //TODO: Optimize copies
-      smap<std::string> props = current->compute_refresh_style(root.attribute("mixin").as_string(""));
-      /*{auto tmp = current->compile_mixins((std::string("+")+root.name()).data()); for(const auto& i: tmp)props.insert_or_assign(i.first,std::move(i.second));}
-
-       const auto &self_mixin = (root.find_child([](const auto &i) {
-         return (strcmp(i.name(), "mixin") == 0) &&
-                (strcmp(i.attribute("name").as_string(""), "") == 0);
-       }));
-       if (!self_mixin.empty()) {
-         for (const auto &i : self_mixin.attributes()) {
-           props.insert_or_assign(i.name(), i.value());
-         }
-         {
-           auto it = props.find("name");
-           if (it != props.end())
-             props.erase(it);
-         }
-      }
-
-      {auto tmp = current->compile_mixins(root.attribute("mixin").as_string("")); for(const auto& i: tmp)props.insert_or_assign(i.first,std::move(i.second));}
-      */
-
-      //For components add to its direct children the attributes coming from above
-      if(strcmp(root.parent().name(),"component")==0){
-        for (const auto &i : this->caller_node->attributes()) {
-          //Exclude src as it was consumed in here.
-          if(strcmp(i.name(),"src")!=0)props.insert_or_assign(i.name(), i.value());
-        }
-      }
-
-      
-      for (const auto &i : root.attributes()) {
-        props.insert_or_assign(i.name(), i.value());
-      }
-
-      for (const auto &i : props) {
-        int v = current->apply_prop(i.first.data(), i.second.data());
-        if (v == 1) {
-          log(severety_t::WARNING, root, "Unable to use property `%s` on ",
-              i.first.data());
-        } else if (v == 2) {
-          log(severety_t::WARNING, root,
-              "Unable to assign value `%s` to property `%s on", i.second.data(),
-              i.first.data());
-        }
-      }
-      return current;
+    
+    for (const auto &i : root.attributes()) {
+      props.insert_or_assign(i.name(), i.value());
     }
-  }
 
-  #undef mkNodeWidget
-  #undef mkLeafWidget
+    for (const auto &i : props) {
+      int v = current->apply_prop(i.first.data(), i.second.data());
+      if (v == 1) {
+        log(severety_t::WARNING, root, "Unable to use property `%s` on ",
+            i.first.data());
+      } else if (v == 2) {
+        log(severety_t::WARNING, root,
+            "Unable to assign value `%s` to property `%s on", i.second.data(),
+            i.first.data());
+      }
+    }
+    return current;
+  }
+}
+
+#undef mkNodeWidget
+#undef mkLeafWidget
+
+#define mkNSNodeWidget
+
+#define mkNSLeafWidget
