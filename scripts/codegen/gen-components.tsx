@@ -26,6 +26,7 @@ function make_type_code(type: Static<typeof type_schema>, subtype: string, code:
 
 function gen_cpp(data: Static<typeof widget_schema>) {
     const cextends = data.extends==null?null:data.extends.split(':');
+    const cppname = `${data.ns}_${data.name?.replaceAll('.','_')}`;
 
     let class_decl = data.use_main_header === null ? `
 #pragma once
@@ -37,21 +38,21 @@ ${data.headers ? data.headers.map(x => `#include <${x}>\n`) : ``}
 
 namespace vs{
 
-class ${data.ns}_${data.name} : public ${data.codegen.extends}{
+class ${cppname} : public ${data.codegen.extends}{
     public:
         template<typename... Args>
-        ${data.ns}_${data.name}(ui_base* p,Args ...w):${data.codegen.extends}(p,w...){}
+        ${cppname}(ui_base* p,Args ...w):${data.codegen.extends}(p,w...){}
         virtual frame_type_t default_frame_type() override {return frame_type_t::LEAF;}
         virtual const char* class_name() override{return "${data.ns}:${data.name}";}
 
-        virtual ~${data.ns}_${data.name}(){}
+        virtual ~${cppname}(){}
 
-        virtual int apply_prop(const char* prop, const char* value) override {return ${data.ns}_${data.name}::_apply_prop(this,prop,value);}
-        virtual int get_computed(const char* prop, const char ** value) override {return ${data.ns}_${data.name}::_get_computed(this,prop,value);};
+        virtual int apply_prop(const char* prop, const char* value) override {return ${cppname}::_apply_prop(this,prop,value);}
+        virtual int get_computed(const char* prop, const char ** value) override {return ${cppname}::_get_computed(this,prop,value);};
 
     public:
-        static int _apply_prop(${data.ns}_${data.name}* that, const char* prop, const char* value);
-        static int _get_computed(${data.ns}_${data.name}* that, const char* prop, const char** value);
+        static int _apply_prop(${cppname}* that, const char* prop, const char* value);
+        static int _get_computed(${cppname}* that, const char* prop, const char** value);
 };
 
 }
@@ -65,7 +66,7 @@ class ${data.ns}_${data.name} : public ${data.codegen.extends}{
 
 namespace vs{
 
-int ${data.ns}_${data.name}::_apply_prop(${data.ns}_${data.name}* that, const char* prop, const char* value){
+int ${cppname}::_apply_prop(${cppname}* that, const char* prop, const char* value){
     auto& w = that->widget();
     bool ok = true;
     if(false){}
@@ -87,7 +88,7 @@ int ${data.ns}_${data.name}::_apply_prop(${data.ns}_${data.name}* that, const ch
     ${cextends === null ? `else {return 2;}\nreturn ok?0:1;` : `if(!ok) return 1; else return ${data.codegen.props_tail ?? `${cextends[0]}_${cextends[1]}`}::_apply_prop((${data.codegen.props_tail ?? `${cextends[0]}_${cextends[1]}`}*)that,prop,value);`}
 }
 
-int ${data.ns}_${data.name}:: _get_computed(${data.ns}_${data.name} * that, const char* prop, const char** value) {
+int ${cppname}:: _get_computed(${cppname} * that, const char* prop, const char** value) {
     auto& w = that->widget();
     bool ok = true;
     if(false){}
@@ -109,11 +110,11 @@ int ${data.ns}_${data.name}:: _get_computed(${data.ns}_${data.name} * that, cons
 
     let parser_selector =
         data.usable!=false ?
-        data.type === 'leaf' ? `mkNSLeafWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
-        data.type === 'node' ? `mkNSNodeWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name}) ` :
-        data.type === 'container' ? `mkNSContainerWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
-        data.type === 'slot' ? `mkNSSlotWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
-        data.type === 'slot-contaiener' ? `mkNSSlotContainerWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` : 
+        data.type === 'leaf' ? `mkNSLeafWidget(${data.ns}, ${data.name}, ${cppname})` :
+        data.type === 'node' ? `mkNSNodeWidget(${data.ns}, ${data.name}, ${cppname}) ` :
+        data.type === 'container' ? `mkNSContainerWidget(${data.ns}, ${data.name}, ${cppname})` :
+        data.type === 'slot' ? `mkNSSlotWidget(${data.ns}, ${data.name}, ${cppname})` :
+        data.type === 'slot-contaiener' ? `mkNSSlotContainerWidget(${data.ns}, ${data.name}, ${cppname})` : 
         ``:``;
     return [class_decl, class_impl, parser_selector]
 }

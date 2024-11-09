@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<app>
+<app xmlns:fl="vs.fltk">
     <fl:window box="0,0,320,240" label="Demo Counter">
-        <mixin name="+button" bg.colour="#aa3300" label.colour="#99ee4f" />
+        <mixin name="+fl:button" bg.colour="#aa3300" label.colour="#99ee4f" />
         <script lang="c">
         <![CDATA[ 
         unsigned int counter = 0;
@@ -27,10 +27,10 @@
         ]]>
         </script>
 
-        <label name="main-text" label="0" label.size="90" box="20,20,280,120" />
-        <button label="Add" on.callback="on_add" box="20,160,80,50" />
-        <button label="Remove" on.callback="on_dec" box="120,160,80,50" />
-        <button label="Console" box="220,160,80,50">
+        <fl:label name="main-text" label="0" label.size="90" box="20,20,280,120" />
+        <fl:button label="Add" on.callback="on_add" box="20,160,80,50" />
+        <fl:button label="Remove" on.callback="on_dec" box="120,160,80,50" />
+        <fl:button label="Console" box="220,160,80,50">
             <script lang="c">
             <![CDATA[ 
             void callback(){
@@ -38,6 +38,6 @@
             }
             ]]>
             </script>
-        </button>
+        </fl:button>
     </fl:window>
 </app>

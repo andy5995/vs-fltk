@@ -1,0 +1,14 @@
+{
+    "$schema": "../../commons/schemas/json-component.schema.json",
+    "description": "Toggle button element",
+    "usable": true,
+    "type": "leaf",
+    "headers": ["FL/Fl_Toggle_Button.H"],
+    "extends": "fl:button",
+    "codegen": {"extends": "ui<Fl_Toggle_Button>"},
+    "props":{
+    },
+    "computed":{
+        
+    }
+}
