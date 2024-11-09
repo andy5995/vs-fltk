@@ -16,6 +16,7 @@ import { render, JSXXML } from 'jsx-xml'
 
 function make_type_code(type: Static<typeof type_schema>, subtype: string, code: string) {
     if (type === 'raw') return code;
+    if (type === 'flag') return `bool computed; if((ok=ui_tree::h_flag(&computed,value,that))){${code}}`
     else if (type === 'color') return `uint32_t computed; if((ok=ui_tree::h_colour(&computed,value,that))){${code}}`
     else if (type === 'string') return code;
     else if (type === 'scalar-1') return `size_t computed[1]; if((ok = ui_tree::h_px(1,computed,value,that))){${code}}`

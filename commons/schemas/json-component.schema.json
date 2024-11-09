@@ -133,6 +133,10 @@
                             "anyOf": [
                                 {
                                     "type": "string",
+                                    "pattern": "^flag$"
+                                },
+                                {
+                                    "type": "string",
                                     "pattern": "^enum$"
                                 },
                                 {
@@ -204,6 +208,10 @@
                             "description": "type",
                             "default": "string",
                             "anyOf": [
+                                {
+                                    "type": "string",
+                                    "pattern": "^flag$"
+                                },
                                 {
                                     "type": "string",
                                     "pattern": "^enum$"

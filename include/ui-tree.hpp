@@ -54,6 +54,9 @@ struct ui_tree {
   static bool h_colour(uint32_t *dst, const char *expr,
                        const ui_base *env);
 
+  static bool h_flag(bool *dst, const char *expr,
+                       const ui_base *env);
+
   // virtual void load_from_path(const char* path, bool root);
   // virtual void load_from_cache(uuid_t uuid, bool root);
 

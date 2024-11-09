@@ -1,0 +1,13 @@
+{
+    "$schema": "../../commons/schemas/json-component.schema.json",
+    "description": "Pack container",
+    "usable": true,
+    "type": "node",
+    "headers": ["FL/Fl_Pack.H"],
+    "extends": "fl:group",
+    "codegen": {"extends": "ui<Fl_Pack>"},
+    "props":{
+    },
+    "computed":{   
+    }
+}

@@ -24,6 +24,7 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
 - [ ] Signal/event propagation mechanisms
 - [ ] Add special logging to generate output used by more complex tests. They must also be exposed to scripts.  
       These logs are only recorded if VS_TESTING is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test. 
+- [ ] In the root of app or components search for `xmlns` attributes, and define local namespaces based on `vs`, `vs.templ` & `vs.fltk`.
 
 ### Scripting
 - [ ] Expose path and the fetcher to embedded script at some level.

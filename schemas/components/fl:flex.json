@@ -1,0 +1,13 @@
+{
+    "$schema": "../../commons/schemas/json-component.schema.json",
+    "description": "Flex container",
+    "usable": true,
+    "type": "node",
+    "headers": ["FL/Fl_Flex.H"],
+    "extends": "fl:group",
+    "codegen": {"extends": "ui<Fl_Flex>"},
+    "props":{
+    },
+    "computed":{
+    }
+}

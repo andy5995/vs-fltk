@@ -28,6 +28,12 @@ namespace vs{
     return true;
   }
 
+  bool ui_tree::h_flag(bool* dst, const char* expr,  const ui_base* env){
+    if(strcmp(expr, "false")==0){dst[0]=false;}
+    else if(strcmp(expr,"true")==0){dst[0]=true;}
+    return false;
+  }
+
   ui_tree::~ui_tree(){
     for(auto i : nodes){
       delete i;

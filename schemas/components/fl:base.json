@@ -118,6 +118,16 @@
             "description": "Colour for the selected state",
             "code": "w.selection_color(computed);"
         },
+        "active":{
+            "type":"flag",
+            "description": "If true set active (default).",
+            "code": "if(computed)w.activate();else w.deactivate();"
+        },
+        "show":{
+            "type":"flag",
+            "description": "If true the widget is shown (default).",
+            "code": "if(computed)w.show();else w.hide();"
+        },
         "on.callback":{
             "type":"raw",
             "subtype": "$symbol",
@@ -126,5 +136,30 @@
         }
     },
     "computed":{
+        "box":{
+            "type": "scalar-4",
+            "description": "Get back the actual box of the widget",
+            "code": "/*TODO size()*/"
+        },
+        "visible":{
+            "type": "flag",
+            "description": "Get back the actual box of the widget",
+            "code": "/*TODO visible()*/"
+        },
+        "visible.recursive":{
+            "type": "flag",
+            "description": "Get back the actual box of the widget",
+            "code": "/*TODO visible.r()*/"
+        }, 
+        "active":{
+            "type": "flag",
+            "description": "Get back the actual box of the widget",
+            "code": "/*TODO active()*/"
+        }, 
+        "active.recursive":{
+            "type": "flag",
+            "description": "Get back the actual box of the widget",
+            "code": "/*TODO active_t()*/"
+        } 
     }
 }
