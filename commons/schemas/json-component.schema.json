@@ -114,6 +114,13 @@
                 }
             ]
         },
+        "skip_props": {
+            "default": [],
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
         "props": {
             "type": "object",
             "patternProperties": {

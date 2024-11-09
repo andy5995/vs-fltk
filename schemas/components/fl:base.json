@@ -5,37 +5,8 @@
     "type": "node",
     "headers": ["FL/Fl_Group.H"],
     "codegen": {"extends": "ui<Fl_Group>"},
+    "skip_props": ["name", "frame.*", "xsml", "xsml:*"],
     "props":{
-        "name":{
-            "type": "raw",
-            "description": "Not handled",
-            "code": ""
-        },
-        "frame.type":{
-            "type": "raw",
-            "description": "Not handled",
-            "code": ""
-        },
-        "frame.access":{
-            "type": "raw",
-            "description": "Not handled",
-            "code": null
-        },
-        "frame.mode":{
-            "type": "raw",
-            "description": "Not handled",
-            "code": null
-        },
-        "xsml":{
-            "type": "raw",
-            "description": "Not handled",
-            "code": null
-        },
-        "xsml:":{
-            "type": "raw",
-            "description": "Not handled. TODO: This should capture all based on xsml:prefix",
-            "code": null
-        },
         "mixin":{
             "type": "string",
             "description": "Apply mixins to this object",

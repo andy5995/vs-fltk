@@ -60,7 +60,7 @@ void ui_xml_tree::log(int severety, const void* _ctx, const char* str, ...){
     "\033[37;1m[CONTINUE]\033[0m : ",
     "\033[31;1m[PANIC]\033[0m    : ",
   };
-  
+
   const pugi::xml_node& ctx = *(const pugi::xml_node*)_ctx;
   std::string rstr = std::string("\n")+std::string(severity_table[(int)severety%5]) + std::string(str) + " @ [\033[93;3m" + (_ctx!=nullptr?ctx.path():"???") + "\033[0m]";
   
@@ -526,6 +526,5 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
 #undef mkNodeWidget
 #undef mkLeafWidget
 
-#define mkNSNodeWidget
-
-#define mkNSLeafWidget
+#undef mkNSNodeWidget
+#undef mkNSLeafWidget

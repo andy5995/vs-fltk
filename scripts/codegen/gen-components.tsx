@@ -83,6 +83,10 @@ int ${data.ns}_${data.name}:: _get_computed(${data.ns}_${data.name} * that, cons
     auto& w = that->widget();
     bool ok = true;
     if(false){}
+    ${(data.skip_props??[]).map(x=>{
+        if(x[x.length-1]=='*')return `else if (strncmp(prop, "${x}", ${x.length-1})){}`
+        else return `else if(strcmp(prop,"${x}")){}`
+    }).join('\n\t')}
     ${Object.entries(data.computed).map(x => {
             x[1].alias?.push(x[0]);
             return x[1].alias?.map(y => `

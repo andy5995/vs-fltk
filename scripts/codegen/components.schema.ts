@@ -26,6 +26,7 @@ export const widget_schema = t.Object({
         computed_tail: t.Optional(t.Union([t.Null(), t.String()])),
     }, { additionalProperties: false }),
     extends: t.Union([t.Null(), t.String()], { default: null }),
+    skip_props: t.Optional(t.Array(t.String(),{default:[]})),
     props: entries_schema,
     computed: entries_schema,
 }, { additionalProperties: false })
