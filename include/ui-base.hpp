@@ -86,4 +86,13 @@ class ui_base{
     void refresh_style(const char* local_mixins="");
 };
 
+//TODO: this can become the generic approach to handle symbols based on their type. For now just callbacks from the ui
+struct ui_callback_t : Fl_Callback_User_Data{
+  ui_base* caller;
+  symbol_ret_t sym;
+};
+
+//TODO: Refresh logic to check callback type
+void ui_callback_handler(Fl_Widget* _, void* _data);
+
 }

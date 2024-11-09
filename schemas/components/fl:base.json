@@ -122,8 +122,10 @@
             "type":"raw",
             "subtype": "$symbol",
             "description": "Empty string to unset.",
-            "code": "if(strcmp(value,\"\")==0)w.callback((Fl_Callback*)nullptr);else{auto result = that->resolve_symbol(value);if(result.symbol.symbol==nullptr){vs_log(severety_t::CONTINUE,that,\"Unable to find symbol `%s` for callback.\",value);}else{ui_callback_t* payload = new ui_callback_t();payload->caller=that;payload->sym=result;w.callback(ui_callback_handler,payload,true);}"
+            "code": "if(strcmp(value,\"\")==0)w.callback((Fl_Callback*)nullptr);else{auto result = that->resolve_symbol(value);if(result.symbol.symbol==nullptr){vs_log(severety_t::CONTINUE,that,\"Unable to find symbol `%s` for callback.\",value);}else{ui_callback_t* payload = new ui_callback_t();payload->caller=that;payload->sym=result;w.callback(ui_callback_handler,payload,true);}}"
         }
     },
-    "computed":{}
+    "computed":{
+        
+    }
 }

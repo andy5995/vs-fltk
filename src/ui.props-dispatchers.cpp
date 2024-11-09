@@ -38,18 +38,6 @@ template<> const char* ui<Fl_Markdown>::class_name()  {return "markdown";}
 #include "./ui.names.autogen.cpp"
 #endif
 
-//TODO: this can become the generic approach to handle symbols based on their type. For now just callbacks from the ui
-struct ui_callback_t : Fl_Callback_User_Data{
-  ui_base* caller;
-  symbol_ret_t sym;
-};
-
-//TODO: Refresh logic to check callback type
-void ui_callback_handler(Fl_Widget* _, void* _data){
-  ui_callback_t* data = (ui_callback_t*)_data;
-  ui_base::use_callback(data->sym, data->caller);
-}
-
 #define $eq(b) else if(strcmp((prop),(b))==0)
 #define $start_prop($class_name) template<> int $class_name::_apply_prop(ui* that, const char* prop, const char* value){\ 
   auto& w = that->widget();\

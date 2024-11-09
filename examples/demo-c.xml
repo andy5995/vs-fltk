@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <app>
-    <window box="0,0,320,240" label="Demo Counter">
+    <fl:window box="0,0,320,240" label="Demo Counter">
         <mixin name="+button" bg.colour="#aa3300" label.colour="#99ee4f" />
         <script lang="c">
         <![CDATA[ 
@@ -39,5 +39,5 @@
             ]]>
             </script>
         </button>
-    </window>
+    </fl:window>
 </app>

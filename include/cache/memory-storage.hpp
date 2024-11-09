@@ -5,7 +5,6 @@
 
 //Once the build process of an app is completed, this cache is fully released before running.
 //This cache is going to be global.
-#include "pipelines/quickjs-js.hpp"
 #include <utils/strings.hpp>
 #include <ui-frame-public.hpp>
 #include <cstddef>
@@ -28,7 +27,6 @@ struct buffer_t{
     size_t size;
 };
 
-typedef pugi::xml_document xml_tree_t;
 
 enum class resource_t{
             NONE,

@@ -4,11 +4,9 @@
   "type": "leaf",
   "headers": ["FL/Fl_Button.H"],
   "codegen": {
-    "extends": "ui<Fl_Button>",
-    "props_tail": "ui<Fl_Widget>",
-    "computed_tail": "ui<Fl_Widget>"
+    "extends": "ui<Fl_Button>"
   },
-  "extends": "fl:widget",
+  "extends": "fl:base",
   "props": {
     "somethig": {
       "type": "string",

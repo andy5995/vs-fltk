@@ -1,0 +1,14 @@
+{
+    "$schema": "../../commons/schemas/json-component.schema.json",
+    "description": "Base element to a window",
+    "usable": true,
+    "type": "node",
+    "headers": ["FL/Fl_Window.H"],
+    "extends": "fl:base",
+    "codegen": {"extends": "ui<Fl_Window>"},
+    "props":{
+    },
+    "computed":{
+        
+    }
+}

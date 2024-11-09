@@ -25,11 +25,14 @@ function make_type_code(type: Static<typeof type_schema>, subtype: string, code:
 }
 
 function gen_cpp(data: Static<typeof widget_schema>) {
+    const cextends = data.extends==null?null:data.extends.split(':');
+
     let class_decl = data.use_main_header === null ? `
 #pragma once
 
 #include <ui.hpp>
 #include <ui-tree.hpp>
+${cextends ? `#include <components/autogen/${cextends[0]}/${cextends[1]}.hpp>\n`:``}
 ${data.headers ? data.headers.map(x => `#include <${x}>\n`) : ``}
 
 namespace vs{
@@ -46,7 +49,7 @@ class ${data.ns}_${data.name} : public ${data.codegen.extends}{
         virtual int apply_prop(const char* prop, const char* value) override {return ${data.ns}_${data.name}::_apply_prop(this,prop,value);}
         virtual int get_computed(const char* prop, const char ** value) override {return ${data.ns}_${data.name}::_get_computed(this,prop,value);};
 
-    protected:
+    public:
         static int _apply_prop(${data.ns}_${data.name}* that, const char* prop, const char* value);
         static int _get_computed(${data.ns}_${data.name}* that, const char* prop, const char** value);
 };
@@ -66,9 +69,14 @@ int ${data.ns}_${data.name}::_apply_prop(${data.ns}_${data.name}* that, const ch
     auto& w = that->widget();
     bool ok = true;
     if(false){}
+    ${(data.skip_props??[]).map(x=>{
+        if(x[x.length-1]=='*')return `else if (strncmp(prop, "${x}", ${x.length-1})==0){}`
+        else return `else if(strcmp(prop,"${x}")==0){}`
+    }).join('\n\t')}
     ${Object.entries(data.props).map(x => {
-        x[1].alias?.push(x[0]);
-        return x[1].alias?.map(y => `
+        x[1].alias=x[1].alias??[]
+        x[1].alias.push(x[0]);
+        return x[1].alias.map(y => `
     ${x[1].description ? `//${x[1].description}` : ``}
     else if(strcmp(prop,"${y}")==0){
         ${make_type_code(x[1].type, x[1].subtype ?? "", x[1].code??"")}
@@ -76,17 +84,13 @@ int ${data.ns}_${data.name}::_apply_prop(${data.ns}_${data.name}* that, const ch
     }
     ).join('\n')
         }
-    ${data.codegen.props_tail === null ? `else {return 2;}\nreturn ok?0:1;` : `if(!ok) return 1; else return ${data.codegen.props_tail ?? data.codegen.extends}::_apply_prop((${data.codegen.props_tail ?? data.codegen.extends}*)that,prop,value);`}
+    ${cextends === null ? `else {return 2;}\nreturn ok?0:1;` : `if(!ok) return 1; else return ${data.codegen.props_tail ?? `${cextends[0]}_${cextends[1]}`}::_apply_prop((${data.codegen.props_tail ?? `${cextends[0]}_${cextends[1]}`}*)that,prop,value);`}
 }
 
 int ${data.ns}_${data.name}:: _get_computed(${data.ns}_${data.name} * that, const char* prop, const char** value) {
     auto& w = that->widget();
     bool ok = true;
     if(false){}
-    ${(data.skip_props??[]).map(x=>{
-        if(x[x.length-1]=='*')return `else if (strncmp(prop, "${x}", ${x.length-1})){}`
-        else return `else if(strcmp(prop,"${x}")){}`
-    }).join('\n\t')}
     ${Object.entries(data.computed).map(x => {
             x[1].alias?.push(x[0]);
             return x[1].alias?.map(y => `
@@ -97,19 +101,20 @@ int ${data.ns}_${data.name}:: _get_computed(${data.ns}_${data.name} * that, cons
         }
         ).join('\n')
         }
-    ${data.codegen.props_tail === null ? `else {return 2;}\nreturn ok?0:1;` : `if(!ok) return 1; else return ${data.codegen.props_tail ?? data.codegen.extends}::_get_computed((${data.codegen.props_tail ?? data.codegen.extends}*)that,prop,value);`}
+    ${cextends === null ? `else {return 2;}\nreturn ok?0:1;` : `if(!ok) return 1; else return ${data.codegen.props_tail ?? `${cextends[0]}_${cextends[1]}`}::_get_computed((${data.codegen.props_tail ?? `${cextends[0]}_${cextends[1]}`}*)that,prop,value);`}
 }
     
 }
 `;
 
     let parser_selector =
+        data.usable!=false ?
         data.type === 'leaf' ? `mkNSLeafWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
-            data.type === 'node' ? `mkNSNodeWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name}) ` :
-                data.type === 'container' ? `mkNSContainerWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
-                    data.type === 'slot' ? `mkNSSlotWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
-                        data.type === 'slot-contaiener' ? `mkNSSlotContainerWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` : `sss`;
-
+        data.type === 'node' ? `mkNSNodeWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name}) ` :
+        data.type === 'container' ? `mkNSContainerWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
+        data.type === 'slot' ? `mkNSSlotWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` :
+        data.type === 'slot-contaiener' ? `mkNSSlotContainerWidget(${data.ns}, ${data.name}, ${data.ns}_${data.name})` : 
+        ``:``;
     return [class_decl, class_impl, parser_selector]
 }
 

@@ -33,6 +33,7 @@
   root_ui = t;\
   for(auto& i : root.children()){_build(i,root_ui);}\
   t->widget().end();\
+  t->widget().show();\
 } 
 //TODO: Avoid parsing its head                                                 
 #define mkLeafWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$name)==0){build_base_widget<$class_name>(root,root_ui); }                                                  
@@ -43,6 +44,7 @@
   root_ui = t;\
   for(auto& i : root.children()){_build(i,root_ui);}\
   t->widget().end();\
+  t->widget().show();\
 } 
 
 #define mkNSLeafWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$ns ":" #$name)==0){\

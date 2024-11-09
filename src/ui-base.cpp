@@ -338,4 +338,10 @@ int ui_base::use_callback(const symbol_ret_t& sym, ui_base * node){
 }
 
 
+void ui_callback_handler(Fl_Widget* _, void* _data){
+  ui_callback_t* data = (ui_callback_t*)_data;
+  ui_base::use_callback(data->sym, data->caller);
+}
+
+
 }
