@@ -48,7 +48,8 @@ At this time, no restriction on names has been defined nor implemented.
 The scope within names are visible is called *namespace*. A namespace is not strictly speaking equivalent to the UI tree structure, and all elements within a namespace, regardless of their child/parent ordering, are mutually visible.
 
 ### Transparent nodes
-Some elements will have their associated frame and name, but their mode is set to `transparent`. In this case any child will be part of the same namespace as their parent, ignoring their tree dependency.
+Some elements will have their associated frame and name, but their mode is set to `transparent`.  
+In this case any child will be part of the same namespace as their parent, ignoring their tree dependency.
 
 ### Limitations on visibility
 Elements for which their mode is set to `container` or `slot-container` will prevent name resolution upwards from children.  
@@ -74,8 +75,8 @@ A node, will always be able to access up and down, regardless of the mode set. L
 ## Event propagation
 
 ## Scripts
-
 Embedded scripts are 
+
 ### Single user scripts
 
 ### Module scripts
@@ -91,7 +92,9 @@ Embedded scripts are
 
 ## Native
 
-## Quickjs
+## QuickJS
+
+## LUA
 
 ## WASM
 
@@ -105,7 +108,7 @@ Templating is based on a `vs.templ`, a custom XML preprocessor loosely inspired 
 Its documentation can be found on its separate repository [here](https://github.com/karurochori/vs-templ).  
 Within the context of `vs.fltk`, using templates involves two files:
 - the static dataset which contains any structured needed by the final generation. For vs, its root must be `<vs:static-data>` and provide a `template` attribute pointing to the actual component template. The suggested extension is `.vs`, the same as normal components.
-- the template itself, containing a `vs` tree structure and templating commands as well.
+- the template itself, containing a `vs` tree structure and templating commands as well.  
   Its conventional extension is `.tvs`. These files should never be used as components on their own.
 
 When importing or using a component which requires processing, it is compiled and replaces the original dataset before the building process in the UI continues.  

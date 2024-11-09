@@ -4,7 +4,7 @@ project(
     default_options: ['c_std=gnu23', 'cpp_std=gnu++23'],
 )
 
-#Used by pugi to enable compact mode. I might want to disable execption too.
+#Used by pugi to enable compact mode. I might want to disable execptions too.
 add_global_arguments('-DPUGIXML_COMPACT', language : ['cpp','c'])
 
 cmake = import('cmake')

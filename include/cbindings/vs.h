@@ -63,7 +63,6 @@ enum vs_frame_type_t{
 };
 typedef enum vs_frame_type_t vs_frame_type_t;
 
-
 enum vs_frame_access_t{
   VS_NODE_PUBLIC,
   VS_NODE_PRIVATE,
