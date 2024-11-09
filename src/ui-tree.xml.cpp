@@ -230,6 +230,11 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     for(auto& i : root.children()){_build(i,root_ui);}
     
   }
+  //DEBUG
+  else if(strcmp(root.name(),"debug")==0){
+    globals::vs_test_debug(root.attribute("key").as_string("<NULL>"), root.attribute("key").as_string("<NULL>"));
+    return;
+  }
   //VIEWPORT
   else if(strcmp(root.name(),"viewport")==0){
     auto tmp = build_base_widget<ui_viewport>(root,root_ui);

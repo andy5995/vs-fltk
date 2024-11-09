@@ -1,20 +1,20 @@
 ## Building requirements
 
 You will need a proper Linux environment, with a modern C++ toolchain installed.  
-Specifically, I suggest `clang-19` as this repo is using modern C23 features like `#embed` to make everyone's life a bit easier.
+Specifically, I suggest `clang-17` or higher, as this repo is using modern C23 features like `#embed` to make everyone's (my) life a bit easier.
 In addition to that, this repo makes use of:
 
-- [meson](https://mesonbuild.com/) as its main build system. Any recent-ish version will do (unless you want zig to simplify cross-compiling for which 1.60 is needed)
-- [bun](https://bun.sh/) as the ts/js runtime to support some codegen and the more complex releasing pipelines.  
+- [meson](https://mesonbuild.com/) as its main build system. Any recent-ish version will do (unless you need `zig` to simplify cross-compiling; for that >= 1.60 is needed)
+- [bun](https://bun.sh/) as the ts/js runtime to support all the code generation tasks and some of the more complex pipelines.  
    I hate bash, and this is what replaces it.
-- [libcurl] unless you are trying to compile a release without it, which is supported.
+- **libcurl-dev**, unless you are trying to compile a custom version without network support, which is supported.
 
-At the moment only Linux is supported, probably on any of the major CPU architecture. Possibly some more UNIX-like systems.  
-This is just temporary limitation, as all dependencies are portable, but my own code is not.
+At the moment, only Linux is supported or tested, probably on any of the major CPU architectures. Wider support for POSIX systems is also likely.  
+This is just temporary limitation, as all dependencies are portable, but my own code is probably not.
 
 ### Optional features
 
-TODO: LSP link.
+There is an ongoing effort to write and release a minimal LSP and vscode extension. Once it is ready TODO add link here.
 
 ## Building process
 
@@ -50,6 +50,7 @@ bun run vs.example
 
 ### Patches
 
+Notice: this issue was only observed with `zig` as the backend and cannot be easily reproduced.
 If not using a precompiled version of sqlite on your system, the `meson.build` of its amalgamate might need patching:
 
 ```
@@ -58,25 +59,26 @@ If not using a precompiled version of sqlite on your system, the `meson.build` o
 
 at the end of the library generation. The issue is tracked [here](https://github.com/mesonbuild/wrapdb/issues/1747)
 
-## A word on codegen
+## A word about code generation
 
 A significant portion of code in this repository is generated automatically and does not ship with your `git clone`.  
 Make sure you run `bun run codegen` before you attempt any further step with meson. I will probably integrate it as part of the meson setup step.
 
-The main source for automatic code generation is located in `/schemas`. The json component definitions are compiled down into C++ classes, c bindings, typescript type definitions, XSD schemas and XML data used in the embedded editor of `vs`.  
-Any component shipped with `vs` (not those externally distributed in `/components`) must have a json schema definition, even if their class definition is not automatically generated.
+The main source for automatic code generation is located in `/schemas` and are JSON files. *Component definitions* are compiled down into C++ classes, c bindings, typescript type definitions, XSD/RND schemas and XML data used in the embedded editor of `vs`.  
+Any component shipped with `vs` (not those externally distributed in `/components`) must have a JSON schema definition, even if their class definition is not automatically generated. In that case the property `use_main_header` is set, but *props* and *computed values* are still defined via JSON schemas.
 
-During development, you might want to use `codegen.quick` in place of `codegen`, as long as you are not altering the number of files involved or their naming. Some changes in the schemas will be incompatible with `codegen.quick`, so if you don't observe what you expect just perform a full refresh.
+During development, you might want to use `codegen.quick` in place of `codegen`, as long as you are not altering the files involved or their naming. Some changes in schemas can also be incompatible with `codegen.quick`, so if you don't observe what you expect, just perform a full refresh.  
+While imperfect, this quick variant avoids the reconfiguration of the full meson project, making your next build much faster.
 
 ## Structure of the repo
 
-- **src** where most of the source for `vs` and the `vs-fltk` library are located.
-- **include** as before for the header files.
-- **test** test suite for `vs` & `vs-fltk` library.
+- **src** where most of the source for **vs.app** and the **vs.fltk** library are located.
+- **include** like before for the header files. Directories are mostly mirrored.
+- **test** test suite for **vs** & **vs.fltk** library.
 - **experiments** playground where new ideas or semi-standalone prototypes are tested.
-- **components** native components to ship alongside `vs` but not embedded in `vs`.
+- **components** native components to ship alongside **vs** but not embedded in **vs**.
 - **docs** this documentation.
-- **bindings** bindings for all languages supported in `script`.
-- **scripts** utility scripts for the building process or distribution.
-- **schemas** high level specs, source of information for documentation and automatic codegen.
-- **commons** extra public files (some autogenerated) which are part of every `vs` distribution.
+- **bindings** bindings for all languages supported in embedded `script`.
+- **scripts** utility scripts (mostly in TS/JS) for the building process and distribution.
+- **schemas** high level specs, source of information for documentation and automatic code-gen.
+- **commons** extra public files (some auto-generated) which are part of every **vs** distribution.

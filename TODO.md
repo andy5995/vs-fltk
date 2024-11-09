@@ -22,8 +22,8 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
 - [ ] Decide what to do about swift.
 - [x] I probably want https://github.com/fmtlib/fmt
 - [ ] Signal/event propagation mechanisms
-- [ ] Add special logging to generate output used by more complex tests. They must also be exposed to scripts.  
-      These logs are only recorded if VS_TESTING is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test. 
+- [x] Add special logging to generate output used by more complex tests. They must also be exposed to scripts.  
+      These logs are only recorded if VS_TEST_DEBUG is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test. 
 - [ ] In the root of app or components search for `xmlns` attributes, and define local namespaces based on `vs`, `vs.templ` & `vs.fltk`.
 
 ### Scripting
@@ -38,6 +38,7 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
 - [x] Add properties on containers to set their type/mode whatever.
 - [x] Split align property
 - [ ] Split font property
+- [x] Add debug component
 
 ### Paths
 - [x] Extend support for more virtual paths (all but those based on sqlite which will be handled later on)

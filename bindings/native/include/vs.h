@@ -82,6 +82,8 @@ extern int vs_get(node_t, const char* k, const char** v);
 #define $$get(self,k,v) vs_set(self,k,&v)
 #define $get(k,v) vs_set(vs_self,k,&v)
 
+extern void vs_test_debug(const char* key, const char* value);
+#define $$debug(k,v) vs_test_debug(k,v)
 
 //Utility functions to export symbols
 #define $callback(x)  void* __EXPORT_CB__##x = &x;

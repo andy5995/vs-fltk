@@ -1,6 +1,7 @@
 
 #include "FL/Enumerations.H"
 #include "version.hpp"
+#include <cstdio>
 #include <unistd.h>
 #include <pwd.h>
 
@@ -54,6 +55,8 @@ path_env_t mk_env(const char* arg0,const char* arg1){
 
   //TODO: add random subpath
   main_env.tmp_path={rpath_type_t::FS,"/tmp/"};
+
+  globals::vs_test_debug_fd=getenv("VS_TEST_DEBUG")
 
   return main_env;
 }
@@ -128,6 +131,7 @@ versions_t get_versions(){
 #undef WAMR_VERSION
 #undef str
 #undef str_helper
+
 
 }
 
