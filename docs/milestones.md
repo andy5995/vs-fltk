@@ -1,6 +1,13 @@
+## 0.1.1-alpha
+- [ ] Implement flex, grid, scroll & pack via codegen.
+- [ ] Tidy up the XML caching
+- [ ] Tidy up the JS scripting interface.
+- [ ] Complete the build process
+- [ ] Prepare pipeline for github actions
+
 ## 0.1.5
 
-- [ ] Move all components to the new codegen format
+- [x] Move all components to the new codegen format
 - [x] Support for script modules
 - [ ] Full support for getters and setters
 - [x] Final implementation of the static xml builder (now external dependency)

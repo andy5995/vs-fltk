@@ -31,7 +31,7 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
 ### Components
 - [x] Enable codegen
 - [x] Simplify codegen for all computed/props types which are not `raw` by writing more or the boilerplate.
-- [ ] and port the current code over the new codegen architecture.
+- [x] and port the current code over the new codegen architecture.
 - [ ] Viewport element.
 - [ ] Fix on.failure and on.loading to match specs in `use` element.
 - [x] Add properties on containers to set their type/mode whatever.
@@ -66,6 +66,8 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
     - [x] From fs
     - [x] From network
   - [ ] Pugi XML documents
+    - [x] Cache support
+    - [ ] Support in parser
   - [x] Scripts 
 
 # Supported environments
