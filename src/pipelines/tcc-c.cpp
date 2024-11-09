@@ -29,6 +29,8 @@ To be changes so that it can do everything in a single function.
 
 //'/home/checkroom/Documents/projects/vs-fltk/subprojects/libtcc/tcc'  test.c  -I../../subprojects/libtcc/include/ -L.  -L../../subprojects/libtcc -lapp 
 
+static void vs_test_debug(const char* k, const char* v){globals::vs_test_debug(k,v);}
+
 #define LIB(x)  script->add_sym(#x, (void*) x)
 #define LIBT(x,t)  script->add_sym(#x, (void*) t x)
 
@@ -64,7 +66,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
 
     // Custom symbol
     //script->add_sym("vs_self", (void *)obj==0?(void*)-1:obj);  //Needed as obj nullptr would remove the symbol for some stupid reason.
-    script->add_sym("vs_test_debug", (void *)globals::vs_test_debug);
+    script->add_sym("vs_test_debug", (void *)vs_test_debug);
     script->add_sym("vs_log", (void *)vs_log);
     script->add_sym("vs_resolve_name", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return (const ui_base*)nullptr;return  w->resolve_name(s); });
     script->add_sym("vs_resolve_name_path", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return (const ui_base*)nullptr;return  w->resolve_name_path(s); });

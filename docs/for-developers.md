@@ -1,7 +1,7 @@
 ## Building requirements
 
 You will need a proper Linux environment, with a modern C++ toolchain installed.  
-Specifically, I suggest `clang-17` or higher, as this repo is using modern C23 features like `#embed` to make everyone's (my) life a bit easier.
+Specifically, I suggest `clang-19` or higher, as this repo is using modern C23 features like `#embed` to make everyone's (my) life a bit easier.
 In addition to that, this repo makes use of:
 
 - [meson](https://mesonbuild.com/) as its main build system. Any recent-ish version will do (unless you need `zig` to simplify cross-compiling; for that >= 1.60 is needed)

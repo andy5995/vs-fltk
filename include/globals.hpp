@@ -1,3 +1,5 @@
+#pragma once
+
 #include <utils/env.hpp>
 #include <utils/paths.hpp>
 #include <utils/policies.hpp>
@@ -11,7 +13,14 @@ extern path_env_t path_env;
 extern js_rt_t js_rt;
 extern cache::memstorage_t memstorage;
 
-extern FILE* vs_test_debug_fd;
-void vs_test_debug(const char* field, const char* value);
+struct vs_test_debug_t{
+    FILE* fd = nullptr;
+    vs_test_debug_t();
+    ~vs_test_debug_t();
+
+    void operator()(const char* field, const char* value);
+};
+
+extern vs_test_debug_t vs_test_debug;
 }
 }
