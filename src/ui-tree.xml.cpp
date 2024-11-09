@@ -38,7 +38,7 @@
 //TODO: Avoid parsing its head                                                 
 #define mkLeafWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$name)==0){build_base_widget<$class_name>(root,root_ui); }                                                  
 
-#define mkNSNodeWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$ns ":" #$name)==0){\
+#define mkNSNodeWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$ns ":" #$name)==0 ){\
   auto t=build_base_widget<$class_name>(root,root_ui);\
   t->set_type(frame_type_t::NODE);\
   root_ui = t;\
@@ -47,7 +47,7 @@
   t->widget().show();\
 } 
 
-#define mkNSLeafWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$ns ":" #$name)==0){\
+#define mkNSLeafWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$ns ":" #$name)==0 ){\
   build_base_widget<$class_name>(root,root_ui);\
 }                                                  
 
@@ -230,17 +230,6 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     for(auto& i : root.children()){_build(i,root_ui);}
     
   }
-  //WINDOW
-  else if(strcmp(root.name(),"window")==0){
-    auto tmp = build_base_widget<ui<Fl_Window>>(root,root_ui);
-    tmp->set_type(frame_type_t::NODE);
-
-    root_ui = tmp;
-    for(auto& i : root.children()){_build(i,root_ui);}
-    tmp->widget().end();
-    tmp->widget().show();
-    return;
-  }
   //VIEWPORT
   else if(strcmp(root.name(),"viewport")==0){
     auto tmp = build_base_widget<ui_viewport>(root,root_ui);
@@ -261,13 +250,20 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     return;
   }
     //GROUP
+  /*else if(strcmp(root.name(),"namespace")==0){
+    auto tmp = build_base_widget<ui_namespace>(root);
+    tmp->set_access(frame_access_t::PUBLIC);
+    root_ui = tmp;
+    for(auto& i : root.children()){_build(i,root_ui);}
+    //tmp->widget().end();
+    return;
+  }*/
   else if(strcmp(root.name(),"namespace")==0){
     auto tmp = build_base_widget<ui_namespace>(root);
     tmp->set_access(frame_access_t::PUBLIC);
     root_ui = tmp;
     for(auto& i : root.children()){_build(i,root_ui);}
-    tmp->widget().end();
-
+    //tmp->widget().end();
     return;
   }
   else if (strcmp(root.name(),"app")==0){
@@ -297,10 +293,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
   else if (strcmp(root.name(),"component")==0){}
 
   //Basic widgets
-  mkLeafWidget(,button,ui<Fl_Button>)
-  mkLeafWidget(,label,ui<Fl_Box>)
   mkLeafWidget(,input,ui<Fl_Input>)
-  mkLeafWidget(,button.toggle,ui<Fl_Toggle_Button>)
 
 #   if __has_include("./ui.xml-widgets.autogen.cpp")
 #   include "./ui.xml-widgets.autogen.cpp"
@@ -474,6 +467,9 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
     if(strcmp(root.parent().name(),"app")==0){
       current->reparent_frame(root_ui);
     }
+
+
+
 
     //TODO: Optimize copies
     smap<std::string> props = current->compute_refresh_style(root.attribute("mixin").as_string(""));

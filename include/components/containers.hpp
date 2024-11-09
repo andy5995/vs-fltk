@@ -5,6 +5,7 @@
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
 
+#include <iostream>
 #include <ui.hpp>
 
 namespace vs{
@@ -41,10 +42,10 @@ class ui_root_component :public ui_base{
 
 };
 
-class ui_namespace : public ui<Fl_Group>{
+class ui_namespace : public ui_base{
   public:
-    ui_namespace(ui_base* p):ui<Fl_Group>(p,0, 0, 0, 0){
-      this->widget().size(widget().parent()->w(), widget().parent()->h());
+    ui_namespace(ui_base* p):ui_base(p){
+      //this->widget().size(widget().parent()->w(), widget().parent()->h());
       this->mk_frame();
       this->set_access(frame_access_t::PUBLIC);
   }
@@ -52,6 +53,8 @@ class ui_namespace : public ui<Fl_Group>{
   virtual frame_type_t default_frame_type() override {return frame_type_t::NODE;}
   virtual const char* class_name() override{return "namespace";}
 
+  int apply_prop(const char *prop, const char *value) override{if(local_frame!=nullptr)return local_frame->call_dispatcher(prop,value);return 1;}
+  int get_computed(const char *prop, const char **value) override{return 1;}
 };
 
 class ui_viewport : public ui<Fl_Window>{

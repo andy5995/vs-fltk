@@ -1,5 +1,5 @@
-<component>
-    <button label="Banana" box="0,0,100,100">
+<component xmlns:fl="vs.fltk">
+    <fl:button label="Banana" box="0,0,100,100">
         <script type="module" lang="c">
             <![CDATA[
             void callback(){
@@ -7,5 +7,5 @@
             }
             ]]>
         </script>
-    </button>
+    </fl:button>
 </component>

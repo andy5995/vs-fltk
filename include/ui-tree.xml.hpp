@@ -23,7 +23,7 @@ private:
 
     const pugi::xml_node *caller_node = nullptr;
     ui_base* caller_ui_node=nullptr;
-    ui_base* root;
+    ui_base* root = nullptr;
 
     pugi::xml_document doc;         //Handle of the xml parser
     policies_t policies;            //Computed policies for this tree

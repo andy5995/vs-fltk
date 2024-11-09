@@ -1,7 +1,7 @@
 <app>
-    <window label="Hello world">
+    <fl:window label="Hello world" box="0,0,400,400">
         <s:for tag="entry" in="/static-data/items/">
-            <s:item><label label="A"/></s:item>
+            <s:item><fl:label label="A" box="0,0,300,300"/></s:item>
         </s:for>
-    </window>
+    </fl:window>
 </app>

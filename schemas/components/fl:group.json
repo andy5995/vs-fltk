@@ -1,0 +1,14 @@
+{
+    "$schema": "../../commons/schemas/json-component.schema.json",
+    "description": "Basic group element",
+    "usable": true,
+    "type": "node",
+    "headers": ["FL/Fl_Group.H"],
+    "extends": "fl:base",
+    "codegen": {"extends": "ui<Fl_Group>"},
+    "props":{
+    },
+    "computed":{
+        
+    }
+}

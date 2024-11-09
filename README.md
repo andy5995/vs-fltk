@@ -33,11 +33,11 @@ The obligatory "counter" [example](./examples/demo-c.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<app>
-    <window box="0,0,320,240" label="Demo Counter">
-        <mixin name="+button" bg.colour="#aa3300" label.colour="#99ee4f" />
+<app xmlns:fl="vs.fltk">
+    <fl:window box="0,0,320,240" label="Demo Counter">
+        <mixin name="+fl:button" bg.colour="#aa3300" label.colour="#99ee4f" />
         <script lang="c">
-        <![CDATA[
+        <![CDATA[ 
         unsigned int counter = 0;
 
         void _update(){
@@ -61,19 +61,19 @@ The obligatory "counter" [example](./examples/demo-c.xml):
         ]]>
         </script>
 
-        <label name="main-text" label="0" label.size="90" box="20,20,280,120" />
-        <button label="Add" on.callback="on_add" box="20,160,80,50" />
-        <button label="Remove" on.callback="on_dec" box="120,160,80,50" />
-        <button label="Console" box="220,160,80,50">
+        <fl:label name="main-text" label="0" label.size="90" box="20,20,280,120" />
+        <fl:button label="Add" on.callback="on_add" box="20,160,80,50" />
+        <fl:button label="Remove" on.callback="on_dec" box="120,160,80,50" />
+        <fl:button label="Console" box="220,160,80,50">
             <script lang="c">
-            <![CDATA[
+            <![CDATA[ 
             void callback(){
                 $log(LOG_LOG,"Hello world!");
             }
             ]]>
             </script>
-        </button>
-    </window>
+        </fl:button>
+    </fl:window>
 </app>
 ```
 
