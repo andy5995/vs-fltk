@@ -9,3 +9,4 @@ subprojects/*
 /node_modules/
 /bun.lockb
 /private
+/logs

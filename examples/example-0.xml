@@ -5,7 +5,7 @@
         <label>It does not exist</label>
     </import>
     <mixin name="+fl:button" box.h="100" box.w="100" />
-
+    <debug value="Important string A"/>
 
     <script-global lang="c">
         <def>
@@ -85,13 +85,14 @@
                 int count=0;
 
                 void on_click_a(){
-                    
                     static char strbuff[32];
                     node_t tmp = $("%tmp-data");
                     if(tmp!=0){
                         itoa(count,strbuff,10);
                         vs_apply_prop(tmp,"label",strbuff);
                     }
+                    $$debug("event", strbuff);
+                    
                     $prop("label","QUINQUE");
                     if(count==0)
                         $log(LOG_LOG,"DON\'T YOU DARE TO APPROACH MIQUELLA THE KIND!");

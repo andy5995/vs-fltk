@@ -8,6 +8,11 @@
 
 ## Running a `vs` application
 
+## Embedded tools
 ### Running an application
 ### Builtin editor
 ### Builtin workspace
+
+## Environment variables
+
+## User profiles
