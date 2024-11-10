@@ -29,7 +29,7 @@ To be changes so that it can do everything in a single function.
 
 //'/home/checkroom/Documents/projects/vs-fltk/subprojects/libtcc/tcc'  test.c  -I../../subprojects/libtcc/include/ -L.  -L../../subprojects/libtcc -lapp 
 
-static void vs_test_debug(const char* k, const char* v){globals::vs_test_debug(k,v);}
+static void vs_test_debug(const char* k, const char* v){globals::debug(k,v);}
 
 #define LIB(x)  script->add_sym(#x, (void*) x)
 #define LIBT(x,t)  script->add_sym(#x, (void*) t x)

@@ -21,6 +21,6 @@ struct vs_test_debug_t{
     void operator()(const char* field, const char* value);
 };
 
-extern vs_test_debug_t vs_test_debug;
+extern vs_test_debug_t debug;
 }
 }

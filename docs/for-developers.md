@@ -82,3 +82,16 @@ While imperfect, this quick variant avoids the reconfiguration of the full meson
 - **scripts** utility scripts (mostly in TS/JS) for the building process and distribution.
 - **schemas** high level specs, source of information for documentation and automatic code-gen.
 - **commons** extra public files (some auto-generated) which are part of every **vs** distribution.
+
+## Debug logging
+
+**vs** has some features to simplify debugging, mostly to support automatic tests and benchmarks, but they might be useful in other scenarios as well.
+`vs::globals::debug` is responsible for that and it is exposed in several ways:
+- in embedded scripts
+- via a special xml `debug` tag
+- in the `vs.fltk` C interface as well
+While using it you can define a key and value. The current timestamp at nanoseconds resolution is also automatically recorded.  
+Records are saved to a file with name `VS_TEST_DEBUG` if set, otherwise no output will be emitted. Older content is destroyed.  
+The file format is just a simple csv with horizontal tabs as separator of fields and newlines for rows. The order is *key*, *value* & *timestamp*.
+
+`vs::globals::debug` should not be confused with the ordinary logging functions which are also exposed in similar ways, but which are generally contextual and they mostly output to `stdout`.

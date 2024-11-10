@@ -76,7 +76,9 @@ typedef vs_symbol_mode_t vs_frame_mode_t;
     #include "./components.autogen.h"
 #endif
 
-extern void vs_hello_world();
+void vs_hello_world();
+void vs_debug(const char* k, const char* v);
+
 
 void vs_node_name_set(vs_node*, const char*);
 void vs_node_frame_mode_set(vs_node*, vs_frame_mode_t);

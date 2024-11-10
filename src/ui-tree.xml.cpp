@@ -232,7 +232,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
   }
   //DEBUG
   else if(strcmp(root.name(),"debug")==0){
-    globals::vs_test_debug(root.attribute("key").as_string("<NULL>"), root.attribute("value").as_string("<NULL>"));
+    globals::debug(root.attribute("key").as_string("<NULL>"), root.attribute("value").as_string("<NULL>"));
     return;
   }
   //VIEWPORT

@@ -11,7 +11,7 @@ path_env_t  path_env;
 js_rt_t     js_rt;
 cache::memstorage_t memstorage;
 
-vs_test_debug_t vs_test_debug;
+vs_test_debug_t debug;
 
 vs_test_debug_t::vs_test_debug_t(){auto file=getenv("VS_TEST_DEBUG");if(file!=nullptr)fd=fopen(file,"w+");}
 vs_test_debug_t::~vs_test_debug_t(){if(fd!=nullptr)fclose(fd);}
