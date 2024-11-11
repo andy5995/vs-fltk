@@ -17,10 +17,13 @@
     "prepare-release": "bun ./scripts/gen-release.ts"
   },
   "dependencies": {
+    "@libsql/client": "^0.14.0",
     "@sinclair/typebox": "^0.33.16",
+    "drizzle-orm": "^0.36.1",
     "jsx-xml": "^0.2.3"
   },
   "devDependencies": {
-    "@types/bun": "^1.1.11"
+    "@types/bun": "^1.1.11",
+    "drizzle-kit": "^0.28.0"
   }
 }

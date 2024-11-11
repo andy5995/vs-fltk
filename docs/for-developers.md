@@ -95,3 +95,7 @@ Records are saved to a file with name `VS_TEST_DEBUG` if set, otherwise no outpu
 The file format is just a simple csv with horizontal tabs as separator of fields and newlines for rows. The order is *key*, *value* & *timestamp*.
 
 `vs::globals::debug` should not be confused with the ordinary logging functions which are also exposed in similar ways, but which are generally contextual and they mostly output to `stdout`.
+
+## Environment Variables
+They are frequently used for both *benchmarks* and *tests*.  
+They can also be useful for the developer while testing new functionality, so they have been all covered in [here](./env-vars.md) for reference.
