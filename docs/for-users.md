@@ -14,5 +14,6 @@
 ### Builtin workspace
 
 ## Environment variables
+In general they are not really meant to be useful for most users, but they are all reported in [here](./env-vars.md).
 
 ## User profiles

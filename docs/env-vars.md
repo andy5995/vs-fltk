@@ -1,11 +1,27 @@
+WIP
+
 ## Debugging
 
-| **Name**     | **Type** | **Description**                                                                                        |
-| ------------ | -------- | ------------------------------------------------------------------------------------------------------ |
-| VS_DEBUG     | fs-path  | If specified, file where debug record are appended. Else, there is no side effect for those operations |
-| VS_LOG_LEVEL | ...      | Globally set the baseline log level, so that some messages can be skipped if not relevant.             |
+| **Name**     | **Type**                       | **Description**                                                                                        |
+| ------------ | -------------------------------|--------------------------------------------------------------------------------------------------------|
+| VS_DEBUG     | fs-path                        | If specified, file where debug record are appended. Else, there is no side effect for those operations |
+| VS_LOG_LEVEL | `silent,basic,verbose,debug`   | Globally set the baseline log level, so that some messages can be skipped if not relevant.             |
 
 ## Safety policies
+
+Policy level:
+- **all**
+- **none**
+- **trusted**
+- **normal**
+- **safe**
+
+| **Name**                    | **Type** | **Description** |
+| --------------------------- | -------- | --------------- |
+| VS_GLOBAL_POLICY            |          |                 |
+| VS_NETWORKING_POLICY        |          |                 |
+| VS_SCRIPTS_POLICY           |          |                 |
+| VS_NATIVE_COMPONENTS_POLICY |          |                 |
 
 ## Runtime
 
@@ -16,3 +32,4 @@
 | VS_DEBUG       | fs-path            | If specified, file where debug record are appended. Else, there is no side effect for those operations              |
 | VS_PARSER_MODE | `balanced,low-mem` | It changes the type of parse used, mostly for compatibility with lower spec hardware. `balanced` by default         |
 | VS_NO_CACHE    | boolean            | Disable any kind of caching & persistence. Some sort of "private" mode.                                             |
+| VS_NO_THEME    | boolean            | Disable any kind of custom theming                                                                                  |
