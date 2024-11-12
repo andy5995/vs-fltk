@@ -129,6 +129,8 @@ vs_fltk = shared_library(
     'vs-fltk',
     [
         './src/cache/memory-storage.cpp',
+        './src/cache/sqlite-cache.cpp',
+        './src/cache/sqlite-persistent.cpp',
 
         './src/utils/paths.cpp',
         './src/utils/strings.cpp',
