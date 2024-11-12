@@ -4,7 +4,7 @@ export default defineConfig({
   dialect: 'sqlite',
   schema: './schemas/db',
   out: './commons/migrations',
-  /*dbCredentials:{
+  dbCredentials:{
     url:'./commons/db.sqlite'
-  }*/
+  }
 })

@@ -59,10 +59,6 @@
                 }
             ]
         },
-        "public": {
-            "default": true,
-            "type": "boolean"
-        },
         "codegen": {
             "additionalProperties": false,
             "type": "object",
@@ -116,6 +112,7 @@
         },
         "skip_props": {
             "default": [],
+            "description": "Properties to be matched but ignored",
             "type": "array",
             "items": {
                 "type": "string"

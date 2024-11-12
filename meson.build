@@ -151,6 +151,7 @@ vs_fltk = shared_library(
         './src/components/data.json.cpp',
         './src/components/data.sqlite.cpp',
         './src/components/data.csv.cpp',
+        './src/components/data.fs.cpp',
 
         autogen_components,
 
@@ -194,6 +195,11 @@ cello_dep = cello_project.get_variable('cello_dep')
 
 shared_library('vs-cello', dependencies: [cello_dep])
 
+#TODO add also a vs_codegen to introduce that step within meson instead of keeping it separate.
+
+vs_copy_commons = find_program('./scripts/gen-commons.ts')
+vs_commons = custom_target('vs-commons', output: 'commons', command: [vs_copy_commons], depends:[])
+
 executable(
     'vs',
     [
@@ -202,6 +208,7 @@ executable(
         './src/app/updater.cpp',
     ],
     dependencies: [vs_fltk_dep],
+    link_depends: [vs_commons],
     override_options: ['c_std=gnuc23', 'cpp_std=c++23'],
 )
 

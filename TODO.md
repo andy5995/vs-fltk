@@ -25,7 +25,7 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
 - [x] Add special logging to generate output used by more complex tests. They must also be exposed to scripts.  
       These logs are only recorded if VS_TEST_DEBUG is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test. 
 - [ ] In the root of app or components search for `xmlns` attributes, and define local namespaces based on `vs`, `vs.templ` & `vs.fltk`.
-- [ ] Evaluate and check if possible to replace sqlite with https://github.com/tursodatabase/libsql as it looks like the better fork
+- [ ] Evaluate and check if possible to replace sqlite with https://github.com/tursodatabase/libsql as it looks like the better fo
 
 ### Scripting
 - [ ] Expose path and the fetcher to embedded script at some level.

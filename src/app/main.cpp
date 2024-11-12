@@ -24,32 +24,48 @@ using namespace vs;
 
 
 int run(const char* path, const char *entry, const char* profile){
-   globals::policy.inherit(policies_t::from_env());
-   globals::policy.debug();
-   globals::path_env = mk_env(path, entry);
-        std::cout<<"\n--------- paths ---------\n";
-        std::cout <<"cwd:      "<<globals::path_env.cwd.as_string()<<"\n"
-                  <<"app:      "<<globals::path_env.app_path.as_string()<<"\n"
-                  <<"root:     "<<globals::path_env.root.as_string()<<"\n"
-                  <<"appdata:  "<<globals::path_env.appdata_path.as_string()<<"\n"
-                  <<"packages: "<<globals::path_env.packages_path.as_string()<<"\n"
-                  <<"tmp:      "<<globals::path_env.tmp_path.as_string()<<"\n";
+  globals::policy.debug();  //To set an initial record in the debug file.
+  globals::policy.inherit(policies_t::from_env());
+  globals::path_env = mk_env(path, entry);
 
-        std::filesystem::create_directories(globals::path_env.appdata_path.location);
-        std::filesystem::create_directories(globals::path_env.packages_path.location);
-        //std::filesystem::create_directories(globals::path_env.tmp_path.as_string()); TODO: enable once it has unique suffix
+  std::cout<<"\n--------- paths ---------\n";
+  std::cout <<"cwd:      "<<globals::path_env.cwd.as_string()<<"\n"
+            <<"app:      "<<globals::path_env.app_path.as_string()<<"\n"
+            <<"root:     "<<globals::path_env.root.as_string()<<"\n"
+            <<"appdata:  "<<globals::path_env.appdata_path.as_string()<<"\n"
+            <<"packages: "<<globals::path_env.packages_path.as_string()<<"\n"
+            <<"tmp:      "<<globals::path_env.tmp_path.as_string()<<"\n";
 
-        try{
-            app_loader loader(profile, entry);
-            auto t= loader.run();
-            std::cout<<"\n";
-            return t;
-        }
-        catch(const char* exception){
-          std::cerr<<"Error"<< exception<<"\n";
-          return 1;
-        }
+  //std::filesystem::create_directories(globals::path_env.tmp_path.as_string()); TODO: enable once it has unique suffix
 
+
+  try{
+    std::filesystem::create_directories(globals::path_env.appdata_path.location);
+    std::filesystem::create_directories(globals::path_env.packages_path.location);
+    std::string db_path;
+    {
+      auto t = getenv("VS_DB");
+      if(t!=nullptr)db_path=t;
+      else db_path=globals::path_env.appdata_path.location+"db.sqlite";
+
+      if(!std::filesystem::exists(db_path)){
+        if(t==nullptr)std::filesystem::copy_file(globals::path_env.app_path.location+"commons/db.sqlite",db_path);
+      }
+    }
+
+    app_loader loader(profile, entry);
+    auto t= loader.run();
+    std::cout<<"\n";
+    return t;
+  }
+  catch(const char* exception){
+    std::cerr<<"Error: "<< exception<<"\n";
+    return 1;
+  }
+  catch(const std::exception& exception){
+    std::cerr<<"Error: "<< exception.what()<<"\n";
+    return 1;
+  }
 }
 
 int main(int argc, char **argv) {
