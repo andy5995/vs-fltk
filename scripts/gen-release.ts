@@ -1,10 +1,11 @@
 #!/bin/env bun
+//TODO: To be deprecated in favour of full meson integration
+
 import { $ } from "bun"
 /**
  * Prepare a binary release for the project in ./dist.
  */
 
-//TODO: Extend to other targets, currently linux only because of some hardcoded values.
 
 const RELEASE_TYPE: 'linux' | 'windows' | 'macos' = 'linux'
 

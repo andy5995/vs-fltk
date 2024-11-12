@@ -182,7 +182,8 @@ vs_fltk = shared_library(
     include_directories: include_dirs,
     override_options: ['c_std=gnu23', 'cpp_std=gnu++23'],
     cpp_args: vs_fltk_flags,
-    c_args: vs_fltk_flags
+    c_args: vs_fltk_flags,
+    install: true
 )
 
 vs_fltk_dep = declare_dependency(
@@ -196,9 +197,12 @@ cello_dep = cello_project.get_variable('cello_dep')
 shared_library('vs-cello', dependencies: [cello_dep])
 
 #TODO add also a vs_codegen to introduce that step within meson instead of keeping it separate.
+#I need to run it not from the builddir but from the root.
+#vs_codegen_cmd = find_program('./scripts/codegen/index.ts')
+#vs_codegen = custom_target(command: 'vs-codegen', output: 'vs-codegen', command: [vs_codegen_cmd], depends:[])
 
-vs_copy_commons = find_program('./scripts/gen-commons.ts')
-vs_commons = custom_target('vs-commons', output: 'commons', command: [vs_copy_commons], depends:[])
+vs_commons_cmd = find_program('./scripts/gen-commons.ts')
+vs_commons = custom_target('vs-commons', output: 'commons', command: [vs_commons_cmd], depends:[])
 
 executable(
     'vs',
@@ -210,6 +214,7 @@ executable(
     dependencies: [vs_fltk_dep],
     link_depends: [vs_commons],
     override_options: ['c_std=gnuc23', 'cpp_std=c++23'],
+    install: true
 )
 
 executable(
@@ -220,7 +225,25 @@ executable(
     dependencies: [vs_fltk_dep],
 )
 
-subdir(['./components/'])
 subdir(['./experiments/'])
 subdir(['./test/'])
 subdir(['./benchmark/'])
+
+# Install stuff
+
+install_headers(['./include/cbindings/vs.h','./include/cbindings/components.autogen.h','./include/cbindings/module.modulemap'], preserve_path: false, subdir: 'vs-fltk')
+
+install_subdir('commons', exclude_files:['.gitignore'], install_dir:'share/vs-fltk',strip_directory:true)
+install_subdir('docs',install_dir:'share/vs-fltk')
+install_subdir('examples',install_dir:'share/vs-fltk')
+install_subdir('bindings',install_dir:'share/vs-fltk')
+install_data(['./LICENCE.md','./README.md', './RELEASE.md'],install_dir:'share/vs-fltk/')
+
+#install_man()
+
+pconf = import('pkgconfig')
+pconf.generate(
+  vs_fltk,
+  description: 'VS fltk library (C interface only)',
+  url: 'https://pugixml.org/',
+)

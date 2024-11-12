@@ -10,6 +10,7 @@
 #include <mutex>
 #include <vector>
 
+#include <iostream>
 #include <pugixml.hpp>
 
 //Progressive Unique ID

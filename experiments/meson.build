@@ -3,6 +3,7 @@ executable(
     ['./test-enums.cpp'],
     dependencies: [],
     override_options: ['c_std=c11', 'cpp_std=c++20'],
+    install:false
 )
 
 executable(
@@ -10,6 +11,7 @@ executable(
     ['./test-parallel-load.cpp'],
     dependencies: [pugixml_dep],
     override_options: ['c_std=c11', 'cpp_std=c++20'],
+    install:false
 )
 
 executable(
@@ -17,6 +19,7 @@ executable(
     ['./test-xml-as-map.cpp'],
     dependencies: [pugixml_dep],
     override_options: ['c_std=c11', 'cpp_std=c++20'],
+    install:false
 )
 
 executable(
@@ -24,5 +27,6 @@ executable(
     ['./preprocessor.cpp'],
     dependencies: [pugixml_dep],
     override_options: ['cpp_std=c++20'],
-    c_args: ['-Wvla-cxx-extension']
+    c_args: ['-Wvla-cxx-extension'],
+    install:false
 )

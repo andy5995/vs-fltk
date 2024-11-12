@@ -13,7 +13,7 @@
     "vs.example": "meson compile -C build/ vs:executable && ./build/vs run ./examples/example-0.xml",
     "test": "meson test -C build/ --suite=vs-fltk",
     "benchmark": "meson test --benchmark -C build/ --suite=vs-fltk",
-    "meson-install": "meson install",
+    "meson-install": "meson install -C build/",
     "prepare-release": "bun ./scripts/gen-release.ts"
   },
   "dependencies": {
