@@ -16,7 +16,7 @@ app_loader::app_loader(const char *profile, const char* path){
     pugi::xml_document doc;
     
     if(profile!=nullptr){
-      std::string profile_path = (globals::path_env.appdata_path.as_string()+profile+".xml");
+      std::string profile_path = (globals::path_env.userdata_path.as_string()+profile+".xml");
       pugi::xml_parse_result result = doc.load_file(profile_path.c_str());
       if(!result){
         std::cout << "XML [" << profile_path << "] parsed with errors, attr value: [" << doc.child("node").attribute("attr").value() << "]\n";
@@ -26,7 +26,7 @@ app_loader::app_loader(const char *profile, const char* path){
       }
     }
     else{
-      std::string profile_path = (globals::path_env.appdata_path.as_string()+"default.xml");
+      std::string profile_path = (globals::path_env.userdata_path.as_string()+"default.xml");
       pugi::xml_parse_result result = doc.load_file(profile_path.c_str());
       if(!result){
         std::cout << "XML [" << profile_path << "] parsed with errors, attr value: [" << doc.child("node").attribute("attr").value() << "]\n";

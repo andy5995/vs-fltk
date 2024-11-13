@@ -29,24 +29,24 @@ int run(const char* path, const char *entry, const char* profile){
   globals::path_env = mk_env(path, entry);
 
   std::cout<<"\n--------- paths ---------\n";
-  std::cout <<"cwd:      "<<globals::path_env.cwd.as_string()<<"\n"
-            <<"app:      "<<globals::path_env.app_path.as_string()<<"\n"
-            <<"root:     "<<globals::path_env.root.as_string()<<"\n"
-            <<"appdata:  "<<globals::path_env.appdata_path.as_string()<<"\n"
-            <<"packages: "<<globals::path_env.packages_path.as_string()<<"\n"
-            <<"tmp:      "<<globals::path_env.tmp_path.as_string()<<"\n";
+  std::cout <<"cwd:  "<<globals::path_env.cwd.as_string()<<"\n"
+            <<"app:  "<<globals::path_env.app_path.as_string()<<"\n"
+            <<"vs:   "<<globals::path_env.root.as_string()<<"\n"
+            <<"data: "<<globals::path_env.userdata_path.as_string()<<"\n"
+            <<"repo: "<<globals::path_env.packages_path.as_string()<<"\n"
+            <<"tmp:  "<<globals::path_env.tmp_path.as_string()<<"\n";
 
   //std::filesystem::create_directories(globals::path_env.tmp_path.as_string()); TODO: enable once it has unique suffix
 
 
   try{
-    std::filesystem::create_directories(globals::path_env.appdata_path.location);
+    std::filesystem::create_directories(globals::path_env.userdata_path.location);
     std::filesystem::create_directories(globals::path_env.packages_path.location);
     std::string db_path;
     {
       auto t = getenv("VS_DB");
       if(t!=nullptr)db_path=t;
-      else db_path=globals::path_env.appdata_path.location+"db.sqlite";
+      else db_path=globals::path_env.userdata_path.location+"db.sqlite";
 
       if(!std::filesystem::exists(db_path)){
         if(t==nullptr)std::filesystem::copy_file(globals::path_env.app_path.location+"commons/db.sqlite",db_path);
@@ -70,7 +70,7 @@ int run(const char* path, const char *entry, const char* profile){
 
 int main(int argc, char **argv) {
   if(argc==1){
-    return run(argv[0],"./commons/hub.xml",nullptr);       
+    return run(argv[0],"vs://hub.xml",nullptr);       
   }
   else{
     if(strcmp(argv[1],"run")==0){
@@ -105,10 +105,10 @@ int main(int argc, char **argv) {
         return run(argv[0],argv[3],argv[2]);       
     }
     else if(strcmp(argv[1],"editor")==0){
-        return run(argv[0],"./commons/editor.xml",nullptr);       
+        return run(argv[0],"vs://editor.xml",nullptr);       
     }
     else if(strcmp(argv[1],"hub")==0){
-        return run(argv[0],"./commons/hub.xml",nullptr);       
+        return run(argv[0],"vs://hub.xml",nullptr);       
     }
     else if(strcmp(argv[1],"help")==0){
         std::cerr<<"Not implemented\n";
@@ -116,6 +116,7 @@ int main(int argc, char **argv) {
     }
     else{
       std::cerr<<"Unrecognized option\n";
+      std::cerr<<argv[1]<<"\n";
     }
   }
 

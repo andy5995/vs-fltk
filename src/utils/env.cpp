@@ -1,5 +1,6 @@
 
 #include "FL/Enumerations.H"
+#include "utils/paths.hpp"
 #include "version.hpp"
 #include <cstdio>
 #include <unistd.h>
@@ -16,6 +17,7 @@
 #include <curl/curl.h>
 #endif
 
+#include <globals.hpp>
 #include <utils/env.hpp>
 
 namespace vs{
@@ -37,11 +39,12 @@ path_env_t mk_env(const char* arg0,const char* arg1){
 
   main_env.cwd={rpath_type_t::FS,buffer};
 
-  if(arg0[0]=='/'){main_env.app_path={rpath_type_t::FS,resolve_path::normalizer("",arg0,false).second};main_env.app_path=main_env.app_path.base_dir();}
-  else {main_env.app_path={rpath_type_t::FS,resolve_path::normalizer(buffer,arg0,true).second};main_env.app_path=main_env.app_path.base_dir();}
-
   //TODO: At the moment only local files with this design
-  main_env.root={rpath_type_t::FS,resolve_path::normalizer(buffer,arg1,true, true).second};
+  {
+    auto t = getenv("VS_COMMONS_DIR");
+    if(t!=nullptr) main_env.root={rpath_type_t::FS,resolve_path::normalizer(t,"",true, true).second};
+    else  main_env.root={rpath_type_t::FS,resolve_path::normalizer(buffer,"commons/foo.bar",true, true).second};
+  }
 
   const char *homedir = "";
   if ((homedir = getenv("HOME")) == NULL) {
@@ -51,11 +54,18 @@ path_env_t mk_env(const char* arg0,const char* arg1){
 
   //In theory homedir should have the `/` at the end, and the normalizer is not expecting this format with child having the trailing '/'. 
   main_env.packages_path = {rpath_type_t::FS,resolve_path::normalizer(_homedir.c_str(),"/.vs-fltk/packages",true).second + "/"};
-  main_env.appdata_path = {rpath_type_t::FS,resolve_path::normalizer(_homedir.c_str(),"/.vs-fltk",true).second  + "/"};
+  main_env.userdata_path = {rpath_type_t::FS,resolve_path::normalizer(_homedir.c_str(),"/.vs-fltk",true).second  + "/"};
 
   //TODO: add random subpath
   main_env.tmp_path={rpath_type_t::FS,"/tmp/"};
 
+  //Finally compute path for the requested file
+  resolve_path resolver(globals::policy,main_env,main_env.cwd);
+  {
+    auto t = resolver(resolve_path::from_t::NATIVE_CODE,arg1);
+    if(t.first!=resolve_path::reason_t::OK)exit(2); //TODO: Handle case
+    else main_env.app_path=t.second;
+  }
   return main_env;
 }
 

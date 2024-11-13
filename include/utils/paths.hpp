@@ -29,7 +29,7 @@ struct vpath_type_t{
     };
 
     static inline constexpr const char* prefixes[] = {
-        "",      
+        "[ERROR]",      
         "this://",      //Local to the current component
         "file://",      //Local fs
         "http://",      //Unprotected http traffic
@@ -58,7 +58,7 @@ struct rpath_type_t{
     };
 
     static inline constexpr const char* prefixes[] = {
-        "",      
+        "[ERROR]",      
         "file://",      //Local fs
         "http://",      //Unprotected http traffic
         "https://",     //Encrypted http traffic
@@ -78,23 +78,7 @@ struct scoped_vpath_t{
         return std::string(vpath_type_t::prefixes[type])+location;
     }
 
-    void from_string(const char* src){
-        vprefix(vpath_type_t::THIS)
-        else vprefix(vpath_type_t::DATA)
-        else vprefix(vpath_type_t::REPO)
-        else vprefix(vpath_type_t::APP)
-        else vprefix(vpath_type_t::CWD)
-        else vprefix(vpath_type_t::FS)
-        else vprefix(vpath_type_t::HTTP)
-        else vprefix(vpath_type_t::HTTPS)
-        else vprefix(vpath_type_t::GEMINI)
-        else vprefix(vpath_type_t::TMP)
-        else vprefix(vpath_type_t::VS)
-        else vprefix(vpath_type_t::SOCKET)
-        else vprefix(vpath_type_t::STORAGE)
-        else vprefix(vpath_type_t::SESSION)
-        else {type=vpath_type_t::THIS;location=src;}
-    }
+    void from_string(const char* src);
 
     scoped_vpath_t to_base_dir(){
         scoped_vpath_t ret = *this;
@@ -136,13 +120,13 @@ struct scoped_rpath_t{
 
 //All these dirs are assumed to be normalized already
 struct path_env_t{
-    scoped_rpath_t root;
+    scoped_rpath_t root;            //Location of VS files
 
-    scoped_rpath_t cwd;
-    scoped_rpath_t app_path;
-    scoped_rpath_t tmp_path;       //Derived from system
-    scoped_rpath_t packages_path;  //Derived from home
-    scoped_rpath_t appdata_path;   //Derived from home
+    scoped_rpath_t cwd;             //Current working directory
+    scoped_rpath_t app_path;        //Path of the current app root
+    scoped_rpath_t tmp_path;        //Derived from system
+    scoped_rpath_t packages_path;   //Derived from home
+    scoped_rpath_t userdata_path;   //Derived from home
 
     scoped_rpath_t socket_file;
 };

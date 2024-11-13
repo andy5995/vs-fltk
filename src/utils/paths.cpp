@@ -3,6 +3,27 @@
 
 namespace vs{
 
+void scoped_vpath_t::from_string(const char* src){
+        vprefix(vpath_type_t::THIS)
+        else vprefix(vpath_type_t::DATA)
+        else vprefix(vpath_type_t::REPO)
+        else vprefix(vpath_type_t::APP)
+        else vprefix(vpath_type_t::CWD)
+        else vprefix(vpath_type_t::FS)
+        else vprefix(vpath_type_t::HTTP)
+        else vprefix(vpath_type_t::HTTPS)
+        else vprefix(vpath_type_t::GEMINI)
+        else vprefix(vpath_type_t::TMP)
+        else vprefix(vpath_type_t::VS)
+        else vprefix(vpath_type_t::SOCKET)
+        else vprefix(vpath_type_t::STORAGE)
+        else vprefix(vpath_type_t::SESSION)
+        else {
+            type=vpath_type_t::THIS;
+            location=src;
+        }
+    }
+
 std::pair<bool, std::string> resolve_path::normalizer(const char *parent, const char *child, bool allow_exit, bool base_dir){
     int parent_len=strlen(parent);
     int child_len=strlen(child);
@@ -84,9 +105,9 @@ std::pair<resolve_path::reason_t::t,scoped_rpath_t> resolve_path::operator()(fro
         else return {reason_t::ROOT_REACHED, {rpath_type_t::NONE, ""}};
     }
     else if(tmp.type==vpath_type_t::DATA){
-        auto normalized = normalizer(env.appdata_path.location.data(), tmp.location.data(), false);
+        auto normalized = normalizer(env.userdata_path.location.data(), tmp.location.data(), false);
         if(normalized.first){
-            return {reason_t::OK,{env.appdata_path.type,normalized.second}};
+            return {reason_t::OK,{env.userdata_path.type,normalized.second}};
         }
         else return {reason_t::ROOT_REACHED, {rpath_type_t::NONE, ""}};
     }
@@ -98,7 +119,7 @@ std::pair<resolve_path::reason_t::t,scoped_rpath_t> resolve_path::operator()(fro
         else return {reason_t::ROOT_REACHED, {env.tmp_path.type, ""}};
     }
     else if(tmp.type==vpath_type_t::VS){
-        auto normalized = normalizer(env.app_path.location.data(), tmp.location.data(), false);
+        auto normalized = normalizer(env.root.location.data(), tmp.location.data(), false);
         if(normalized.first){
             return {reason_t::OK,{rpath_type_t::FS,normalized.second}};
         }
@@ -110,9 +131,9 @@ std::pair<resolve_path::reason_t::t,scoped_rpath_t> resolve_path::operator()(fro
         else return {reason_t::POLICY_VIOLATION, {rpath_type_t::NONE, ""}};
     }
     else if(tmp.type==vpath_type_t::APP){
-        auto normalized = normalizer(env.root.location.data(), tmp.location.data(), false);
+        auto normalized = normalizer(env.app_path.location.data(), tmp.location.data(), false);
         if(normalized.first){
-            return {reason_t::OK,{env.root.type,normalized.second}};
+            return {reason_t::OK,{env.app_path.type,normalized.second}};
         }
         else return {reason_t::ROOT_REACHED, {rpath_type_t::NONE, ""}};
     }

@@ -14,7 +14,8 @@ libtcc = library(
   'libtcc',
   src,
   include_directories: [include_dir],
-  install: not meson.is_subproject(),
+  #install: not meson.is_subproject(),
+  install: true
 )
 
 libtcc_dep = declare_dependency(
@@ -27,6 +28,6 @@ pkg_mod = import('pkgconfig')
 pkg_mod.generate(
   libtcc,
   name: 'libtcc',
-  description: 'An incremental parsing system for programming tools',
+  description: 'A tiny C compiler',
   libraries: libtcc,
 )
