@@ -46,7 +46,12 @@ To run the dev demo where features under development are tested:
 bun run vs.example
 ```
 
-`meson-install` is not implemented yet. `prepare-release` works, but it is only meant for automatic pipelines at this stage.
+`meson-install` is now implemented & tested. 
+
+> [!WARNING]  
+> Don't install it via `meson install ...` without a custom `DESTDIR` set, like it is done in the `package.json` script.  
+> Some library names will most surely clash with those already installed on your system, and will be overridden.  
+> `vs.fltk` is using very recent versions which have not been rolled out yet, or even worse, custom ones.
 
 ### Patches
 
