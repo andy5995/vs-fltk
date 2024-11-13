@@ -10,3 +10,4 @@ subprojects/*
 /bun.lockb
 /private
 /logs
+/.flatpak-builder

@@ -1,13 +1,19 @@
 id: com.karurochari.vs
 runtime: org.freedesktop.Platform
-runtime-version: '23.08'
+runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
+sdk-extensions :
+ - "org.freedesktop.Sdk.Extension.llvm19"
+ - "org.freedesktop.Sdk.Extension.swift6" 
 command: vs
+modules:
+  - name: bun
 modules:
   - name: vs-fltk
     buildsystem: meson
-#    build-commands:
-#l      - install -Dm755 hello.sh /app/bin/hello
+    #Sadly not working as it should
+    #make-args:
+    #  - build/ --buildtype=release --native-file toolchains/clang.ini
     sources:
       - type: dir
         path: .
@@ -27,4 +33,5 @@ finish-args:
   - --socket=pulseaudio
   # Home folder
   - --filesystem=home/.vs-fltk
-#cleanup:
+cleanup:
+  - '*'

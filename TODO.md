@@ -32,6 +32,8 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
   - [ ] Man page
   - [ ] deb (mounted on opt, as most dependencies are needed recent and potentially forked)
   - [ ] flatpak
+    - [ ] Swift6 is added, but meson cannot find swiftc. Why?
+    - [ ] Unable to append args to meson setup
 
 ### Scripting
 - [ ] Expose path and the fetcher to embedded script at some level.
