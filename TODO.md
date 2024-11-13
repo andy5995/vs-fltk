@@ -25,7 +25,13 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
 - [x] Add special logging to generate output used by more complex tests. They must also be exposed to scripts.  
       These logs are only recorded if VS_TEST_DEBUG is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test. 
 - [ ] In the root of app or components search for `xmlns` attributes, and define local namespaces based on `vs`, `vs.templ` & `vs.fltk`.
-- [ ] Evaluate and check if possible to replace sqlite with https://github.com/tursodatabase/libsql as it looks like the better fo
+- [ ] Evaluate and check if possible to replace sqllite with https://github.com/tursodatabase/libsql as it looks like the better (it supports alteration of foreign keys for example)
+- [ ] Installation!
+  - [x] Rewrite TS stuff in meson directly
+  - [x] Update internal paths to work in both build and installed mode.
+  - [ ] Man page
+  - [ ] deb (mounted on opt, as most dependencies are needed recent and potentially forked)
+  - [ ] flatpak
 
 ### Scripting
 - [ ] Expose path and the fetcher to embedded script at some level.
@@ -42,7 +48,7 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
 - [x] Add debug component
 
 ### Paths
-- [x] Extend support for more virtual paths (all but those based on sqlite which will be handled later on)
+- [x] Extend support for more virtual paths (all but those based on sqllite which will be handled later on)
 
 
 ### Dynamic Library linking

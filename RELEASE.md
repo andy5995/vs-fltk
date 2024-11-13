@@ -45,3 +45,4 @@ This is what has been implemented so far (and some missing parts for context):
 - Very early and partial c bindings for `vs.fltk`.
 - A simple in-memory caching for files, compiled scripts & parsed XML trees. The more complex sqlite-based cache has no implementation yet.
 - An early (partial) implementation of policies and coarse-grained flags as a temporary stopgap.
+- Install scripts mostly implemented via meson, replacing the extra ts step at the end.

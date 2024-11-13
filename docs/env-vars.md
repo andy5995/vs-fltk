@@ -33,3 +33,4 @@ Policy level:
 | VS_PARSER_MODE | `balanced,low-mem` | It changes the type of parse used, mostly for compatibility with lower spec hardware. `balanced` by default         |
 | VS_NO_CACHE    | boolean            | Disable any kind of caching & persistence. Some sort of "private" mode.                                             |
 | VS_NO_THEME    | boolean            | Disable any kind of custom theming                                                                                  |
+| VS_PREFIX_DIR  | fs-path            | Define a base root not in `/`. Used to run vs when installed as portable on a system. Also good for testing.        |
