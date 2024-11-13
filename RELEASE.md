@@ -1,16 +1,24 @@
 ## v0.1.1-alpha
 
-This alpha release is not meant to be usable nor well documented.  
+This first alpha release is not meant to be usable in a real-world scenario nor sufficiently documented.  
+The actual objective is to implement & test the full pipeline which is involved in:
+- building
+- installing
+- generating flatpak (possibly packages as well)
 It is just needed to implement a complete building & testing pipeline to support future releases.  
 
-Still, `vs` is somewhat usable as a technical preview, as long as you are able to replicate its build process locally.  
-I am seeking feedback, so you are very welcome to test it along.
+Still, `vs` is somewhat usable as a technical preview.  
+For now the build system is not well documented and hard to replicate. Also, installing it on most distribution might cause issues with your dependencies.  Still, you should be able to try it out via flatpak.  
+I am seeking feedback, so you are very welcome to test it along!
 
-You can check what is the bigger picture in terms of future developments and expected features on the [readme](./README.md)) and the [milestone](./docs/milestones.md) page.
-This is what has been implemented so far (and some missing parts for context):
+For reference, you can check what is the [intended scope](./README.md) of this project in terms of future developments and expected features.  
+The [milestone](./docs/milestones.md) page page also contained some related information.  
+
+This is what has been implemented so far (and some missing feature for context):
 
 - Basic CLI features for the command `vs`. These are not expected to change for quite a while.
 - Code generation infrastructure for fltk components and derived schemas.
+- Infrastructure to handle the user sqlite database with proper schemas and migration.
 - A small set of components from fltk being exposed, like buttons, labels, windows etc.
 - Several features of `vs` exposed as XML elements:
     - [x] `mixin`
@@ -45,4 +53,5 @@ This is what has been implemented so far (and some missing parts for context):
 - Very early and partial c bindings for `vs.fltk`.
 - A simple in-memory caching for files, compiled scripts & parsed XML trees. The more complex sqlite-based cache has no implementation yet.
 - An early (partial) implementation of policies and coarse-grained flags as a temporary stopgap.
-- Install scripts mostly implemented via meson, replacing the extra ts step at the end.
+- Install process mostly implemented via meson.
+- ~~Functional flatpak build~~ not yet
