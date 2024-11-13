@@ -46,13 +46,6 @@ To run the dev demo where features under development are tested:
 bun run vs.example
 ```
 
-`meson-install` is now implemented & tested. 
-
-> [!WARNING]  
-> Don't install it via `meson install ...` without a custom `DESTDIR` set, like it is done in the `package.json` script.  
-> Some library names will most surely clash with those already installed on your system, and will be overridden.  
-> `vs.fltk` is using very recent versions which have not been rolled out yet, or even worse, custom ones.
-
 ### Patches
 
 Notice: this issue was only observed with `zig` as the backend and cannot be easily reproduced.
@@ -63,6 +56,22 @@ If not using a precompiled version of sqlite on your system, the `meson.build` o
 ```
 
 at the end of the library generation. The issue is tracked [here](https://github.com/mesonbuild/wrapdb/issues/1747)
+
+## Installation
+
+> [!WARNING]  
+> Don't install it via `meson install ...` without a custom `DESTDIR` set, like it is done in the `package.json` script.  
+> Some library names will most surely clash with those already installed on your system, and will be overridden.  
+> `vs.fltk` is using very recent versions which have not been rolled out yet in most distribution. Or even worse, custom forks.
+
+`meson-install` is now implemented & tested. By default, it install everything in `./build/dist`.
+
+### Flatpak
+
+```sh
+flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+bun run flatpak-builder
+```
 
 ## A word about code generation
 
@@ -97,10 +106,10 @@ While imperfect, this quick variant avoids the reconfiguration of the full meson
 - in the `vs.fltk` C interface as well
 While using it you can define a key and value. The current timestamp at nanoseconds resolution is also automatically recorded.  
 Records are saved to a file with name `VS_TEST_DEBUG` if set, otherwise no output will be emitted. Older content is destroyed.  
-The file format is just a simple csv with horizontal tabs as separator of fields and newlines for rows. The order is *key*, *value* & *timestamp*.
+The file format is just a simple CSV with horizontal tabs as separator of fields and newlines for rows. The order is *key*, *value* & *timestamp*.
 
 `vs::globals::debug` should not be confused with the ordinary logging functions which are also exposed in similar ways, but which are generally contextual and they mostly output to `stdout`.
 
-## Environment Variables
+## Variables of environment
 They are frequently used for both *benchmarks* and *tests*.  
 They can also be useful for the developer while testing new functionality, so they have been all covered in [here](./env-vars.md) for reference.
