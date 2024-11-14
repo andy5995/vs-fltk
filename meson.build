@@ -122,7 +122,7 @@ vs_fltk_deps = [
     treesitter_dep,
 ]
 
-vs_fltk_flags = []
+vs_fltk_flags = ['-Wno-c23-extensions', '-Wno-vla-cxx-extension', '-Wno-unused-variable']
 
 if curl.found()
     vs_fltk_deps += [curl]

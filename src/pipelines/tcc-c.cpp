@@ -68,8 +68,8 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     script->add_sym("vs_resolve_symbol", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return symbol_ret_t {symbol_t::VOID, symbol_t::VOID, nullptr};return w->resolve_symbol(s); });
     script->add_sym("vs_apply_prop", (void *)+[](ui_base* w,const char* k, const char* v){if(w==nullptr)return -1;return w->apply_prop(k,v); });
     script->add_sym("vs_get_computed", (void *)+[](ui_base* w,const char* k, const char** v){if(w==nullptr)return -1;return w->get_computed(k,v); });
-    script->add_sym("vs_set", (void *)+[](ui_base* w,const char* k, const uint8_t* v){if(w==nullptr)return -1;return w->use_setter(w->resolve_symbol(k), v);});
-    script->add_sym("vs_get", (void *)+[](ui_base* w,const char* k, uint8_t** v){if(w==nullptr)return -1;return w->use_getter(w->resolve_symbol(k), v);});
+    script->add_sym("vs_set", (void *)+[](ui_base* w,const char* k, const value_t* v){if(w==nullptr)return -1;return w->use_setter(w->resolve_symbol(k), v);});
+    script->add_sym("vs_get", (void *)+[](ui_base* w,const char* k, value_t** v){if(w==nullptr)return -1;return w->use_getter(w->resolve_symbol(k), v);});
     
 
     // Fragments of stdlib

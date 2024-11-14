@@ -268,7 +268,7 @@ void ui_base::refresh_style(const char* local_mixins){
   }
 }
 
-int ui_base::use_getter(const symbol_ret_t& sym, uint8_t ** value){
+int ui_base::use_getter(const symbol_ret_t& sym, value_t ** value){
   symbol_ret_t::get_fn fn = (symbol_ret_t::get_fn)sym.symbol.symbol;
 
   if(sym.found_at->get_mode()==frame_mode_t::NATIVE){
@@ -287,7 +287,7 @@ int ui_base::use_getter(const symbol_ret_t& sym, uint8_t ** value){
   else {} //TODO: Add support for quickjs
   return 1;
 }
-int ui_base::use_setter(const symbol_ret_t& sym, const uint8_t * value){
+int ui_base::use_setter(const symbol_ret_t& sym, const value_t * value){
   symbol_ret_t::set_fn fn = (symbol_ret_t::set_fn)sym.symbol.symbol;
 
   if(sym.found_at->get_mode()==frame_mode_t::NATIVE){

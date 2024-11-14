@@ -22,5 +22,7 @@ struct vs_test_debug_t{
 };
 
 extern vs_test_debug_t debug;
+
+extern value_models_t value_models;
 }
 }
