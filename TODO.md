@@ -24,7 +24,9 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
 - [ ] Signal/event propagation mechanisms
 - [x] Add special logging to generate output used by more complex tests. They must also be exposed to scripts.  
       These logs are only recorded if VS_TEST_DEBUG is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test. 
-- [ ] In the root of app or components search for `xmlns` attributes, and define local namespaces based on `vs`, `vs.templ` & `vs.fltk`.
+- [ ] Namespace support
+  - [x] In the root of app or components search for `xmlns` attributes, and define local namespaces based on `vs`, `vs.templ` & `vs.fltk`.
+  - [ ] Codegen for reserved elements & attributes in the vs namespace. Like for `vs.fltk` but automatic
 - [ ] Evaluate and check if possible to replace sqllite with https://github.com/tursodatabase/libsql as it looks like the better (it supports alteration of foreign keys for example)
 - [ ] Installation!
   - [x] Rewrite TS stuff in meson directly
@@ -36,7 +38,7 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
     - [ ] Unable to append args to meson setup
 
 ### Scripting
-- [ ] Expose path and the fetcher to embedded script at some level.
+- [ ] Expose path and the fetcher to embedded script at some degree.
 
 ### Components
 - [x] Enable codegen
@@ -72,13 +74,13 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
 
 ### Caching
 
-- [ ] Caching all done (no SQLITE)
+- [ ] Caching all done (no SQLITE, for that there is a different milestone)
   - [x] Source files
     - [x] From fs
     - [x] From network
   - [ ] Pugi XML documents
     - [x] Cache support
-    - [ ] Support in parser
+    - [ ] Save XML trees while parsing
   - [x] Scripts 
 
 # Supported environments

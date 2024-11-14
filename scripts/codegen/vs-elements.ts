@@ -21,3 +21,5 @@ export const attributes=[
     'template',
     'mixins'
 ]
+
+//Generate ui-tree.xml.ns.autofrag.hpp and ui-tree.xml.ns.autofrag.cpp

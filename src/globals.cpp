@@ -24,5 +24,9 @@ void vs_test_debug_t::operator()(const char* field, const char* value){
     }
 }
 
+//TODO: Fill in with the basic types supported.
+value_models_t value_models;
+
+
 }
 }

@@ -51,6 +51,9 @@ public:
 
     int build();
 
+#   if __has_include("ui-tree.xml.ns.autofrag.hpp")
+        #include "ui-tree.xml.ns.autofrag.hpp"
+#   endif
 
     int load(const char* file, bool app, const pugi::xml_node* caller_node=nullptr, ui_base* caller_ui_node=nullptr, const scoped_rpath_t* caller_path=nullptr, const policies_t& base_policies=globals::policy);
 

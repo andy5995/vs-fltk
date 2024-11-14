@@ -27,6 +27,11 @@
 #include <components/autogen/index.hpp>
 #endif
 
+#if __has_include("ui-tree.xml.ns.autofrag.hpp")
+#include "ui-tree.xml.ns.autofrag.hpp"
+#endif
+
+
 //TODO: Add support for namespaces in macros
 #define mkNodeWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$name)==0){\
   auto t=build_base_widget<$class_name>(root,root_ui);\
@@ -164,6 +169,8 @@ int ui_xml_tree::build(){
     }
   }
   //TODO: Compile tag names based on these namespaces
+  //More or less like I am doing for the vs.templ stuff
+  
 
   ui_base* base;
 

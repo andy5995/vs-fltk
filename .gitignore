@@ -5,6 +5,7 @@ subprojects/*
 !subprojects/packagefiles/
 /wraps/cfltk
 *.autogen.*
+*.autofrag.*
 /dist/
 /node_modules/
 /bun.lockb

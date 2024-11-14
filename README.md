@@ -91,7 +91,7 @@ And oftentimes, we want to run them on very low spec Linux system, without resor
 
 `vs` is an attempt to bring together the best of the techniques and patterns we learned in modern UI frameworks & web technologies onto a native runtime with a miniscule footprint.
 
-Compared to other approaches, `vs` is extremely opinionated and tries to force just one way to make things right. It does not mean it is inflexible, just that it makes clear where complexity should be (spoiler, not in the UI). If you are coming from a less restrictive context you might find these limitations unpleasant at first, so I compiled a list of [frequently asked questions](./docs/faq.md) no one asked for, to make things easier.
+Compared to other approaches, `vs` is extremely opinionated and tries to enforce just one way to make things right. It does not mean it is inflexible, just that it makes clear where complexity should be (spoiler, not in the UI). If you are coming from a less restrictive context you might find these limitations unpleasant at first, so I compiled a list of [frequently asked questions](./docs/faq.md) no one asked for, to make things easier.
 
 ## Planned Features
 

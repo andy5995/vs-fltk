@@ -84,6 +84,12 @@ Any component shipped with `vs` (not those externally distributed in `/component
 During development, you might want to use `codegen.quick` in place of `codegen`, as long as you are not altering the files involved or their naming. Some changes in schemas can also be incompatible with `codegen.quick`, so if you don't observe what you expect, just perform a full refresh.  
 While imperfect, this quick variant avoids the reconfiguration of the full meson project, making your next build much faster.
 
+### Naming conventions
+- names following the pattern `**.autogen.*` are full c/cpp/h/hpp files to be included, compiled and/or linked.
+- names following the pattern `**.autofrag.*` are fragments introduced in the source of other files only.
+
+In both cases they are all not tracked by git.
+
 ## Structure of the repo
 
 - **src** where most of the source for **vs.app** and the **vs.fltk** library are located.

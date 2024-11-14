@@ -1,11 +1,31 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
+
 namespace vs{
 
 
 class frame;
 class ui_base;
+
+
+//TODO: Add static table of serializers/deserializers
+//Used by getters, setters and computed
+struct value_t{
+  enum types {} type;
+  size_t storage;
+};
+
+struct value_model_t{
+  int(*serialize)(value_t& obj, const char* src);
+  int(*deserialize)(const value_t& obj, const char** src, void*(*alloc)(size_t), void(*dealloc)(void*));
+};
+
+struct value_models_t{
+  std::vector<value_model_t> entires;
+  //TODO
+};
 
 enum class symbol_type_t{
   VOID, UNKNOWN, CALLBACK, DRAW, SETTER, GETTER, DISPATCHER
@@ -37,8 +57,8 @@ struct symbol_ret_t{
   typedef ui_base*(*ctx_apply_fn)(ui_base*);
   typedef void(*cb_fn)(ui_base*);
   typedef void(*draw_fn)(); //TODO: to be defined
-  typedef int(*set_fn)(const uint8_t* src);
-  typedef int(*get_fn)(uint8_t** src);
+  typedef int(*set_fn)(const value_t* src);
+  typedef int(*get_fn)(value_t** src);
 };
 
 enum class frame_type_t{
@@ -54,5 +74,6 @@ enum class frame_access_t{
 };
 
 typedef  symbol_mode_t frame_mode_t;
+
 
 }
