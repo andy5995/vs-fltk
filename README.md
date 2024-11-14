@@ -142,7 +142,6 @@ This project is based on the following dependencies:
 - [fltk](https://www.fltk.org/) the UI toolkit library used.
 - [fmt](https://github.com/fmtlib/fmt) to format strings and as printf replacement.
 - [pugixml](https://pugixml.org/) to parse xml.
-- [nlohmann-json](https://github.com/nlohmann/json) to parse json.
 - [mio](https://github.com/vimpunk/mio) memory mapping for loading files.
 - [hashlib](https://github.com/KaruroChori/hash-library) for cryptographic functions (and not).
 - [libuv](https://libuv.org/) for me not to care about portable code.
@@ -154,9 +153,11 @@ This project is based on the following dependencies:
 - [tcc](https://github.com/KaruroChori/tcc-vs) the embeddable C compiler used for C scripts.
 - [quickjs](https://github.com/quickjs-ng) the embeddable JS runtime used for JS scripts.
 - [lua](https://www.lua.org/) and [luajit](http://luajit.org/) to support Lua scripts.
-- [cello](https://libcello.org) an unholy macro machine for C to transform it into a dynamic language.
 - [wamr](https://github.com/bytecodealliance/wasm-micro-runtime) the embeddable WASM runtime used for scripts, portable compiled components & compilers.
+- [cello](https://libcello.org) an unholy macro machine for C to transform it into a dynamic language.
+
 
 ### For custom components
 - [treesitter](https://tree-sitter.github.io/tree-sitter/) to handle parsing of languages (used for some components and the self-hosted editor).
 - [md4c](https://github.com/mity/md4c) a library to parse markdown (not just to HTML).
+- [nlohmann-json](https://github.com/nlohmann/json) to parse json in some `data` directives

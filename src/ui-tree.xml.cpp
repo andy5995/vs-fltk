@@ -11,6 +11,7 @@
 #include <vs-templ.hpp>
 #include "ui-frame.hpp"
 #include "pipelines/tcc-c.hpp"
+#include "utils.hpp"
 #include "utils/paths.hpp"
 #include "utils/policies.hpp"
 #include <cstdarg>
@@ -153,6 +154,16 @@ int ui_xml_tree::build(){
     log(severety_t::CONTINUE, xml_root, "Unable to find a valid root in `%s`", fullname.as_string().c_str());
     return 1;
   }
+
+  //Detect namespaces defined on the root of the component
+  for(auto& prop : xml_root.attributes()){
+    if(templ::cexpr_strneqv(prop.name(), "xmlns:")){
+      if(strcmp(prop.value(),"vs.fltk")==0){this->set_namespace(namespaces_t::fltk, prop.name()+7);}
+      else if(strcmp(prop.value(),"vs.templ")==0){this->set_namespace(namespaces_t::s, prop.name()+7);}
+      else if(strcmp(prop.value(),"vs.core")==0){this->set_namespace(namespaces_t::vs, prop.name()+7);}
+    }
+  }
+  //TODO: Compile tag names based on these namespaces
 
   ui_base* base;
 
@@ -428,7 +439,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
         const auto &lang = root.attribute("lang").as_string();
         //TODO search for assigned compiler for a given language. Compiling pipeline must be generic and made uniform for each one of them.
       }
-      
+
       {
           log(severety_t::CONTINUE, root,
               "Unsupported language `%s` for frame type `%i`. The script will not be handled.",
