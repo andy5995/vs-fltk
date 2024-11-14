@@ -113,3 +113,12 @@ Within the context of `vs.fltk`, using templates involves two files:
 
 When importing or using a component which requires processing, it is compiled and replaces the original dataset before the building process in the UI continues.  
 You can find an example for a [dataset](../examples/test-templ.vs) & its associated [template](../examples/test-templ.tvs).
+
+# Data
+## General structure
+## Subtypes
+### CSV
+### FS
+### JSON
+### SQLITE
+### XML

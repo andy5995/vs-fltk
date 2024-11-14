@@ -113,3 +113,11 @@ The file format is just a simple CSV with horizontal tabs as separator of fields
 ## Variables of environment
 They are frequently used for both *benchmarks* and *tests*.  
 They can also be useful for the developer while testing new functionality, so they have been all covered in [here](./env-vars.md) for reference.
+
+## About exceptions & memory allocations
+Exceptions are fully allowed in the CLI at `/src/app`.  
+However, they are strongly discouraged anywhere else in the library code, and it is possible they will be fully disabled via `-fno-exceptions` at some point. The main reason is that the UI should be fault-tolerant and provide as much functionality as possible even if parts of it are broken, like malformed XML files, some scripts failing compilation, missing resources and so on. Exceptions, in this sense, are internally handled and semantically supported by providing subtrees to be rendered in case of failure events.   
+Exceptions should only be used in those cases when the application **must** stop, either because the error is not recoverable or because it would leave the rest of the application in an inconsistent state.  
+
+As for memory allocations, spawning small dynamic objects is also discouraged. If possible, stack allocations are a better alternative. Arrays with variable length on stack are totally fine to be used in place of local objects allocated on heap.  
+`std::string` is also highly discouraged, make sure `std::string_view` is used instead whenever possible.

@@ -142,6 +142,8 @@ This project is based on the following dependencies:
 - [fltk](https://www.fltk.org/) the UI toolkit library used.
 - [fmt](https://github.com/fmtlib/fmt) to format strings and as printf replacement.
 - [pugixml](https://pugixml.org/) to parse xml.
+- [nlohmann-json](https://github.com/nlohmann/json) to parse json.
+- [mio](https://github.com/vimpunk/mio) memory mapping for loading files.
 - [hashlib](https://github.com/KaruroChori/hash-library) for cryptographic functions (and not).
 - [libuv](https://libuv.org/) for me not to care about portable code.
 - [vs.templ](https://github.com/karurochori/vs-templ) a library to parse markdown (not just to HTML).

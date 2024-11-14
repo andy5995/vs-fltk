@@ -342,8 +342,9 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
 
       bool is_module=false;
 
+      auto script_type=root.attribute("type").as_string("");
       //Check if it is a module or single user; if module check for cache and use it.
-      if(strcmp(root.attribute("type").as_string(""),"module")==0){
+      if(strcmp(script_type,"module")==0){
         is_module=true;
         auto filename = this->fullname.as_string();
 
@@ -356,6 +357,10 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
           //All done, precomputed and rightfully applied!
           continue;
         }
+      }
+      else if(strcmp(script_type,"quick")==0){
+        //TODO: Quick scripts are modules for which the code is the body of a callback function which will be automatically assigned. 
+        //They can be used to write code which is much more compact.
       }
 
       //Information for linking
@@ -371,9 +376,8 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
         }
       }
 
-
-      //I am ignoring the one of the tree. Mode is now widget based and not component based.
       auto mode =current->get_local_frame()->get_mode();
+
       if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::VOID) {          
         const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
         if (strcmp(lang, "c") == 0) {
@@ -414,6 +418,17 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
           continue;
         }
       }
+      if (mode == frame_mode_t::LUA || mode == frame_mode_t::VOID) {
+        const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::QUICKJS?"lua":"");
+        if (strcmp(lang, "lua") == 0) {
+          //TODO
+        }
+      }
+      if (mode == frame_mode_t::WASM || mode == frame_mode_t::VOID) {
+        const auto &lang = root.attribute("lang").as_string();
+        //TODO search for assigned compiler for a given language. Compiling pipeline must be generic and made uniform for each one of them.
+      }
+      
       {
           log(severety_t::CONTINUE, root,
               "Unsupported language `%s` for frame type `%i`. The script will not be handled.",

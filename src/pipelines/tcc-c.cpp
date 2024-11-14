@@ -19,12 +19,7 @@ void tcc_log_symbol_func_xml(const pugi::xml_node& ctx, const char * msg, const 
 }
 
 /*TODO: 
-To be changes so that it can do everything in a single function.
-- vs::ui_base* obj if set to nullptr is equivalent to be in a module configuration
-- vs::ui_base* component_root is not needed. In the past I wanted to compile along with its script.global, but that is a bad idea.
-- const pugi::xml_node& node to be reworked in a generic context. A reference to a valid error function should also be provided as parameters.
-- const char *link_with is good
--  bool is_runtime
+Make it portable (at the moment path is fixed)
 */
 
 //'/home/checkroom/Documents/projects/vs-fltk/subprojects/libtcc/tcc'  test.c  -I../../subprojects/libtcc/include/ -L.  -L../../subprojects/libtcc -lapp 
@@ -49,7 +44,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     script->add_sysinclude_path("./subprojects/libtcc/include/");
     script->add_include_path("./bindings/native/include");
     
-    //script->add_lib("d");
+    //script->add_lib("ld");
     //script->add_lib("tcc1");
     //script->add_lib("c");
 

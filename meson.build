@@ -65,6 +65,9 @@ fmt_dep = fmt_proj.dependency('fmt')
 hashlib_proj = subproject('hashlib')
 hashlib_dep = hashlib_proj.get_variable('hashlib_dep')
 
+json_proj = subproject('nlohmann_json')
+json_dep = json_proj.get_variable('nlohmann_json_dep')
+
 pugixml_proj = subproject('pugixml')
 pugixml_dep = pugixml_proj.get_variable('pugixml_dep')
 
@@ -80,6 +83,10 @@ libtcc_dep = libtcc_proj.get_variable('libtcc_dep')
 
 uv_proj = subproject('libuv')
 uv_dep = uv_proj.get_variable('libuv_dep')
+
+
+mio_proj = cmake.subproject('mio')
+mio_dep = mio_proj.dependency('mio')
 
 #TODO convert to internald dep
 sqlitecpp_dep = subproject('sqlitecpp').get_variable('sqlitecpp_dep')
@@ -99,8 +106,10 @@ vs_fltk_deps = [
     libfltk_forms_dep,
 
     pugixml_dep,
+    json_dep,
     vs_templ_dep,
     fmt_dep,
+    mio_dep,
     uv_dep,
     hashlib_dep,
 
@@ -110,7 +119,7 @@ vs_fltk_deps = [
     sqlitecpp_dep,
 
     md4c_dep,
-    treesitter_dep
+    treesitter_dep,
 ]
 
 vs_fltk_flags = []
