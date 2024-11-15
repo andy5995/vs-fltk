@@ -1,25 +1,4 @@
-const elements=[
-    'app',
-    'component',
-    'static-data',
-    'import',
-    'use',
-    'viewport',
-    'data.',
-    'script',
-    'mixin',
-    'debug',
-    'namespace'
-]
-
-//Not sure about these
-const attributes=[
-    'src.',
-    'name',
-    'frame.',
-    'template',
-    'mixins'
-]
+import {elements,attributes} from '../../schemas/vs-ns.json'
 
 function toSymbol(str:string){
     return str.toUpperCase().replaceAll('.','_').replaceAll('-','_');
