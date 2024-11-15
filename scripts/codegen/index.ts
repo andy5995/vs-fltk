@@ -17,6 +17,8 @@ inline const char* vs_version(){return "${pkg.version}";}
 
 // Components automatic codegen
 import "./gen-components"
+import "./gen-ns-strings"
+
 import { $ } from "bun"
 
 await $`bun drizzle-kit generate && bun drizzle-kit push`;

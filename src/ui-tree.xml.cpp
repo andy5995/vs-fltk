@@ -167,6 +167,11 @@ int ui_xml_tree::build(){
       else if(strcmp(prop.value(),"vs.templ")==0){this->set_namespace(namespaces_t::s, prop.name()+7);}
       else if(strcmp(prop.value(),"vs.core")==0){this->set_namespace(namespaces_t::vs, prop.name()+7);}
     }
+    else if(strcmp(prop.name(),"xmlns")){
+      if(strcmp(prop.value(),"vs.fltk")==0){this->set_namespace(namespaces_t::fltk, "");}
+      else if(strcmp(prop.value(),"vs.templ")==0){this->set_namespace(namespaces_t::s, "");}
+      else if(strcmp(prop.value(),"vs.core")==0){this->set_namespace(namespaces_t::vs, "");}
+    }
   }
   //TODO: Compile tag names based on these namespaces
   //More or less like I am doing for the vs.templ stuff
