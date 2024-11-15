@@ -51,13 +51,15 @@ ${attributes.map(x=>
 
 export const ns_strings_impl =
 `
-void preprocessor::ns_strings::prepare(const char * ns_prefix){
+void ui_xml_tree::ns_strings::prepare(const char * ns_prefix){
 #   define WRITE(name,value) name=data+count;memcpy(data+count,ns_prefix,ns_prefix_len);memcpy(data+count+ns_prefix_len,value,std::char_traits<char>::length(value));data[count+ns_prefix_len+std::char_traits<char>::length(value)]=0;count+=ns_prefix_len+std::char_traits<char>::length(value)+1;
 #   define STRLEN(str) ns_prefix_len+std::char_traits<char>::length(str)+1
 
     size_t ns_prefix_len=strlen(ns_prefix);
 
     if(data!=nullptr)delete []data;
+    int count = 0;
+
     data = new char[${elements.reduce((total,v:string)=> total+v.length+1,0) + attributes.reduce((total,v:string)=> total+v.length+1,0)}];
 ${
     elements.map(x=>

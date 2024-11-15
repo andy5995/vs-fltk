@@ -27,10 +27,6 @@
 #include <components/autogen/index.hpp>
 #endif
 
-#if __has_include("ui-tree.xml.ns.autofrag.hpp")
-#include "ui-tree.xml.ns.autofrag.hpp"
-#endif
-
 
 //TODO: Add support for namespaces in macros
 #define mkNodeWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$name)==0){\
@@ -59,6 +55,11 @@
 
 
 namespace vs{
+
+#if __has_include("ui-tree.xml.ns.autofrag.cpp")
+#include "ui-tree.xml.ns.autofrag.cpp"
+#endif
+
 
 void ui_xml_tree::log(int severety, const void* _ctx, const char* str, ...){
   static const char* severity_table[] = {
@@ -154,14 +155,8 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
 ui_xml_tree::~ui_xml_tree(){if(root!=nullptr)delete root;}
 
 int ui_xml_tree::build(){
-  const auto& xml_root = doc.child(is_app?"app":"component");
-  if(xml_root.empty()){
-    log(severety_t::CONTINUE, xml_root, "Unable to find a valid root in `%s`", fullname.as_string().c_str());
-    return 1;
-  }
-
   //Detect namespaces defined on the root of the component
-  for(auto& prop : xml_root.attributes()){
+  for(auto& prop : doc.root().attributes()){
     if(templ::cexpr_strneqv(prop.name(), "xmlns:")){
       if(strcmp(prop.value(),"vs.fltk")==0){this->set_namespace(namespaces_t::fltk, prop.name()+7);}
       else if(strcmp(prop.value(),"vs.templ")==0){this->set_namespace(namespaces_t::s, prop.name()+7);}
@@ -173,16 +168,21 @@ int ui_xml_tree::build(){
       else if(strcmp(prop.value(),"vs.core")==0){this->set_namespace(namespaces_t::vs, "");}
     }
   }
-  //TODO: Compile tag names based on these namespaces
-  //More or less like I am doing for the vs.templ stuff
   
+  strings.prepare(ns.vs);
+  
+  const auto& xml_root = doc.child(is_app?strings.APP_TAG:strings.COMPONENT_TAG);
+  if(xml_root.empty()){
+    log(severety_t::CONTINUE, xml_root, "Unable to find a valid root in `%s`", fullname.as_string().c_str());
+    return 1;
+  }
 
   ui_base* base;
 
   if(is_app){base = (ui_base*)new ui_root_app(frame_mode_t::VOID);}
   else base = caller_ui_node;
 
-  _build(doc.child(is_app?"app":"component"),is_app?base:caller_ui_node);
+  _build(doc.child(is_app?strings.APP_TAG:strings.COMPONENT_TAG),is_app?base:caller_ui_node);
 
   if(is_app)root=base;
   else root = nullptr;
@@ -192,7 +192,7 @@ int ui_xml_tree::build(){
 void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
   //std::cout<<root.name()<<root.text()<<root.value()<<'\n';
   //USE
-  if(strcmp(root.name(),"use")==0){
+  if(strcmp(root.name(),strings.USE_TAG)==0){
     const auto& src =root.attribute("src");
     if(src.empty()){
       log(severety_t::CONTINUE,root,"<use/> must have a source");

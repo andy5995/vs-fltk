@@ -16,10 +16,14 @@ private:
         const char* s = "s:";            //Namespace for static xml operations (default s:)
     }ns;
 
-
     enum namespaces_t{
         vs, fltk, s
     };
+
+#   if __has_include("ui-tree.xml.ns.autofrag.hpp")
+        #include "ui-tree.xml.ns.autofrag.hpp"
+        ns_strings strings;
+#   endif
 
     const pugi::xml_node *caller_node = nullptr;
     ui_base* caller_ui_node=nullptr;
@@ -50,10 +54,6 @@ public:
     void _build(const pugi::xml_node &root,  ui_base *root_ui = nullptr);
 
     int build();
-
-#   if __has_include("ui-tree.xml.ns.autofrag.hpp")
-        #include "ui-tree.xml.ns.autofrag.hpp"
-#   endif
 
     int load(const char* file, bool app, const pugi::xml_node* caller_node=nullptr, ui_base* caller_ui_node=nullptr, const scoped_rpath_t* caller_path=nullptr, const policies_t& base_policies=globals::policy);
 
