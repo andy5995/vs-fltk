@@ -1,5 +1,8 @@
 ## General questions
 
+![Good luck with vs!](./hero-img.webp)
+
+
 While `vs` shares many of its technologies and ideas with modern SFC frameworks, its design is significantly more opinionated and less free.  
 This document addresses several of these issues and provides some of the implied rationale.
 
