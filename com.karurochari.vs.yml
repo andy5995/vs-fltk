@@ -5,15 +5,16 @@ sdk: org.freedesktop.Sdk
 sdk-extensions :
  - "org.freedesktop.Sdk.Extension.llvm19"
  - "org.freedesktop.Sdk.Extension.swift6" 
+build-options:
+  append-path: "/usr/lib/sdk/llvm19/bin:/usr/lib/sdk/swift6/bin"
+  prepend-ld-library-path: "/usr/lib/sdk/llvm19/lib:/usr/lib/sdk/swift6/lib"
 command: vs
 modules:
-  - name: bun
-modules:
+  - flatpak/shared-modules/glu/glu-9.json
   - name: vs-fltk
     buildsystem: meson
-    #Sadly not working as it should
-    #make-args:
-    #  - build/ --buildtype=release --native-file toolchains/clang.ini
+    config-opts:
+      - --native-file=/run/build/vs-fltk/toolchains/flatpak.ini
     sources:
       - type: dir
         path: .
@@ -33,5 +34,5 @@ finish-args:
   - --socket=pulseaudio
   # Home folder
   - --filesystem=home/.vs-fltk
-cleanup:
-  - '*'
+#cleanup:
+#  - '*'

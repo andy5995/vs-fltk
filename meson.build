@@ -210,7 +210,7 @@ shared_library('vs-cello', dependencies: [cello_dep])
 #vs_codegen_cmd = find_program('./scripts/codegen/index.ts')
 #vs_codegen = custom_target(command: 'vs-codegen', output: 'vs-codegen', command: [vs_codegen_cmd], depends:[])
 
-vs_commons_cmd = find_program('./scripts/gen-commons.ts')
+vs_commons_cmd = find_program('./scripts/gen-commons.sh')
 vs_commons = custom_target('vs-commons', output: 'commons', command: [vs_commons_cmd], depends:[])
 
 executable(
