@@ -5,7 +5,7 @@ const elements=[
     'import',
     'use',
     'viewport',
-    'data.*',
+    'data.',
     'script',
     'mixin',
     'debug',
@@ -14,9 +14,9 @@ const elements=[
 
 //Not sure about these
 const attributes=[
-    'src.*',
+    'src.',
     'name',
-    'frame.*',
+    'frame.',
     'template',
     'mixins'
 ]
@@ -58,12 +58,23 @@ void preprocessor::ns_strings::prepare(const char * ns_prefix){
     size_t ns_prefix_len=strlen(ns_prefix);
 
     if(data!=nullptr)delete []data;
-    data = new char[]
+    data = new char[${elements.reduce((total,v:string)=> total+v.length+1,0) + attributes.reduce((total,v:string)=> total+v.length+1,0)}];
+${
+    elements.map(x=>
+`    WRITE(${toSymbol(x)}_TAG,"${x}")`
+    ).join('\n')
+}
 
+${
+    attributes.map(x=>
+`    WRITE(${toSymbol(x)}_PROP,"${x}")`
+    ).join('\n')
+}
 #   undef WRITE
 #   undef STRLEN
 }
 `
+await Bun.write('./include/ui-tree.xml.ns.autofrag.hpp', ns_strings_struct);
+await Bun.write('./src/ui-tree.xml.ns.autofrag.cpp', ns_strings_impl);
 
-
-//Generate ui-tree.xml.ns.autofrag.hpp and ui-tree.xml.ns.autofrag.cpp
+//Generate ui-tree.xml.ns.autofrag.hpp and 
