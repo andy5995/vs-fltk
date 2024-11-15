@@ -12,6 +12,11 @@ What is causing this massive increase?
 
 XSD as an xml schema format is not that good. RelaxNG better captures the flexible nature of vs files, so I would be better to consider it as it was for `vs.templ`.
 
+### Flatpak issues
+- [ ] libfltk and its subdeps are compiled into `/app/lib64`, which is not covered by paths
+- [ ] commons are not mountd in `/usr/local/share`. I must pass the relevant vars.
+- [ ] Icons, signature and few more things are still missing.
+
 ### Infrastructural
 - [ ] Add namespaces for vs elements and fltk elements
 - [x] Expose some sort of inverse for apply_prop, where selected fields can be read from a widget.
@@ -33,9 +38,9 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
   - [x] Update internal paths to work in both build and installed mode.
   - [ ] Man page
   - [ ] deb (mounted on opt, as most dependencies are needed recent and potentially forked)
-  - [ ] flatpak
-    - [ ] Swift6 is added, but meson cannot find swiftc. Why?
-    - [ ] Unable to append args to meson setup
+  - [x] flatpak
+    - [x] Swift6 is added, but meson cannot find swiftc. Why?
+    - [x] Unable to append args to meson setup
 
 ### Scripting
 - [ ] Expose path and the fetcher to embedded script at some degree.

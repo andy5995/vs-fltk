@@ -28,8 +28,8 @@ finish-args:
   - --device=dri
   # Needs to talk to the network:
   - --share=network
-  # Needs to save files locally
-  - --filesystem=xdg-documents
+  # Add support for shared memory
+  - --device=shm
   # Audio
   - --socket=pulseaudio
   # Home folder
