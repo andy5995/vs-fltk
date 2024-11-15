@@ -7,12 +7,8 @@
 > Safety & Security policies have not been implemented or fully tested yet.
 > Running untrusted XML files on VS can lead to [arbitrary code execution](./docs/safety-policies.md) on your machine with your user privileges.
 
-![hero image](./commons/assets/icons/vs.light.svg)
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./commons/assets/icons/vs.dark.svg">
-  <img alt="Logo" src="./commons/assets/icons/vs.light.svg">
-</picture>
+![Fancy logo](./commons/assets/icons/vs.dark.svg#gh-dark-mode-only)
+![Fancy logo](./commons/assets/icons/vs.light.svg#gh-light-mode-only)
 
 Hey, you there! Yes you! May I entertain you with something slightly cursed?  
 Have you ever woken up in the middle of the night, thinking:
