@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <app type="native" link-with="this://native-app/app" xmlns:fl="vs.fltk">
-    <import src="file://./two-buttons.xml" as="TwoButtons" />
+    <import src="./two-buttons.xml" as="TwoButtons" />
     <import src="file://./three-buttons.xml" as="ThreeButtons">
         <label>It does not exist</label>
     </import>

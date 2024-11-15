@@ -221,7 +221,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
   }
   //IMPORT
   //TODO: restrict to direct children of the base app/component
-  else if(strcmp(root.name(),"import")==0){
+  else if(strcmp(root.name(),strings.IMPORT_TAG)==0){
     const auto& src = root.attribute("src").as_string(nullptr);
     const auto& as = root.attribute("as").as_string(nullptr);
 
@@ -232,7 +232,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     }
   }    
   //SLOT
-  else if(strcmp(root.name(),"slot")==0){
+  else if(strcmp(root.name(),strings.SLOT_TAG)==0){
     //Copy the content provided by the parent in place of the slot, or render its content if the parent has none.
     const auto& name = root.attribute("tag").as_string("default");
     //The default slot.
@@ -254,12 +254,12 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     
   }
   //DEBUG
-  else if(strcmp(root.name(),"debug")==0){
+  else if(strcmp(root.name(),strings.DEBUG_TAG)==0){
     globals::debug(root.attribute("key").as_string("<NULL>"), root.attribute("value").as_string("<NULL>"));
     return;
   }
   //VIEWPORT
-  else if(strcmp(root.name(),"viewport")==0){
+  else if(strcmp(root.name(),strings.VIEWPORT_TAG)==0){
     auto tmp = build_base_widget<ui_viewport>(root,root_ui);
     root_ui = tmp;
     for(auto& i : root.children()){_build(i,root_ui);}
@@ -268,7 +268,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     return;
   }
   //NAMESPACE
-  else if(strcmp(root.name(),"namespace")==0){
+  else if(strcmp(root.name(),strings.NAMESPACE_TAG)==0){
     auto tmp = build_base_widget<ui_namespace>(root);
     tmp->set_access(frame_access_t::PUBLIC);
     root_ui = tmp;
@@ -276,7 +276,8 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     //tmp->widget().end();
     return;
   }
-  else if (strcmp(root.name(),"app")==0){
+  //APP
+  else if (strcmp(root.name(),strings.APP_TAG)==0){
 
     _build_base_widget_extended_attr(root, (ui_base *)root_ui);
   
@@ -340,7 +341,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
   for (auto &root : root.children()) {
 
     // MIXIN
-    if (strcmp(root.name(), "mixin") == 0) {
+    if (strcmp(root.name(), strings.MIXIN_TAG) == 0) {
       smap<std::string> tmp;
       for (const auto &i : root.attributes()) {
         tmp.insert_or_assign(i.name(), i.value());
@@ -355,7 +356,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
     }
 
     // SCRIPT
-    else if (strcmp(root.name(), "script") == 0) {
+    else if (strcmp(root.name(),strings.SCRIPT_TAG) == 0) {
       //Check uniqueness
       current->mk_frame();
       if(current->get_local_frame()->has_script()){
@@ -486,7 +487,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
     _build_base_widget_extended_attr(root, (ui_base *)current);
     
 
-    if(strcmp(root.parent().name(),"app")==0){
+    if(strcmp(root.parent().name(),strings.APP_TAG)==0){
       current->reparent_frame(root_ui);
     }
 
@@ -516,7 +517,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
     */
 
     //For components add to its direct children the attributes coming from above
-    if(strcmp(root.parent().name(),"component")==0){
+    if(strcmp(root.parent().name(),strings.COMPONENT_TAG)==0){
       for (const auto &i : this->caller_node->attributes()) {
         //Exclude src as it was consumed in here.
         if(strcmp(i.name(),"src")!=0)props.insert_or_assign(i.name(), i.value());

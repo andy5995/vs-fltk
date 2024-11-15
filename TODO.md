@@ -14,8 +14,26 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
 
 ### Flatpak issues
 - [ ] libfltk and its subdeps are compiled into `/app/lib64`, which is not covered by paths
-- [ ] commons are not mountd in `/usr/local/share`. I must pass the relevant vars.
+- [ ] commons are not mounted in `/usr/local/share`. I must pass the relevant vars.
 - [ ] Icons, signature and few more things are still missing.
+
+### Loading XML issues
+```
+[INFO]     : Loading component file://./two-buttons.xml @ [/app/fl:window/TwoButtons]
+[INFO]     : Requested loading of file `file://./two-buttons.xml`
+[PANIC]    : Oh no! Loading failed `file://./two-buttons.xml` for 2
+[INFO]     : Loading failed, file cannot be opened file://./two-buttons.xml @ [/app/fl:window/TwoButtons]
+```
+
+At times it fails, at times it does not. Investigate.
+```
+    <import src="this://two-buttons.xml" as="TwoButtons" />
+```
+works but 
+```
+    <import src="file://./two-buttons.xml" as="TwoButtons" />
+```
+does not somehow. But just `./two-buttons.xml` does? Check why!
 
 ### Infrastructural
 - [ ] Add namespaces for vs elements and fltk elements
