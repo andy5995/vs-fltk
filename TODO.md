@@ -1,3 +1,16 @@
+# Missing for release 0.1.1
+
+### Flatpak issues
+- [ ] libfltk and its subdeps are compiled into `/app/lib64`, which is not covered by paths
+- [ ] commons are not mounted in `/usr/local/share`. I must pass the relevant vars.
+- [ ] Icons, signature and few more things are still missing.
+
+### Scripts
+- [ ] turn off (for now) app linking capabilities
+
+### Setup github actions
+- [ ] ?
+
 # Current
 
 ### Annoying memory consumption
@@ -11,11 +24,6 @@ What is causing this massive increase?
 ### XSD -> RNG?
 
 XSD as an xml schema format is not that good. RelaxNG better captures the flexible nature of vs files, so I would be better to consider it as it was for `vs.templ`.
-
-### Flatpak issues
-- [ ] libfltk and its subdeps are compiled into `/app/lib64`, which is not covered by paths
-- [ ] commons are not mounted in `/usr/local/share`. I must pass the relevant vars.
-- [ ] Icons, signature and few more things are still missing.
 
 ### Loading XML issues
 ```
@@ -50,7 +58,7 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
 - [ ] Namespace support
   - [x] In the root of app or components search for `xmlns` attributes, and define local namespaces based on `vs`, `vs.templ` & `vs.fltk`.
   - [x] Codegen for reserved elements & attributes in the vs namespace. Like for `vs.fltk`.
-- [ ] Evaluate and check if possible to replace sqllite with https://github.com/tursodatabase/libsql as it looks like the better (it supports alteration of foreign keys for example)
+- [ ] Evaluate and check if possible to replace sqlite with https://github.com/tursodatabase/libsql as it looks like the better (it supports alteration of foreign keys for example)
 - [ ] Installation!
   - [x] Rewrite TS stuff in meson directly
   - [x] Update internal paths to work in both build and installed mode.

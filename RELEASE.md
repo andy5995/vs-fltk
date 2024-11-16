@@ -51,7 +51,7 @@ This is what has been implemented so far (and some missing feature for context):
         - [ ] FFI to external libraries
         - [x] Debug interface
 - Very early and partial c bindings for `vs.fltk`.
-- A simple in-memory caching for files, compiled scripts & parsed XML trees. The more complex sqlite-based cache has no implementation yet.
+- A simple in-memory caching for files, compiled scripts & parsed XML trees. The more complex sqlite cache is yet to be implemented in code.
 - An early (partial) implementation of policies and coarse-grained flags as a temporary stopgap.
 - Install process mostly implemented via meson.
-- ~~Functional flatpak build~~ not yet
+- Functional flatpak build
