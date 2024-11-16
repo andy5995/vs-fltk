@@ -127,7 +127,7 @@ versions_t get_versions(){
         tmp.curl="Not installed";
 #   endif
     tmp.fltk=std::to_string(FL_API_VERSION);
-    tmp.libuv=uv_version_string();
+    tmp.libuv="---";//uv_version_string();
     tmp.sqlite=sqlite3_libversion();
     tmp.tcc= TCC_VERSION;
     tmp.quickjs=JS_GetVersion();

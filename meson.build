@@ -5,7 +5,7 @@ project(
 )
 
 #Used by pugi to enable compact mode. I might want to disable execptions too.
-add_global_arguments('-DPUGIXML_COMPACT', language : ['cpp','c'])
+add_global_arguments(['-DPUGIXML_COMPACT'], language : ['cpp','c'])
 
 cmake = import('cmake')
 
@@ -81,9 +81,8 @@ treesitter_dep = treesitter_proj.get_variable('tree_sitter_dep')
 libtcc_proj = subproject('libtcc')
 libtcc_dep = libtcc_proj.get_variable('libtcc_dep')
 
-uv_proj = subproject('libuv')
-uv_dep = uv_proj.get_variable('libuv_dep')
-
+#uv_proj = subproject('libuv')
+#uv_dep = uv_proj.get_variable('libuv_dep')
 
 mio_proj = cmake.subproject('mio')
 mio_dep = mio_proj.dependency('mio')
@@ -110,7 +109,7 @@ vs_fltk_deps = [
     vs_templ_dep,
     fmt_dep,
     mio_dep,
-    uv_dep,
+    #uv_dep,    The one provided with the system if present should be fine for our tasks
     hashlib_dep,
 
     libtcc_dep,
@@ -223,7 +222,8 @@ executable(
     dependencies: [vs_fltk_dep],
     link_depends: [vs_commons],
     override_options: ['c_std=gnuc23', 'cpp_std=c++23'],
-    install: true
+    install: true,
+    #install_rpath: ''
 )
 
 executable(
