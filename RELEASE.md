@@ -36,7 +36,7 @@ This is what has been implemented so far (and some missing feature for context):
         - [x] Modules
         - [x] Callbacks
         - [x] Props
-        - [x] Computed
+        - [ ] Computed
         - [x] Dispatcher
         - [ ] Setters/getters
         - [ ] FFI to external libraries

@@ -64,12 +64,20 @@ at the end of the library generation. The issue is tracked [here](https://github
 > Some library names will most surely clash with those already installed on your system, and will be overridden.  
 > `vs.fltk` is using very recent versions which have not been rolled out yet in most distribution. Or even worse, custom forks.
 
-`meson-install` is now implemented & tested. By default, it install everything in `./build/dist`.
+`meson-install` is now implemented & tested. By default, it installs everything in `./build/dist`.
 
 ### Flatpak
 
+Flatpak is not really the ideal approach to deliver `vs` due to the intrinsic cost of having a separate runtime from the main system, and the potential issues with permissions.  
+Still, it is good to support it at this stage since many libraries & build dependencies are bleeding-edge.
+
 ```sh
 flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+```
+if you never configured `--user` on your system.  
+Then
+
+```sh
 bun run flatpak-builder
 ```
 
@@ -106,12 +114,12 @@ In both cases they are all not tracked by git.
 ## Debug logging
 
 **vs** has some features to simplify debugging, mostly to support automatic tests and benchmarks, but they might be useful in other scenarios as well.
-`vs::globals::debug` is responsible for that and it is exposed in several ways:
+`vs::globals::debug` is responsible for that, and it is exposed in several ways:
 - in embedded scripts
 - via a special xml `debug` tag
 - in the `vs.fltk` C interface as well
 While using it you can define a key and value. The current timestamp at nanoseconds resolution is also automatically recorded.  
-Records are saved to a file with name `VS_TEST_DEBUG` if set, otherwise no output will be emitted. Older content is destroyed.  
+Records are saved to a file with name `VS_DEBUG_FILE` if set, otherwise no output will be emitted. Older content is destroyed.  
 The file format is just a simple CSV with horizontal tabs as separator of fields and newlines for rows. The order is *key*, *value* & *timestamp*.
 
 `vs::globals::debug` should not be confused with the ordinary logging functions which are also exposed in similar ways, but which are generally contextual and they mostly output to `stdout`.

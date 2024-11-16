@@ -36,17 +36,17 @@ works but
 does not somehow. But just `./two-buttons.xml` does? Check why!
 
 ### Infrastructural
-- [ ] Add namespaces for vs elements and fltk elements
+- [x] Add namespaces for vs elements and fltk elements
 - [x] Expose some sort of inverse for apply_prop, where selected fields can be read from a widget.
 - [ ] Add special `inherit` value to props to remove the current one and let it be computed based on its parents? I have to decide if we want this one.
 - [ ] Add pipelines for compilation & testing on github/gitea
 - [ ] Basic LSP for the vs syntax. Implementation @ https://github.com/KaruroChori/vs-fltk-lsp
-- [ ] Make some dependencies and their related features toggable at build-time (tcc, quickjs, lua, wamr).
+- [ ] Make some dependencies and their related features toggleable at build-time (tcc, quickjs, lua, wamr).
 - [ ] Decide what to do about swift.
 - [x] I probably want https://github.com/fmtlib/fmt
 - [ ] Signal/event propagation mechanisms
 - [x] Add special logging to generate output used by more complex tests. They must also be exposed to scripts.  
-      These logs are only recorded if VS_TEST_DEBUG is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test. 
+      These logs are only recorded if VS_DEBUG_FILE is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test. 
 - [ ] Namespace support
   - [x] In the root of app or components search for `xmlns` attributes, and define local namespaces based on `vs`, `vs.templ` & `vs.fltk`.
   - [ ] Codegen for reserved elements & attributes in the vs namespace. Like for `vs.fltk` but automatic
