@@ -11,9 +11,9 @@ namespace vs{
 struct ui_xml_tree : ui_tree {
 private:
     struct ns_t{
-        const char* vs = "";             //Namespace for vs basic components (default none, suggested vs: if needed)
-        const char* fltk = "fl:";      //Namespace for fltk specific components (default fl:)
-        const char* s = "s:";            //Namespace for static xml operations (default s:)
+        std::string vs = "";             //Namespace for vs basic components (default none, suggested vs: if needed)
+        std::string fltk = "fl:";      //Namespace for fltk specific components (default fl:)
+        std::string s = "s:";            //Namespace for static xml operations (default s:)
     }ns;
 
     enum namespaces_t{
@@ -42,9 +42,9 @@ private:
 
 public:
     void set_namespace(namespaces_t n, const char* prefix){
-        if(n==namespaces_t::vs)ns.vs=prefix;
-        else if(n==namespaces_t::fltk)ns.fltk=prefix;
-        else if(n==namespaces_t::s)ns.s=prefix;
+        if(n==namespaces_t::vs){if(prefix[0]==0)ns.vs="";else ns.vs=std::string(prefix)+":";}
+        else if(n==namespaces_t::fltk){if(prefix[0]==0)ns.fltk="";else ns.fltk=std::string(prefix)+":";}
+        else if(n==namespaces_t::s){if(prefix[0]==0)ns.s="";else ns.s=std::string(prefix)+":";}
     }
 
     template <std::derived_from<ui_base> T>

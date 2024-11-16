@@ -40,7 +40,7 @@
 //TODO: Avoid parsing its head                                                 
 #define mkLeafWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$name)==0){build_base_widget<$class_name>(root,root_ui); }                                                  
 
-#define mkNSNodeWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$ns ":" #$name)==0 ){\
+#define mkNSNodeWidget($ns,$name,$class_name) else if(strcmp(root.name(),(ns.fltk +  #$name).c_str())==0 ){\
   auto t=build_base_widget<$class_name>(root,root_ui);\
   t->set_type(frame_type_t::NODE);\
   root_ui = t;\
@@ -49,7 +49,7 @@
   t->widget().show();\
 } 
 
-#define mkNSLeafWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$ns ":" #$name)==0 ){\
+#define mkNSLeafWidget($ns,$name,$class_name) else if(strcmp(root.name(),(ns.fltk +  #$name).c_str())==0 ){\
   build_base_widget<$class_name>(root,root_ui);\
 }                                                  
 
@@ -117,6 +117,22 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
         return 1;
     }
 
+  //Detect namespaces defined on the root of the component
+  for(auto& prop : doc.root().first_child().attributes()){
+    if(templ::cexpr_strneqv(prop.name(), "xmlns:")){
+      if(strcmp(prop.value(),"vs.fltk")==0){this->set_namespace(namespaces_t::fltk, prop.name()+6);}
+      else if(strcmp(prop.value(),"vs.templ")==0){this->set_namespace(namespaces_t::s, prop.name()+6);}
+      else if(strcmp(prop.value(),"vs.core")==0){this->set_namespace(namespaces_t::vs, prop.name()+6);}
+    }
+    else if(strcmp(prop.name(),"xmlns")){
+      if(strcmp(prop.value(),"vs.fltk")==0){this->set_namespace(namespaces_t::fltk, "");}
+      else if(strcmp(prop.value(),"vs.templ")==0){this->set_namespace(namespaces_t::s, "");}
+      else if(strcmp(prop.value(),"vs.core")==0){this->set_namespace(namespaces_t::vs, "");}
+    }
+  }
+  
+  strings.prepare(ns.vs.data());
+
     //TODO: Static parsing is performed in here!
     {
     auto root_data = doc.child("static-data");
@@ -140,7 +156,7 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
           }
         }
 
-        templ::preprocessor processor(datadoc,doc);
+        templ::preprocessor processor(datadoc,doc,ns.s.c_str());
         //Resolve it.
 
         auto& result  = processor.parse();
@@ -155,21 +171,6 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
 ui_xml_tree::~ui_xml_tree(){if(root!=nullptr)delete root;}
 
 int ui_xml_tree::build(){
-  //Detect namespaces defined on the root of the component
-  for(auto& prop : doc.root().attributes()){
-    if(templ::cexpr_strneqv(prop.name(), "xmlns:")){
-      if(strcmp(prop.value(),"vs.fltk")==0){this->set_namespace(namespaces_t::fltk, prop.name()+7);}
-      else if(strcmp(prop.value(),"vs.templ")==0){this->set_namespace(namespaces_t::s, prop.name()+7);}
-      else if(strcmp(prop.value(),"vs.core")==0){this->set_namespace(namespaces_t::vs, prop.name()+7);}
-    }
-    else if(strcmp(prop.name(),"xmlns")){
-      if(strcmp(prop.value(),"vs.fltk")==0){this->set_namespace(namespaces_t::fltk, "");}
-      else if(strcmp(prop.value(),"vs.templ")==0){this->set_namespace(namespaces_t::s, "");}
-      else if(strcmp(prop.value(),"vs.core")==0){this->set_namespace(namespaces_t::vs, "");}
-    }
-  }
-  
-  strings.prepare(ns.vs);
   
   const auto& xml_root = doc.child(is_app?strings.APP_TAG:strings.COMPONENT_TAG);
   if(xml_root.empty()){

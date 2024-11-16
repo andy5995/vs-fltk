@@ -39,7 +39,11 @@ void ui_xml_tree::ns_strings::prepare(const char * ns_prefix){
     if(data!=nullptr)delete []data;
     int count = 0;
 
-    data = new char[${elements.reduce((total,v:string)=> total+v.length+1,0) + attributes.reduce((total,v:string)=> total+v.length+1,0)}];
+    data = new char[
+${
+    //elements.reduce((total,v:string)=> total+v.length+1,0) + attributes.reduce((total,v:string)=> total+v.length+2,0)
+    [...elements,...attributes].map(x=>`STRLEN("${x}")`).join('+')
+}];
 ${
     elements.map(x=>
 `    WRITE(${toSymbol(x)}_TAG,"${x}")`
