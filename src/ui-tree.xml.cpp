@@ -1,11 +1,6 @@
 #include "FL/Fl.H"
-#include "FL/Fl_Box.H"
-#include "FL/Fl_Button.H"
-#include "FL/Fl_Input.H"
-#include "FL/Fl_Toggle_Button.H"
 #include "FL/Fl_Widget.H"
 #include "cache/memory-storage.hpp"
-#include "components/markdown-view.hpp"
 #include "fetcher.hpp"
 #include "pipelines/quickjs-js.hpp"
 #include <vs-templ.hpp>

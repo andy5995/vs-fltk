@@ -18,6 +18,7 @@ inline const char* vs_version(){return "${pkg.version}";}
 // Components automatic codegen
 import "./gen-components"
 import "./gen-ns-strings"
+import "./gen-policies"
 
 import { $ } from "bun"
 

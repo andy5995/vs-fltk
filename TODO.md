@@ -49,7 +49,7 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
       These logs are only recorded if VS_DEBUG_FILE is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test. 
 - [ ] Namespace support
   - [x] In the root of app or components search for `xmlns` attributes, and define local namespaces based on `vs`, `vs.templ` & `vs.fltk`.
-  - [ ] Codegen for reserved elements & attributes in the vs namespace. Like for `vs.fltk` but automatic
+  - [x] Codegen for reserved elements & attributes in the vs namespace. Like for `vs.fltk`.
 - [ ] Evaluate and check if possible to replace sqllite with https://github.com/tursodatabase/libsql as it looks like the better (it supports alteration of foreign keys for example)
 - [ ] Installation!
   - [x] Rewrite TS stuff in meson directly
