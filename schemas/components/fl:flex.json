@@ -7,6 +7,43 @@
     "extends": "fl:group",
     "codegen": {"extends": "ui<Fl_Flex>"},
     "props":{
+        "layout.type":{
+            "type": "enum",
+            "subtype": "fl_flex_layout",
+            "description": "Set to `row` or `column` (default)",
+            "code": "/*TODO*/"
+        },
+        "layout.gap":{
+            "type":"scalar-1",
+            "description": "Gap between elements in this flex",
+            "code": "w.gap(computed[0]);"
+        },
+        "margin":{
+            "type": "scalar-4",
+            "description": "Margin left top right bottom",
+            "code": "w.margin(computed[0],computed[1],computed[2],computed[3]);"
+        },
+        "margin.left":{
+            "type": "scalar-1",
+            "code": "int tmp[4];w.margin(tmp,tmp+1,tmp+2,tmp+3);w.margin(computed[0],tmp[1],tmp[2],tmp[3]);"
+        },
+        "margin.top":{
+            "type": "scalar-1",
+            "code": "int tmp[4];w.margin(tmp,tmp+1,tmp+2,tmp+3);w.margin(tmp[0],computed[0],tmp[2],tmp[3]);"
+        },
+        "margin.right":{
+            "type": "scalar-1",
+            "code": "int tmp[4];w.margin(tmp,tmp+1,tmp+2,tmp+3);w.margin(tmp[0],tmp[1],computed[0],tmp[3]);"
+        },
+        "margin.bottom":{
+            "type": "scalar-1",
+            "code": "int tmp[4];w.margin(tmp,tmp+1,tmp+2,tmp+3);w.margin(tmp[0],tmp[1],tmp[2],computed[0]);"
+        },
+        "layout.spacing":{
+            "type":"scalar-1",
+            "description": "Gap between elements in this flex",
+            "code": "w.spacing(computed[0]);"
+        }
     },
     "computed":{
     }

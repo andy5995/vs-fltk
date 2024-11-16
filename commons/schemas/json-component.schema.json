@@ -129,12 +129,12 @@
                             "default": "string",
                             "anyOf": [
                                 {
-                                    "type": "string",
-                                    "pattern": "^flag$"
+                                    "const": "flag",
+                                    "type": "string"
                                 },
                                 {
-                                    "type": "string",
-                                    "pattern": "^enum$"
+                                    "const": "enum",
+                                    "type": "string"
                                 },
                                 {
                                     "const": "raw",
@@ -206,12 +206,12 @@
                             "default": "string",
                             "anyOf": [
                                 {
-                                    "type": "string",
-                                    "pattern": "^flag$"
+                                    "const": "flag",
+                                    "type": "string"
                                 },
                                 {
-                                    "type": "string",
-                                    "pattern": "^enum$"
+                                    "const": "enum",
+                                    "type": "string"
                                 },
                                 {
                                     "const": "raw",

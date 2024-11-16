@@ -22,7 +22,7 @@ function make_type_code(type: Static<typeof type_schema>, subtype: string, code:
     else if (type === 'scalar-1') return `size_t computed[1]; if((ok = ui_tree::h_px(1,computed,value,that))){${code}}`
     else if (type === 'scalar-2') return `size_t computed[2]; if((ok = ui_tree::h_px(2,computed,value,that))){${code}}`
     else if (type === 'scalar-4') return `size_t computed[4]; if((ok = ui_tree::h_px(4,computed,value,that))){${code}}`
-    else if (type === 'enum') return `int computed  = ${subtype}_i(value);if((ok=(t!=-1))){${code}}`
+    else if (type === 'enum') return `int computed  = ui_tree::${subtype}_i(value);if((ok=(computed!=-1))){${code}}`
 }
 
 function gen_cpp(data: Static<typeof widget_schema>) {

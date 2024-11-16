@@ -100,6 +100,11 @@
             "subtype": "fl_boxtype",
             "code": "w.box(ui_tree::fl_boxtype_i(value));"
         },
+        "box.fixed":{
+            "type": "flag",
+            "description": "If this widget is child of a container like flex, set its box size as fixed",
+            "code": "/*TODO*/"
+        }, 
         "bg.colour":{
             "type":"color",
             "alias": ["bg.color"],

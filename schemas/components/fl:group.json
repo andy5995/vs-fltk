@@ -7,6 +7,16 @@
     "extends": "fl:base",
     "codegen": {"extends": "ui<Fl_Group>"},
     "props":{
+        "box.clip":{
+            "type":"flag",
+            "description": "Define the clipping behaviour of this group.",
+            "code": "w.clip_children(computed);"
+        },
+        "resizable":{
+            "type":"raw",
+            "description": "Set to ``, `self` or the name of a direct child",
+            "code": "/*TODO*/"
+        }
     },
     "computed":{ 
     }

@@ -127,7 +127,7 @@ namespace vs{
 
     if(strcmp(v,"bold")==0){return FL_BOLD;}
     if(strcmp(v,"italic")==0){return FL_ITALIC;}
-    return 0;
+    return -1;
   }
 
 
@@ -136,6 +136,16 @@ namespace vs{
   constexpr const char* ui_tree::fl_boxtype_s(Fl_Font v){return nullptr;}
   Fl_Boxtype ui_tree::fl_boxtype_i(const char* v){return FL_NO_BOX;}
 
+  constexpr const char* ui_tree::fl_flex_layout_s(int v){
+    if(v==0)return "vertical";
+    else if(v==1)return "horizontal";
+    return nullptr;
+  }
+  int ui_tree::fl_flex_layout_i(const char* v){
+    if(strcmp(v,"vertical")==0){return 0;}
+    if(strcmp(v,"horizontal")==0){return 1;}
+    return -1;
+  }
 
 
 }

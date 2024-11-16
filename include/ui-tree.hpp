@@ -47,6 +47,9 @@ struct ui_tree {
   constexpr static const char *fl_boxtype_s(Fl_Font v);
   static Fl_Boxtype fl_boxtype_i(const char *v);
 
+  constexpr static const char *fl_flex_layout_s(int v);
+  static int fl_flex_layout_i(const char *v);
+
   // Helpers to compute expressions into values that Fl_Widgets can use.
 
   static bool h_px(uint T, size_t *dst, const char *expr,
