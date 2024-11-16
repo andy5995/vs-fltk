@@ -32,7 +32,7 @@ enum class symbol_type_t{
 };
 
 enum class symbol_mode_t{
-  VOID,
+  AUTO,
   NATIVE,
   QUICKJS,
   WASM,

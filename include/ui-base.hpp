@@ -12,7 +12,7 @@ class ui_base{
 
     public:
     const frame* get_local_frame(){return local_frame;}
-    void mk_frame(const char* name=nullptr, frame_mode_t mode = frame_mode_t::VOID);
+    void mk_frame(const char* name=nullptr, frame_mode_t mode = frame_mode_t::AUTO);
     virtual frame_type_t default_frame_type()=0;
     virtual const char* class_name(){return "vs-base";};
 

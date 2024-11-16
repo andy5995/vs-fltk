@@ -14,4 +14,4 @@ void vs_hello_world(){
 void vs_debug(const char* k, const char* v){vs::globals::debug(k,v);}
 
 
-struct vs_symbol_t vs_symbol_null = {VS_SYMBOL_MODE_VOID,VS_SYMBOL_TYPE_VOID,NULL};
+struct vs_symbol_t vs_symbol_null = {VS_SYMBOL_MODE_AUTO,VS_SYMBOL_TYPE_VOID,NULL};

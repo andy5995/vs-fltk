@@ -10,6 +10,13 @@ struct ui_script {
 };
 
 struct ui_tree {
+  struct{
+    uint8_t src_key[256/8];       //Key as it appears on the app definition
+    uint8_t computed_key[256/8];  //Key after the parent one has been applied. Root keys is the one of the parent. Needed to avoid nasty secrets violations
+    std::string page_tag;         //Used to identify different apps all sharing the same key. While permanent data is shared, secrets are tagged to match a specific "page"
+    //TODO: Add dynamic library to be linked as well.
+  };
+
   // Globals
   std::string basename;
   std::map<std::string, std::string, std::less<>> modules;
@@ -19,11 +26,12 @@ struct ui_tree {
 
   std::vector<ui_base*> nodes;
 
-  ui_script global_decl;
-  ui_script global_def;
+  //These no longer exists.
+  //ui_script global_decl;
+  //ui_script global_def;
 
   // Support during navigation
-  frame_mode_t mode = frame_mode_t::VOID;
+  frame_mode_t mode = frame_mode_t::AUTO;
 
 
   constexpr const char * fl_align_pos_s(Fl_Align v);

@@ -33,7 +33,7 @@ struct __symbol_t{
     UNKNOWN=1, CALLBACK, DRAW, SETTER, GETTER,
   } mode:3;
   enum{
-    NATIVE=1, QUICKJS, WASM
+    NATIVE=1, QUICKJS, WASM, EXTERNAL, LUA
   } type:5;
   const void* symbol;
 };

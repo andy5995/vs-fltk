@@ -27,7 +27,7 @@ class frame{
   protected:
     std::shared_ptr<void> script;
     std::shared_ptr<smap<symbol_t>> symbols = nullptr;  //For symbol resolution on function calling 
-    frame_mode_t mode = frame_mode_t::VOID;
+    frame_mode_t mode = frame_mode_t::AUTO;
 
     bool is_script_module = false;
 
@@ -116,16 +116,16 @@ class frame{
       //If I am a container I cannot let this progress any further.
       if(type==frame_type_t::CONTAINER or type==frame_type_t::SLOT_CONTAINER){
         return symbol_ret_t{
-          {symbol_mode_t::VOID,symbol_type_t::VOID,nullptr},
-          {symbol_mode_t::VOID,symbol_type_t::VOID,nullptr},
+          {symbol_mode_t::AUTO,symbol_type_t::VOID,nullptr},
+          {symbol_mode_t::AUTO,symbol_type_t::VOID,nullptr},
            nullptr
         };
       } else if (parent != nullptr) {
         return parent->_resolve_symbol(name, origin);
       }
         return symbol_ret_t{
-          {symbol_mode_t::VOID,symbol_type_t::VOID,nullptr},
-          {symbol_mode_t::VOID,symbol_type_t::VOID,nullptr},
+          {symbol_mode_t::AUTO,symbol_type_t::VOID,nullptr},
+          {symbol_mode_t::AUTO,symbol_type_t::VOID,nullptr},
            nullptr
         };
     }

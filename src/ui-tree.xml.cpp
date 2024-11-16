@@ -175,7 +175,7 @@ int ui_xml_tree::build(){
 
   ui_base* base;
 
-  if(is_app){base = (ui_base*)new ui_root_app(frame_mode_t::VOID);}
+  if(is_app){base = (ui_base*)new ui_root_app(frame_mode_t::AUTO);}
   else base = caller_ui_node;
 
   _build(doc.child(is_app?strings.APP_TAG:strings.COMPONENT_TAG),is_app?base:caller_ui_node);
@@ -398,7 +398,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
 
       auto mode =current->get_local_frame()->get_mode();
 
-      if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::VOID) {          
+      if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::AUTO) {          
         const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
         if (strcmp(lang, "c") == 0) {
           auto compiler = pipelines::tcc_c_pipeline_xml(true, is_module?nullptr:current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
@@ -418,7 +418,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
           continue;
         }
       }
-      if (mode == frame_mode_t::QUICKJS || mode == frame_mode_t::VOID) {
+      if (mode == frame_mode_t::QUICKJS || mode == frame_mode_t::AUTO) {
         const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::QUICKJS?"js":"");
         if (strcmp(lang, "js") == 0) {
           auto compiler = pipelines::qjs_js_pipeline_xml(true, is_module?nullptr:current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
@@ -438,13 +438,13 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
           continue;
         }
       }
-      if (mode == frame_mode_t::LUA || mode == frame_mode_t::VOID) {
+      if (mode == frame_mode_t::LUA || mode == frame_mode_t::AUTO) {
         const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::QUICKJS?"lua":"");
         if (strcmp(lang, "lua") == 0) {
           //TODO
         }
       }
-      if (mode == frame_mode_t::WASM || mode == frame_mode_t::VOID) {
+      if (mode == frame_mode_t::WASM || mode == frame_mode_t::AUTO) {
         const auto &lang = root.attribute("lang").as_string();
         //TODO search for assigned compiler for a given language. Compiling pipeline must be generic and made uniform for each one of them.
       }
@@ -476,7 +476,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
         else if(strcmp(tmp.as_string(),"lua")==0)current->set_mode(frame_mode_t::LUA);
         else if(strcmp(tmp.as_string(),"wasm")==0)current->set_mode(frame_mode_t::WASM);
         else if(strcmp(tmp.as_string(),"external")==0)current->set_mode(frame_mode_t::EXTERNAL);
-        else{current->set_mode(frame_mode_t::VOID);}
+        else{current->set_mode(frame_mode_t::AUTO);}
       }
     }
 

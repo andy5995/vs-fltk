@@ -27,7 +27,7 @@ enum vs_symbol_type_t{
 typedef enum vs_symbol_type_t vs_symbol_type_t;
 
 enum vs_symbol_mode_t{
-  VS_SYMBOL_MODE_VOID, 
+  VS_SYMBOL_MODE_AUTO, 
   VS_SYMBOL_MODE_NATIVE, 
   VS_SYMBOL_MODE_QUICKJS, 
   VS_SYMBOL_MODE_WASM,

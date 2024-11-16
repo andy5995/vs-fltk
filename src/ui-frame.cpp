@@ -62,7 +62,7 @@ int frame::call_dispatcher(const char* key, const char* value){
   else return 1;
 }
 
-symbol_t symbol_t::VOID= {symbol_mode_t::VOID,symbol_type_t::VOID,nullptr};
+symbol_t symbol_t::VOID= {symbol_mode_t::AUTO,symbol_type_t::VOID,nullptr};
 
 
 }
