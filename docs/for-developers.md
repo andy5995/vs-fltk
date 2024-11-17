@@ -68,8 +68,8 @@ at the end of the library generation. The issue is tracked [here](https://github
 
 ### Flatpak
 
-Flatpak is not really the ideal approach to deliver `vs` due to the intrinsic cost of having a separate runtime from the main system, and the potential issues with permissions.  
-Still, it is good to support it at this stage since many libraries & build dependencies are bleeding-edge.
+Flatpak is not really the ideal approach to deliver `vs` due to the intrinsic cost of having a separate runtime. Also its sandboxing & permission system might raise some issues.  
+Still, it is good to support it at these early stages, since many libraries & build dependencies are bleeding-edge.
 
 ```sh
 flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -78,6 +78,7 @@ if you never configured `--user` on your system.
 Then
 
 ```sh
+bun run codegen           #If not run already
 bun run flatpak-builder
 ```
 
@@ -94,9 +95,9 @@ While imperfect, this quick variant avoids the reconfiguration of the full meson
 
 ### Naming conventions
 - names following the pattern `**.autogen.*` are full c/cpp/h/hpp files to be included, compiled and/or linked.
-- names following the pattern `**.autofrag.*` are fragments introduced in the source of other files only.
+- names following the pattern `**.autofrag.*` are fragments introduced in the source of other files only. They are not directly listed in `meson.build`
 
-In both cases they are all not tracked by git.
+In either case, such files are not tracked by git.
 
 ## Structure of the repo
 

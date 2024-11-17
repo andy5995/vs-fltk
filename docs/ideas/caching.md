@@ -1,3 +1,6 @@
+> [!WARNING]  
+> Revision needed as the first fragments of caching have been implemented.
+
 - `file://` prefix for all files mounted on fs, both absolute and relative.
 - `http(s)://` prefix for resources obtainable via internet (libcurl?).
 - `this://` relative prefix based on the local base (only supporting file, http/s, packages, app, user).

@@ -53,5 +53,5 @@ This is what has been implemented so far (and some missing feature for context):
 - Very early and partial c bindings for `vs.fltk`.
 - A simple in-memory caching for files, compiled scripts & parsed XML trees. The more complex sqlite cache is yet to be implemented in code.
 - An early (partial) implementation of policies and coarse-grained flags as a temporary stopgap.
-- Install process mostly implemented via meson.
+- Install process mostly implemented via meson (codegen will stay in ts).
 - Functional flatpak build

@@ -254,5 +254,5 @@ pconf = import('pkgconfig')
 pconf.generate(
   vs_fltk,
   description: 'VS fltk library (C interface only)',
-  url: 'https://pugixml.org/',
+  url: 'https://github.com/KaruroChori/vs-fltk/',
 )
