@@ -235,8 +235,11 @@ executable(
 )
 
 subdir(['./experiments/'])
-subdir(['./test/'])
-subdir(['./benchmark/'])
+
+if get_option('tests')
+    subdir(['./test/'])
+    subdir(['./benchmark/'])
+endif
 
 # Install stuff
 

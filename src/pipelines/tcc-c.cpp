@@ -37,11 +37,19 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
 
     script->set_error_fn(ctx,error_fn);
     script->set_opts("-nostdlib"); //-fno-builtin
+
+    //TODO: 
+    //I need to provide from the outside as configuration:
+    //- All directories resolving paths for libraries
+    //- The path where libtcc.so is located
+    //- The location where it s headers are placed.
+    //- The path for bindings shall be computed as absolute based on VS_SHARE or whatever it is called.
+    
     script->add_lib_path("/usr/lib/x86_64-linux-gnu/"); //I dont' want to hardcode this one.
     script->add_lib_path("./subprojects/libtcc");
 
     script->set_out_type(tcc::memory);
-    script->add_sysinclude_path("./subprojects/libtcc/include/");
+    //script->add_sysinclude_path("./subprojects/libtcc/include/");
     script->add_include_path("./bindings/native/include");
     
     //script->add_lib("ld");

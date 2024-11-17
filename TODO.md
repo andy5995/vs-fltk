@@ -9,10 +9,13 @@
 - [ ] Icons, signature and few more things are still missing.
 
 ### Scripts
-- [ ] turn off (for now) app linking capabilities
+- [x] turn off (for now) app linking capabilities
+- [ ] Make all paths being used by the c and js pipeline portable.
 
 ### Setup github actions
-- [ ] ?
+- [ ] ? To run tests and save its reports on some backend
+- [ ] ? To run benchmarks and save its reports on some backend (variable system load will destroy performance metrics?)
+- [ ] ? To run the full flatpak-builder.
 
 # Current
 
@@ -22,11 +25,11 @@
 ~~There is no clear reason why this happened out of nowhere, and the overall memory usage by heap/stack is still quite small.~~    
 What is causing this massive increase?  
 
-**Answer:** thank you libcurl. Actually libgnutls and libcrypto. While some choices like having an `unordered_map` for the global cache and some buffer optimization I had to dial back led to some increase, it is all mostly justified by me installing `libcurl-dev` and so enabling it in the build process. Even if not in use it will claim some space.
+**Answer:** thank you libcurl. Actually libgnutls and libcrypto. While some choices like having an `unordered_map` for the global cache and some buffer optimization I had to dial back led to some increase, it is all mostly justified by me installing `libcurl-dev` and enabling it in the build process. Even when not in use it claims quite some space.
 
 ### XSD -> RNG?
 
-XSD as an xml schema format is not that good. RelaxNG better captures the flexible nature of vs files, so I would be better to consider it as it was for `vs.templ`.
+XSD as an XML schema format is not that good. RelaxNG better captures the flexible nature of vs files, so I would be better off considering it as I did for `vs.templ` already.
 
 ### Loading XML issues
 ```
@@ -36,7 +39,7 @@ XSD as an xml schema format is not that good. RelaxNG better captures the flexib
 [INFO]     : Loading failed, file cannot be opened file://./two-buttons.xml @ [/app/fl:window/TwoButtons]
 ```
 
-At times it fails, at times it does not. Investigate.
+At times it fails, at times it does not. Investigate and check against syntax in specs.
 ```
     <import src="this://two-buttons.xml" as="TwoButtons" />
 ```
