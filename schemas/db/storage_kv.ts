@@ -2,9 +2,11 @@ import { sqliteTable, integer, uniqueIndex, text, blob } from "drizzle-orm/sqlit
 import { apps } from "./apps";
 
 //Simple table offering a key:value storage solution for persistent data of each app.
-export const permanent = sqliteTable('permanent', {
+export const storage_kv = sqliteTable('storage_kv', {
   id: integer().primaryKey(),
   app: integer().references(()=> apps.id, {onDelete:'cascade',onUpdate:'cascade'}).notNull(),
   key: text().notNull(),
   value: blob().notNull(),
-},(table)=>({idx:uniqueIndex('permanentUniqueIdx').on(table.app,table.key)}));
+  timestamp_creation: integer().notNull(),
+  timestamp_expiring: integer().notNull(), //If null no expiration
+},(table)=>({idx:uniqueIndex('kvUniqueIdx').on(table.app,table.key)}));

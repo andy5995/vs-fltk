@@ -15,7 +15,7 @@
 ### Setup github actions
 - [ ] ? To run tests and save its reports on some backend
 - [ ] ? To run benchmarks and save its reports on some backend (variable system load will destroy performance metrics?)
-- [ ] ? To run the full flatpak-builder.
+- [ ] ? To run the full flatpak-builder. For referencehttps://github.com/flatpak/flatpak-github-actions
 
 # Current
 
@@ -89,7 +89,7 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
 - [x] Add debug component
 
 ### Paths
-- [x] Extend support for more virtual paths (all but those based on sqllite which will be handled later on)
+- [x] Extend support for more virtual paths (all but those based on sqlite which will be handled later on)
 
 
 ### Dynamic Library linking
@@ -98,8 +98,8 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
   - [x] Test linking
   - [x] On http/s & gemini (the cache is now generic)
   - [ ] Without libc?
-  - [ ] If nobuiltin is not usable, I need to add more of libtcc to meson targets.
-- [ ] Fix building process of tcc to generate the minimal libraries needed.
+  - [x] If nobuiltin is not usable, I need to add more of libtcc to meson targets.
+- [x] Fix building process of tcc to generate the minimal libraries needed.
 
 ### Policies
 

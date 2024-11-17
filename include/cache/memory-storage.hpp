@@ -1,10 +1,13 @@
 #pragma once
-//Temporary cache storing files from fs, collected from remote sources or pre-compiled.
+//Temporary cache storing files from fs, remote sources or pre-compiled.
 //This is not the final cache based on sqlite, but entries might be promoted under some conditions.
-//This cache exists regardless of the other one being enabled or not, and has a functional purpose.
+//This cache exists regardless of the other types being enabled or not, and has a functional purpose to support the xml parsing.
 
-//Once the build process of an app is completed, this cache is fully released before running.
-//This cache is going to be global.
+//Once the build process of an app is completed, its content is fully before running (with a flag for those objects which must persist).
+//This cache is exposed as a global singleton.
+
+//Its content is not exposed via any sort of API to embedded scripts.
+
 #include <utils/strings.hpp>
 #include <ui-frame-public.hpp>
 #include <cstddef>

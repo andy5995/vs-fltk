@@ -18,10 +18,6 @@ void tcc_log_symbol_func_xml(const pugi::xml_node& ctx, const char * msg, const 
     ui_xml_tree::log(severety_t::INFO, ctx , msg, name);
 }
 
-/*TODO: 
-Make it portable (at the moment path is fixed)
-*/
-
 //'/home/checkroom/Documents/projects/vs-fltk/subprojects/libtcc/tcc'  test.c  -I../../subprojects/libtcc/include/ -L.  -L../../subprojects/libtcc -lapp 
 
 static void vs_test_debug(const char* k, const char* v){globals::debug(k,v);}
@@ -44,7 +40,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     //- The path where libtcc.so is located
     //- The location where it s headers are placed.
     //- The path for bindings shall be computed as absolute based on VS_SHARE or whatever it is called.
-    
+
     script->add_lib_path("/usr/lib/x86_64-linux-gnu/"); //I dont' want to hardcode this one.
     script->add_lib_path("./subprojects/libtcc");
 
