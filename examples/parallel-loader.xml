@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--Not to be run from vs, it is used by one of the experiments-->
 <app auth.token="AAAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA-AAAAAAAAAAAAAAAA-AAA">
     <res src="TEST-A"/>
     <something>

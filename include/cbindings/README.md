@@ -1,0 +1,2 @@
+C bindings of `vs.fltk`. Here are also include files for interoperability with other languages:
+- Swift (modern versions of swift also have some limited capability of interfacing with the rest of the C++ codebase)

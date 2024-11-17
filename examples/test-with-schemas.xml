@@ -12,7 +12,6 @@
         sss
     <![CDATA[ Hello ]]>
     </script>
-
     <fl:window banana="">
         <use>
             <on.load-failure>
