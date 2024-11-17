@@ -2,9 +2,9 @@
 
 ### Flatpak issues
 - [ ] libfltk and its subdeps are compiled into `/app/lib64`, which is not covered by paths
-  Investigation got results. Basically, all meson libraries are in `/app/lib` while those through cmake are in `/app/lib64` which is not added to the search path in that image.  
-  Even outside of flatpak this is visible, but the folder names involved are not the same. I must ensure cmake and meson behave the same.
-- [ ] commons are not mounted in `/usr/local/share`. I must pass the relevant vars.  
+  Investigation got results. Basically, all cmake libraries are in `/app/lib` while those through meson are in `/app/lib64` which is not added to the search path in that image.  
+  Even outside of flatpak this problem occurs, just with different folder names. I must ensure cmake and meson behave the same.
+- [ ] commons are not mounted in `/usr/local/share`. I must pass the relevant vars (already supported).  
   I must register a variable in the user with where these files are located? Or embed it during compilation? Still not sure.
 - [ ] Icons, signature and few more things are still missing.
 

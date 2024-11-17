@@ -2,5 +2,5 @@
 url = https://github.com/KaruroChori/tcc-vs
 revision = head
 depth = 1
-patch_directory = libtcc
+#patch_directory = libtcc
 method = meson

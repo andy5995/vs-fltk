@@ -36,7 +36,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     //Without libc.so and libtcc1.a (not sure which) dynamic linking is not working as expected. I would really like to remove the libc dependency.
 
     script->set_error_fn(ctx,error_fn);
-    //script->set_opts("-nostdlib"); //-fno-builtin
+    script->set_opts("-nostdlib"); //-fno-builtin
     script->add_lib_path("/usr/lib/x86_64-linux-gnu/"); //I dont' want to hardcode this one.
     script->add_lib_path("./subprojects/libtcc");
 
@@ -49,7 +49,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     //script->add_lib("c");
 
 
-    if(link_with!=nullptr){
+    /*if(link_with!=nullptr){
         //TODO: Split in the last "/" position. Left is path for include and libraries to link, the remaining tag is the name it has.
         std::string link_header=(std::string(link_with));
         link_header.append(".h");
@@ -57,7 +57,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
         script->add_lib_path("/home/checkroom/Documents/projects/vs-fltk/examples/native-app/");
         script->add_include_path("/home/checkroom/Documents/projects/vs-fltk/examples/native-app/");
         script->add_lib("app");
-    }
+    }*/
 
     // Custom symbol
     //script->add_sym("vs_self", (void *)obj==0?(void*)-1:obj);  //Needed as obj nullptr would remove the symbol for some stupid reason.
