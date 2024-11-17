@@ -138,7 +138,7 @@ vs_fltk = shared_library(
     [
         './src/cache/memory-storage.cpp',
         './src/cache/kv-storage.cpp',
-        './src/cache/cache-storage.cpp',
+        './src/cache/res-storage.cpp',
         './src/cache/secrets.cpp',
 
         './src/utils/paths.cpp',

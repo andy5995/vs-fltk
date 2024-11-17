@@ -12,7 +12,7 @@
 #include "subprojects/libtcc/config.h"
 #include "subprojects/wamr/core/version.h"
 
-#include <uv.h>
+//#include <uv.h>
 #ifdef HAS_CURL
 #include <curl/curl.h>
 #endif

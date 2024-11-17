@@ -120,6 +120,15 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
     - [ ] Save XML trees while parsing
   - [x] Scripts 
 
+# Props, computed, getters and setters
+I would like to implement an architectural change how these concepts are handled.  
+Schemas will be defining objects for which `getters` and `setters` are defined.  
+Some component might allow for arbitrary definitions (already the case for the dispatcher which could be recycled), but most are fixed.  
+Props are just calls to setters for which expression evaluation from a string is available.  
+They are just an artifact of XML components, native ones for the most part are only going to use `getters` and `setters` directly.  
+
+It is also possible to mark specific objects as persistent. Those will be recorded as secrets & recovered if so desired.
+
 # Supported environments
 
 

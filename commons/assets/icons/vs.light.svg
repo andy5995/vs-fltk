@@ -24,9 +24,9 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
      showgrid="true"
-     inkscape:zoom="1.2111328"
-     inkscape:cx="305.91195"
-     inkscape:cy="155.22658"
+     inkscape:zoom="3.2932574"
+     inkscape:cx="274.34843"
+     inkscape:cy="96.56093"
      inkscape:window-width="1920"
      inkscape:window-height="1029"
      inkscape:window-x="0"
@@ -38,21 +38,7 @@
        id="grid2501" />
   </sodipodi:namedview>
   <defs
-     id="defs2">
-    <filter
-       inkscape:collect="always"
-       style="color-interpolation-filters:sRGB"
-       id="filter16942"
-       x="-0.027522284"
-       y="-0.058793761"
-       width="1.0550446"
-       height="1.1175875">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.19612622"
-         id="feGaussianBlur16944" />
-    </filter>
-  </defs>
+     id="defs2" />
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
@@ -94,7 +80,7 @@
     <g
        aria-label="⟨VS⟩"
        id="g16447"
-       style="font-size:33.0729px;fill:#000000;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;fill-opacity:1;stroke:#303062;stroke-width:2;stroke-dasharray:none;paint-order:normal;filter:url(#filter16942);opacity:1">
+       style="font-size:33.0729px;fill:#000000;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;fill-opacity:1;stroke:#303062;stroke-width:2;stroke-dasharray:none;paint-order:normal;opacity:1">
       <path
          d="m 74.451383,24.311365 4.553983,-6.04683 h 2.745309 l -4.553983,6.04683 4.553983,5.95317 h -2.745309 z"
          style="-inkscape-font-specification:sans-serif;fill:#000000;fill-opacity:1;stroke:#303062;stroke-opacity:1;stroke-width:2;stroke-dasharray:none;paint-order:normal;stroke-linecap:butt;stroke-linejoin:round"

@@ -24,9 +24,9 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
      showgrid="true"
-     inkscape:zoom="0.91081482"
-     inkscape:cx="-57.640696"
-     inkscape:cy="263.50032"
+     inkscape:zoom="0.7389276"
+     inkscape:cx="113.0016"
+     inkscape:cy="304.49532"
      inkscape:window-width="1920"
      inkscape:window-height="1029"
      inkscape:window-x="0"
@@ -38,34 +38,7 @@
        id="grid2501" />
   </sodipodi:namedview>
   <defs
-     id="defs2">
-    <filter
-       inkscape:collect="always"
-       style="color-interpolation-filters:sRGB"
-       id="filter17710"
-       x="-0.031227156"
-       y="-0.066708261"
-       width="1.0624543"
-       height="1.1334165">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.19612622"
-         id="feGaussianBlur17712" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       style="color-interpolation-filters:sRGB"
-       id="filter17714"
-       x="-0.052741184"
-       y="-0.12558232"
-       width="1.1054824"
-       height="1.2511646">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.21239809"
-         id="feGaussianBlur17716" />
-    </filter>
-  </defs>
+     id="defs2" />
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
@@ -73,7 +46,7 @@
     <g
        aria-label="⟨VS⟩"
        id="text8526"
-       style="font-size:33.0729px;display:inline;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.39595633;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:normal;filter:url(#filter17710);opacity:1"
+       style="font-size:33.0729px;display:inline;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.39595633;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:normal;opacity:1"
        transform="matrix(2.2086927,0,0,2.2086927,-155.10556,-2.6429762)"
        inkscape:label="text8526">
       <path
@@ -98,7 +71,7 @@
     </g>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:33.0729px;font-family:sans-serif;-inkscape-font-specification:sans-serif;display:inline;opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:5.29167;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:normal;filter:url(#filter17714)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:33.0729px;font-family:sans-serif;-inkscape-font-specification:sans-serif;display:inline;opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:5.29167;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
        x="61.415302"
        y="117.73753"
        id="text10956"
