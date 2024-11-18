@@ -1,22 +1,26 @@
-#include "FL/Fl.H"
-#include "FL/Fl_Widget.H"
-#include "cache/memory-storage.hpp"
-#include "fetcher.hpp"
-#include "pipelines/quickjs-js.hpp"
-#include <vs-templ.hpp>
-#include "ui-frame.hpp"
-#include "pipelines/tcc-c.hpp"
-#include "utils.hpp"
-#include "utils/paths.hpp"
-#include "utils/policies.hpp"
 #include <cstdarg>
-
-#include <memory>
-#include <ui.hpp>
-#include <components/containers.hpp>
-#include <ui-tree.xml.hpp>
 #include <unistd.h>
+#include <memory>
+
+#include <FL/Fl.H>
+#include <FL/Fl_Widget.H>
+#include <components/containers.hpp>
+
+#include <vs-templ.hpp>
+
+#include <pipelines/tcc-c.hpp>
+#include <pipelines/quickjs-js.hpp>
+
+#include <utils.hpp>
+#include <utils/paths.hpp>
+#include <utils/policies.hpp>
+
+#include <ui.hpp>
+#include <ui-frame.private.hpp>
+#include <ui-tree.xml.hpp>
+
 #include <globals.hpp>
+#include <fetcher.hpp>
 
 #if __has_include("components/autogen/index.hpp")
 #include <components/autogen/index.hpp>
@@ -368,7 +372,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
         is_module=true;
         auto filename = this->fullname.as_string();
 
-        auto found = globals::memstorage.get({filename.c_str(),this->local_unique_counter+1,cache::resource_t::SCRIPT});
+        auto found = globals::mem_storage.get({filename.c_str(),this->local_unique_counter+1,cache::resource_t::SCRIPT});
         if(found!=nullptr){
           current->set_mode(((cache::script_t*)found->ref.get())->mode);
           current->attach_script(((cache::script_t*)found->ref.get())->script,is_module);
@@ -411,7 +415,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
               auto tmp = std::make_shared<cache::script_t>(cache::script_t{
                 compiler, symbols, frame_mode_t::NATIVE
               });
-              globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
+              globals::mem_storage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
               local_unique_counter++;
             }
           }
@@ -431,7 +435,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
                 auto tmp = std::make_shared<cache::script_t>(cache::script_t{
                   compiler, symbols, frame_mode_t::QUICKJS
                 });
-                globals::memstorage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
+                globals::mem_storage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
                 local_unique_counter++;
               }
             }

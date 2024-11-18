@@ -5,5 +5,9 @@
 namespace vs{
 namespace cache{
 
+struct secrets_t{
+
+};
+
 }
 }

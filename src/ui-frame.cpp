@@ -1,4 +1,4 @@
-#include <ui-frame.hpp>
+#include <ui-frame.private.hpp>
 
 namespace vs{
 

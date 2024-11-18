@@ -1,5 +1,4 @@
-#include "cache/memory-storage.hpp"
-#include "pipelines/quickjs-js.hpp"
+#include <cache/memory-storage.hpp>
 #include <fetcher.hpp>
 
 namespace vs{
@@ -10,7 +9,7 @@ std::tuple<resolve_path::reason_t::t,cache::buffer_t, scoped_rpath_t> fetcher(re
 
         //If present, use the one cached.
         {
-            auto found = globals::memstorage.get({ret.second.location,0,cache::resource_t::BUFFER});
+            auto found = globals::mem_storage.get({ret.second.location,0,cache::resource_t::BUFFER});
             if(found!=nullptr){
                 cache::buffer_t bf = * (cache::buffer_t*)found->ref.get();
                 return {resolve_path::reason_t::OK,bf,ret.second};
@@ -18,8 +17,8 @@ std::tuple<resolve_path::reason_t::t,cache::buffer_t, scoped_rpath_t> fetcher(re
         }
 
         if(ret.second.type==rpath_type_t::FS){
-            auto res = globals::memstorage.fetch_from_fs({ret.second.location,0,cache::resource_t::BUFFER,promote,preserve});
-            if(res==globals::memstorage.end()){
+            auto res = globals::mem_storage.fetch_from_fs({ret.second.location,0,cache::resource_t::BUFFER,promote,preserve});
+            if(res==globals::mem_storage.end()){
                 return {resolve_path::reason_t::NOT_FOUND,{nullptr,0},ret.second};
             }
             else{
@@ -29,8 +28,8 @@ std::tuple<resolve_path::reason_t::t,cache::buffer_t, scoped_rpath_t> fetcher(re
         }
 #       ifdef HAS_CURL
         else if(ret.second.type==rpath_type_t::HTTP){
-            auto res = globals::memstorage.fetch_from_http({ret.second.as_string(),0,cache::resource_t::BUFFER,promote,preserve});
-            if(res==globals::memstorage.end()){
+            auto res = globals::mem_storage.fetch_from_http({ret.second.as_string(),0,cache::resource_t::BUFFER,promote,preserve});
+            if(res==globals::mem_storage.end()){
                 return {resolve_path::reason_t::NOT_FOUND,{nullptr,0},ret.second};
             }
             else{
@@ -39,8 +38,8 @@ std::tuple<resolve_path::reason_t::t,cache::buffer_t, scoped_rpath_t> fetcher(re
             }
         }
         else if(ret.second.type==rpath_type_t::HTTPS){
-            auto res = globals::memstorage.fetch_from_https({ret.second.as_string(),0,cache::resource_t::BUFFER,promote,preserve});
-            if(res==globals::memstorage.end()){
+            auto res = globals::mem_storage.fetch_from_https({ret.second.as_string(),0,cache::resource_t::BUFFER,promote,preserve});
+            if(res==globals::mem_storage.end()){
                 return {resolve_path::reason_t::NOT_FOUND,{nullptr,0},ret.second};
             }
             else{

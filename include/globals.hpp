@@ -4,6 +4,9 @@
 #include <utils/paths.hpp>
 #include <utils/policies.hpp>
 #include <cache/memory-storage.hpp>
+#include <cache/res-storage.hpp>
+#include <cache/kv-storage.hpp>
+#include <cache/secrets.hpp>
 
 namespace vs{
 
@@ -11,7 +14,10 @@ namespace globals{
 extern policies_t policy;
 extern path_env_t path_env;
 extern js_rt_t js_rt;
-extern cache::memstorage_t memstorage;
+extern cache::mem_storage_t mem_storage;
+//extern cache::kv_storage_t kv_storage;
+//extern cache::res_storage_t res_storage;
+//extern cache::secrets_t secrets;
 
 struct vs_test_debug_t{
     FILE* fd = nullptr;

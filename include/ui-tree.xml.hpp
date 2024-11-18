@@ -35,7 +35,7 @@ private:
     scoped_rpath_t fullname;            //Full path for the location of this component.
 
     std::map<std::string,std::string> imports;
-    //std::vector<uint8_t> filebuffer;
+
     bool is_app;
 
     size_t local_unique_counter = 0;

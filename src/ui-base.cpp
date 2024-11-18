@@ -5,14 +5,6 @@
 #include <ui.hpp>
 #include <ui-tree.hpp>
 
-
-#include "FL/Enumerations.H"
-#include "FL/Fl_Button.H"
-#include "FL/Fl_Group.H"
-#include "FL/Fl_Input.H"
-
-#include "FL/Fl_Toggle_Button.H"
-#include "FL/Fl_Widget.H"
 #include "pipelines/quickjs-js.hpp"
 #include "ui-frame.hpp"
 #include "utils/strings.hpp"

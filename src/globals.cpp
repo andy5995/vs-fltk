@@ -9,7 +9,7 @@ namespace globals{
 policies_t  policy;
 path_env_t  path_env;
 js_rt_t     js_rt;
-cache::memstorage_t memstorage;
+cache::mem_storage_t mem_storage;
 
 vs_test_debug_t debug;
 

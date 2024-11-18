@@ -3,7 +3,7 @@
 
 #include <quickjs.h>
 
-#include <ui-frame.hpp>
+#include <ui-frame.private.hpp>
 #include <ui.hpp>
 #include <ui-tree.xml.hpp>
 #include <pipelines/quickjs-js.hpp>

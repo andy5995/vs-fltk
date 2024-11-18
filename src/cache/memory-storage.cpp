@@ -16,7 +16,7 @@ namespace vs{
 namespace cache{
 
 
-memstorage_t::entry_it  memstorage_t::fetch_from_fs(const key_t& path){
+mem_storage_t::entry_it  mem_storage_t::fetch_from_fs(const mem_key_t& path){
     uint8_t* buffer = nullptr;
     size_t fsize = 0;
     {
@@ -44,8 +44,7 @@ memstorage_t::entry_it  memstorage_t::fetch_from_fs(const key_t& path){
 
 #ifdef HAS_CURL
 
-//TODO: Not working yet! More to do
-memstorage_t::entry_it memstorage_t::fetch_from_http(const key_t& path){
+mem_storage_t::entry_it mem_storage_t::fetch_from_http(const mem_key_t& path){
     CURL *curl;
     CURLcode res;
 
@@ -85,7 +84,7 @@ memstorage_t::entry_it memstorage_t::fetch_from_http(const key_t& path){
     return entries.end();
 }
 
- memstorage_t::entry_it memstorage_t::fetch_from_https(const key_t& path){
+ mem_storage_t::entry_it mem_storage_t::fetch_from_https(const mem_key_t& path){
     CURL *curl;
     CURLcode res;
 
@@ -130,37 +129,37 @@ memstorage_t::entry_it memstorage_t::fetch_from_http(const key_t& path){
     return entries.end();
 }
 
- memstorage_t::entry_it memstorage_t::fetch_from_gemini(const key_t& path){
+ mem_storage_t::entry_it mem_storage_t::fetch_from_gemini(const mem_key_t& path){
     //Gemini cannot be based on cURL. It requires a custom implementation based on some SSL library and sockets.
     return entries.end();
 }
 #endif
 
- memstorage_t::entry_it memstorage_t::fetch_from_cache(const key_t& path){
+ mem_storage_t::entry_it mem_storage_t::fetch_from_res_storage(const mem_key_t& path){
     //I need to have SQLITE integrate first.
     return entries.end();
 }
 
- memstorage_t::entry_it memstorage_t::fetch_from_shared(const key_t& key, const std::shared_ptr<void>& src){
-    key_t k = {key.location,key.local_id};
+ mem_storage_t::entry_it mem_storage_t::fetch_from_shared(const mem_key_t& key, const std::shared_ptr<void>& src){
+    mem_key_t k = {key.location,key.local_id};
     auto it = entries.emplace(k,src);
     if(it.second==true)return it.first;
     else return entries.end();
 ;
 }
 
-void memstorage_t::drop(const key_t& key){
+void mem_storage_t::drop(const mem_key_t& key){
     entries.erase({key.location,key.local_id});
 }
 
 //Search fragment inside document
-memstorage_t::entry_t* memstorage_t::get(const key_t& key){
+mem_storage_t::entry_t* mem_storage_t::get(const mem_key_t& key){
     auto it = entries.find({key.location,key.local_id, key.resource});
     if(it!=entries.end())return &it->second;
     else return nullptr;
 }
 
-void memstorage_t::cleanup(){
+void mem_storage_t::cleanup(){
     for(auto i =this->entries.begin();i!=this->entries.end();){
         if(i->first.to_keep==false) i = this->entries.erase(i);
         else i++;

@@ -11,6 +11,10 @@
 import pkg from "@/package.json"
 await Bun.write("./include/version.hpp",
     `#pragma once
+constexpr int vs_version_major=${pkg.version.split('-')[0].split('.')[0]};
+constexpr int vs_version_minor=${pkg.version.split('-')[0].split('.')[1]};
+constexpr int vs_version_rev=${pkg.version.split('-')[0].split('.')[2]};
+inline const char* vs_version_tag="${pkg.version.split('-')[1]}";
 inline const char* vs_version(){return "${pkg.version}";}
 `)
 
