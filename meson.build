@@ -1,9 +1,9 @@
 project(
     'vs-fltk',
     ['c', 'cpp', 'swift'],
-    default_options: ['c_std=gnu23', 'cpp_std=gnu++23'],
     version: '0.1.0-dev',
     meson_version: '>= 1.1',
+    default_options: ['c_std=gnu2x', 'cpp_std=gnu++23'],
 )
 
 #Used by pugi to enable compact mode. I might want to disable execptions too.
