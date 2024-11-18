@@ -24,7 +24,12 @@ jobs:
           sudo apt update
           sudo apt remove -y firefox
           sudo apt upgrade -y
-          sudo apt install -y python3-pip python3-setuptools
+          sudo apt install -y \
+            libfltk1.3-dev \
+            libsqlite3-0 \
+            libtcc-dev \
+            python3-pip \
+            python3-setuptools
           python3 -m pip install meson ninja
         else
           brew update
