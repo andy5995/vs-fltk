@@ -1,4 +1,5 @@
 #include "ui-tree.hpp"
+#include "ui-frame.hpp"
 #include <cstdarg>
 #include <unistd.h>
 #include <memory>
@@ -488,7 +489,27 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
         else if(strcmp(tmp.as_string(),"lua")==0)current->set_mode(frame_mode_t::LUA);
         else if(strcmp(tmp.as_string(),"wasm")==0)current->set_mode(frame_mode_t::WASM);
         else if(strcmp(tmp.as_string(),"external")==0)current->set_mode(frame_mode_t::EXTERNAL);
-        else{current->set_mode(frame_mode_t::AUTO);}
+        else{current->set_mode(frame_mode_t::AUTO);}  //TODO: Catch error
+      }
+    }
+    {
+      const auto& tmp = root.attribute("frame.type");
+      if (!tmp.empty()) {
+        if(strcmp(tmp.as_string(),"container")==0)current->set_type(frame_type_t::CONTAINER);
+        else if(strcmp(tmp.as_string(),"slot-container")==0)current->set_type(frame_type_t::SLOT_CONTAINER);
+        else if(strcmp(tmp.as_string(),"container-slot")==0)current->set_type(frame_type_t::SLOT_CONTAINER);
+        else if(strcmp(tmp.as_string(),"slot")==0)current->set_type(frame_type_t::SLOT);
+        else if(strcmp(tmp.as_string(),"leaf")==0)current->set_type(frame_type_t::LEAF);
+        else if(strcmp(tmp.as_string(),"node")==0)current->set_type(frame_type_t::NODE);
+        else{current->set_type(frame_type_t::SLOT_CONTAINER);}  //TODO: Catch error
+      }
+    }
+    {
+      const auto& tmp = root.attribute("frame.access");
+      if (!tmp.empty()) {
+        if(strcmp(tmp.as_string(),"private")==0)current->set_access(frame_access_t::PRIVATE);
+        else if(strcmp(tmp.as_string(),"public")==0)current->set_access(frame_access_t::PUBLIC);
+        else{current->set_access(frame_access_t::PRIVATE);}  //TODO: Catch error
       }
     }
 

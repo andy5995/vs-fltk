@@ -28,6 +28,7 @@ enum class resource_t{
             OTHER_RESOURCE,             //?
 };
 
+//__attribute__((packed)) string sucks, it is non-POD
 struct ctx_t{
   uint8_t src_key[256/8];       //Key as it appears on the app definition
   uint8_t computed_key[256/8];  //Key after the parent one has been applied. Root keys is the one of the parent. Needed to avoid nasty secrets violations

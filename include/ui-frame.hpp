@@ -69,7 +69,7 @@ enum class frame_type_t{
   NODE,             //A namespace without constraints on moving in and out
 };
 enum class frame_access_t{
-  PUBLIC,           //Symbols can be searched bottom up & top down.
+  PUBLIC,           //Symbols can be searched inside, bottom up & top down.
   PRIVATE,          //There can be symbols, but they are only visible by self. Requests are passed
 };
 

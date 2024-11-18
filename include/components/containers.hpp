@@ -4,8 +4,8 @@
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
+#include <cache/commons.hpp>
 
-#include <iostream>
 #include <ui.hpp>
 
 namespace vs{
@@ -13,10 +13,12 @@ namespace vs{
 
 class ui_root_app :public ui_base{
   protected:
+    cache::ctx_t cache_ctx;
+
   public:
     ui_root_app(frame_mode_t MODE):ui_base(nullptr){
       //Cannot use mk_frame as it requires recursion and the widget property to operate.
-      local_frame=new frame("%root", MODE, this, nullptr, default_frame_type(), frame_access_t::PUBLIC);
+      local_frame=new frame(nullptr, MODE, this, nullptr, default_frame_type(), frame_access_t::PUBLIC);
   }
 
   virtual frame_type_t default_frame_type() override {return frame_type_t::CONTAINER;}
@@ -31,7 +33,7 @@ class ui_root_component :public ui_base{
   public:
     ui_root_component(frame_mode_t MODE):ui_base(nullptr){
         //Cannot use mk_frame as it requires recursion and the widget property to operate.
-        local_frame=new frame("%component", MODE, this, nullptr, default_frame_type(), frame_access_t::PUBLIC);
+        local_frame=new frame(nullptr, MODE, this, nullptr, default_frame_type(), frame_access_t::PUBLIC);
     }
 
     virtual frame_type_t default_frame_type() override {return frame_type_t::CONTAINER;}
@@ -41,6 +43,8 @@ class ui_root_component :public ui_base{
     int get_computed(const char *prop, const char **value) override{return 1;}
 
 };
+
+//TODO: Add a new ui_region similar to namespace but with extra cache::ctx_t like app, to nest a new "safe" region inside.
 
 class ui_namespace : public ui_base{
   public:

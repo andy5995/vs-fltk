@@ -7,6 +7,7 @@
 namespace vs {
 
 struct ui_tree {
+  //TODO: Probably not here. I should move it inside the app container class AND a new one unless I want to reuse namespaces
   cache::ctx_t cache_ctx;
 
   //TODO: Add the path for any dynamic library to be linked with as well.

@@ -27,7 +27,10 @@ class frame{
   protected:
     std::shared_ptr<void> script;
     std::shared_ptr<smap<symbol_t>> symbols = nullptr;  //For symbol resolution on function calling 
+    
     frame_mode_t mode = frame_mode_t::AUTO;
+    frame_type_t type;
+    frame_access_t access;
 
     bool is_script_module = false;
 
@@ -37,21 +40,20 @@ class frame{
 
     smap<frame*> children;
     symbol_t custom_dispatcher = symbol_t::VOID;
-    smap<filter_t> filters;                           //To prevent top/down propagation of messages
-    smap<resolver_t> resolvers;                       //To catch messages coming from bottom up
+    //smap<filter_t> filters;                           //To prevent top/down propagation of messages
+    //smap<resolver_t> resolvers;                       //To catch messages coming from bottom up
 
     smap<smap<std::string>> mixins;   //Provide css-like classes for itself and children based on the same scoping rules for symbols.
 
-    frame_type_t type;
-    frame_access_t access;
 
     //Propagate search of a name down to children
     frame* _resolve_name_down(const char* name, const frame* origin) const{
+      auto t = children.find(name);
+      if(t!=children.end()){return t->second;}
+
       //Failure? Try to check inside in case children are passthrough.
       for(const auto& i : children){
-
-        if(i.second->type==frame_type_t::LEAF)continue;
-        if(i.second->name==""){
+        if(type==frame_type_t::NODE || type==frame_type_t::CONTAINER){
             auto w = i.second->_resolve_name_down(name, origin);
             if(w!=nullptr) return w;
         }
@@ -59,10 +61,10 @@ class frame{
       return nullptr;
     }
 
-    //Names are resolved at the first PUBLIC or CONTAINER ignoring PASSTHROUGH.
-    //Only the first one found is retured. Slots prevent going down.
     const frame* _resolve_name(const char* name, const frame* origin) const {
-      //Self
+      if(name[0]==0)return nullptr;
+
+      //Self      
       if(strcmp(name,".")==0){
         return this;
       }
@@ -83,13 +85,11 @@ class frame{
         return saved;
       }
 
-      else if((type==frame_type_t::LEAF) && parent!=nullptr)return parent->_resolve_name(name, this);
-      //Else look for the symbol!
-      auto t = children.find(name);
-      if(t!=children.end()){return t->second;}
+      //TODO: Evaluate if I want this rule, but I think not.
+      //else if((type==frame_type_t::LEAF) && parent!=nullptr)return parent->_resolve_name(name, this);
 
+      //Else look for the name!
       return _resolve_name_down(name,origin);
-      return nullptr;
     }
 
     //Symbols are forced to match the tree structure to be found, from bottom to top
@@ -156,7 +156,7 @@ class frame{
 
     frame(const char* name, frame_mode_t mode, ui_base* ui_node, frame* parent, frame_type_t type, frame_access_t access){
       static int counter = 0;
-      if(name==nullptr)this->name=std::string("%__")+std::to_string(counter++);
+      if(name==nullptr)this->name=std::string("%__")+std::to_string(counter++); //TODO: replace with hash to make them not predictable. Filter out %__ prefixed names from any serialization
       else this->name=name;
       this->mode=mode;
       this->ui_node=ui_node;
@@ -205,6 +205,7 @@ class frame{
     inline void unregister_symbol(const char* name){symbols->erase(symbols->find(name));}
     inline void reset_symbols(){symbols->clear();}
 
+    /*
     //For top->down signals
     inline void register_filter(const char* name, filter_t value){filters.insert_or_assign(name,value);}
     inline const filter_t get_filter(const char* name){const auto& it = filters.find(name);if(it==filters.end())return nullptr; else return it->second;}
@@ -216,6 +217,7 @@ class frame{
     inline const resolver_t get_resolver(const char* name){const auto& it = resolvers.find(name);if(it==resolvers.end())return nullptr; else return it->second;}
     inline void unregister_resolver(const char* name){resolvers.erase(resolvers.find(name));}
     inline void reset_resolver(){resolvers.clear();}
+    */
 
     //TODO helpers for mixin?
 
