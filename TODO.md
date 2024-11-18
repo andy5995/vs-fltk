@@ -19,6 +19,8 @@
 
 # Current
 
+All these notes should be progressively removed from here and recorded as github issues.
+
 ### Annoying memory consumption
 
 ~~The memory footprint (RSS) went up from 4.5MB from two weeks ago or so, to about 19MB in this latest version.~~  
@@ -52,7 +54,8 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
 ### Infrastructural
 - [x] Add namespaces for vs elements and fltk elements
 - [x] Expose some sort of inverse for apply_prop, where selected fields can be read from a widget.
-- [ ] Add special `inherit` value to props to remove the current one and let it be computed based on its parents? I have to decide if we want this one.
+- [ ] (?) Add special `inherit` value to props to remove the current one and let it be computed based on its parents? I have to decide if we want this one.
+- [ ] Serialize the current UI structure in some format to be consumed by other services (AI assistants, speech dispatcher etc)
 - [ ] Add pipelines for compilation & testing on github/gitea
 - [ ] Basic LSP for the vs syntax. Implementation @ https://github.com/KaruroChori/vs-fltk-lsp
 - [ ] Make some dependencies and their related features toggleable at build-time (tcc, quickjs, lua, wamr).
@@ -61,7 +64,7 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
 - [ ] Signal/event propagation mechanisms
 - [x] Add special logging to generate output used by more complex tests. They must also be exposed to scripts.  
       These logs are only recorded if VS_DEBUG_FILE is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test. 
-- [ ] Namespace support
+- [x] Namespace support
   - [x] In the root of app or components search for `xmlns` attributes, and define local namespaces based on `vs`, `vs.templ` & `vs.fltk`.
   - [x] Codegen for reserved elements & attributes in the vs namespace. Like for `vs.fltk`.
 - [ ] Evaluate and check if possible to replace sqlite with https://github.com/tursodatabase/libsql as it looks like the better (it supports alteration of foreign keys for example)
@@ -69,7 +72,7 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
   - [x] Rewrite TS stuff in meson directly
   - [x] Update internal paths to work in both build and installed mode.
   - [ ] Man page
-  - [ ] deb (mounted on opt, as most dependencies are needed recent and potentially forked)
+  - [ ] ~~deb (mounted on opt, as most dependencies are needed recent and potentially forked)~~
   - [x] flatpak
     - [x] Swift6 is added, but meson cannot find swiftc. Why?
     - [x] Unable to append args to meson setup
@@ -120,6 +123,12 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
     - [ ] Save XML trees while parsing
   - [x] Scripts 
 
+- [ ] Caching all done (SQLITE part)
+  - [ ] kv
+  - [ ] res
+  - [ ] secrets
+  - [x] DB schemas
+
 # Props, computed, getters and setters
 I would like to implement an architectural change how these concepts are handled.  
 Schemas will be defining objects for which `getters` and `setters` are defined.  
@@ -127,10 +136,10 @@ Some component might allow for arbitrary definitions (already the case for the d
 Props are just calls to setters for which expression evaluation from a string is available.  
 They are just an artifact of XML components, native ones for the most part are only going to use `getters` and `setters` directly.  
 
-It is also possible to mark specific objects as persistent. Those will be recorded as secrets & recovered if so desired.
+It is also possible to mark specific objects as `persistent`. Those will be recorded as secrets & recovered if so desired.
+It is also possible to mark specific objects as `semantic`. Those will be reported in the serialization.
 
 # Supported environments
-
 
 ## TCC
 

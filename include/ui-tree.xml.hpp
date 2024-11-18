@@ -36,7 +36,6 @@ private:
 
     std::map<std::string,std::string> imports;
 
-    bool is_app;
 
     size_t local_unique_counter = 0;
 
@@ -55,7 +54,7 @@ public:
 
     int build();
 
-    int load(const char* file, bool app, const pugi::xml_node* caller_node=nullptr, ui_base* caller_ui_node=nullptr, const scoped_rpath_t* caller_path=nullptr, const policies_t& base_policies=globals::policy);
+    int load(const char* file, type_t type, const pugi::xml_node* caller_node=nullptr, ui_base* caller_ui_node=nullptr, const scoped_rpath_t* caller_path=nullptr, const policies_t& base_policies=globals::policy);
 
     ~ui_xml_tree();
 

@@ -1,8 +1,11 @@
 #!/bin/env bun
 /*
     Single script to perform all codegen task in one single step.
+    Use `quick` as optional arg to avoid generating the meson file again.  
+    This will speed up compilation considerably and is fine as long as you have not added or removed files in the schema folder.
 */
 
+import { $ } from "bun"
 
 /*
     Export the information from the package.json into a header file to be consumed during compilation.
@@ -24,6 +27,5 @@ import "./gen-components"
 import "./gen-ns-strings"
 import "./gen-policies"
 
-import { $ } from "bun"
 
 await $`bun drizzle-kit generate && bun drizzle-kit push`;

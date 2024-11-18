@@ -1,3 +1,4 @@
+#include "ui-tree.hpp"
 #include <cstdarg>
 #include <unistd.h>
 #include <memory>
@@ -83,7 +84,7 @@ void ui_xml_tree::log(int severety, const void* _ctx, const char* str, ...){
 
 //General XML loader for apps and components.
 //TODO: The caller node is a design flaw. We need to be given the list of props and slots. Not the full node which might not even exist.
-int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* caller_node, ui_base* caller_ui_node, const scoped_rpath_t* caller_path, const policies_t& base_policies)
+int ui_xml_tree::load(const char* file, type_t type, const pugi::xml_node* caller_node, ui_base* caller_ui_node, const scoped_rpath_t* caller_path, const policies_t& base_policies)
 {
   //TODO: As part of this process, policies should be aligned with what defined in the base config, 
   //and not just one single set of options, so that we can pattern match paths.
@@ -97,7 +98,7 @@ int ui_xml_tree::load(const char* file, bool is_app, const pugi::xml_node* calle
     this->fullname=std::get<2>(buffer);
   }
 
-  this->is_app = is_app;
+  this->type = type;
   this->caller_node=caller_node;
   this->caller_ui_node=caller_ui_node;
   vs_log(severety_t::INFO, nullptr, "Requested loading of file `%s`", std::get<2>(buffer).as_string().data());
@@ -171,7 +172,7 @@ ui_xml_tree::~ui_xml_tree(){if(root!=nullptr)delete root;}
 
 int ui_xml_tree::build(){
   
-  const auto& xml_root = doc.child(is_app?strings.APP_TAG:strings.COMPONENT_TAG);
+  const auto& xml_root = doc.child((type==type_t::APP)?strings.APP_TAG:strings.COMPONENT_TAG);
   if(xml_root.empty()){
     log(severety_t::CONTINUE, xml_root, "Unable to find a valid root in `%s`", fullname.as_string().c_str());
     return 1;
@@ -179,12 +180,19 @@ int ui_xml_tree::build(){
 
   ui_base* base;
 
-  if(is_app){base = (ui_base*)new ui_root_app(frame_mode_t::AUTO);}
+  if(type==type_t::APP){
+    base = (ui_base*)new ui_root_app(frame_mode_t::AUTO);
+    //TODO: Handle app.class token & page tag
+    
+    auto token = string2key256(xml_root.attribute("class-token").as_string(nullptr), cache_ctx.src_key);
+    //cache_ctx.computed_key = key256compose(token, cache_ctx.computed_key);
+    cache_ctx.page_tag = xml_root.attribute("page").as_string("");
+  }
   else base = caller_ui_node;
 
-  _build(doc.child(is_app?strings.APP_TAG:strings.COMPONENT_TAG),is_app?base:caller_ui_node);
+  _build(doc.child((type==type_t::APP)?strings.APP_TAG:strings.COMPONENT_TAG),(type==type_t::APP)?base:caller_ui_node);
 
-  if(is_app)root=base;
+  if(type==type_t::APP)root=base;
   else root = nullptr;
   return 0;
 }
@@ -200,7 +208,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     else{
       log(severety_t::INFO,root,"Loading component %s", src.as_string()); //TODO: How is it possible that this shows file:// in place of the actual one?
       ui_xml_tree component_tree; 
-      if(component_tree.load(src.as_string(),false,&root,root_ui,&local, policies)!=0){
+      if(component_tree.load(src.as_string(),type_t::COMPONENT,&root,root_ui,&local, policies)!=0){
         log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", src);
       }
       else{
@@ -312,7 +320,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     auto it = imports.find(root.name());
     log(severety_t::INFO,root,"Loading component %s", it->second.c_str()); //TODO: How is it possible that this shows file:// in place of the actual one?
     ui_xml_tree component_tree; 
-    if(component_tree.load(it->second.c_str(),false,&root,root_ui,&local, policies)!=0){
+    if(component_tree.load(it->second.c_str(),type_t::COMPONENT,&root,root_ui,&local, policies)!=0){
       log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", it->second.c_str());
     }
     else{

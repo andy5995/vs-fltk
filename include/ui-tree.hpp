@@ -2,17 +2,20 @@
 
 #include "ui-frame.hpp"
 #include <ui.hpp>
+#include <cache/commons.hpp>
 
 namespace vs {
 
 struct ui_tree {
-  struct cache_ctx_t{
-    uint8_t src_key[256/8];       //Key as it appears on the app definition
-    uint8_t computed_key[256/8];  //Key after the parent one has been applied. Root keys is the one of the parent. Needed to avoid nasty secrets violations
-    std::string page_tag;         //Used to identify different apps all sharing the same key. While permanent data is shared, secrets are tagged to match a specific "page"
-  }cache_ctx;
+  cache::ctx_t cache_ctx;
 
   //TODO: Add the path for any dynamic library to be linked with as well.
+
+  //ui_tree* parent = nullptr;      //Filled in for viewports when apps are embedded inside other apps
+  enum class type_t{
+    NONE, APP, COMPONENT, FRAGMENT
+  }type;
+
 
   // Globals
   std::string basename;
@@ -25,6 +28,8 @@ struct ui_tree {
 
   // Support during navigation
   frame_mode_t mode = frame_mode_t::AUTO;
+
+  bool string2key256(const char* str, uint8_t array[256/32] );
 
   //TODO: It is likely  I want this stuff moved from here.
   //      Also a lot of it might end up in the codegen machine.

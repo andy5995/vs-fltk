@@ -1,7 +1,12 @@
+#include <cstring>
 #include <ui-tree.hpp>
 
 namespace vs{
   
+  bool ui_tree::string2key256(const char* str, uint8_t array[256/32]){
+    memset(array,0,256/8);
+  }
+
   //TODO: I need to check if number conversions failed or not too.
   bool ui_tree::h_px(uint T, size_t* dst, const char* expr, const ui_base* env){
     if (T==1){

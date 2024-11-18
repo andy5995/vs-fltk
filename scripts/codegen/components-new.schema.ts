@@ -22,6 +22,7 @@ const entries_schema = t.Record(t.String(), t.Object({
     getter: t.Union([t.String(),t.Null()], {default:null, description:"Information on how to extract value from object."}),
     //`serialize` not needed as it is already implemented for each supported type.
     description: t.Optional(t.String()),
+    semantic: t.Optional(t.Boolean({default:false, description:'If true this field has a strong semantic meaning. Used for semantic serialization of a document.'})),
     alias: t.Optional(t.Array(t.String(), { description: "alias names" , default:[]}))
 }))
 

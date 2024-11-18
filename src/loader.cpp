@@ -1,3 +1,4 @@
+#include "ui-tree.hpp"
 #include <iostream>
 
 #include <ui-tree.xml.hpp>
@@ -41,7 +42,7 @@ app_loader::app_loader(const char *profile, const char* path){
 
 
   root=new ui_xml_tree();
-  if(root->load(path,true)!=0){
+  if(root->load(path,ui_tree::type_t::APP)!=0){
     throw "Unable to process file";
   }
   else{
