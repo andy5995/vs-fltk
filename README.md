@@ -125,6 +125,12 @@ Compared to other approaches, `vs` is extremely opinionated and tries to enforce
 
 You can read more about which features are planned in the [milestones page](./docs/milestones.md).
 
+## Useful documentation
+
+- Instuctions [for developers](./docs/for-developers.md)
+- Instuctions ~~[for users](./docs/for-users.md) of vs~~
+- Complete ~~[specifications](./docs/specs.md)~~.
+
 ## Licences
 
 Currently, most of this project is source available, under the terms of CC BY-ND.  
