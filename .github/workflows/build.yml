@@ -16,16 +16,20 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
+    env:
+      CC: clang
+      CXX: clang++
     steps:
     - uses: actions/checkout@v4
     - name: Install dependencies
       run: |
         if [ "${{ contains(matrix.os, 'ubuntu') }}" = "true" ]; then
+          curl -fsSL https://bun.sh/install | bash
+          echo "PATH=$HOME/.bun/bin:$PATH" >> $GITHUB_ENV
           sudo apt update
           sudo apt remove -y firefox
           sudo apt upgrade -y
           sudo apt install -y \
-            libfltk1.3-dev \
             libsqlite3-0 \
             libtcc-dev \
             python3-pip \
@@ -38,5 +42,7 @@ jobs:
 
     - name: Configure and build
       run: |
-        meson setup builddir
-        meson compile -C builddir
+        bun install
+        bun run codegen
+        bun run meson-setup.clang-release
+        bun run vs.example
