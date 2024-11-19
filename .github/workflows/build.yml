@@ -17,13 +17,14 @@ jobs:
         os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     env:
-      CC: clang
-      CXX: clang++
+      CC: clang-19
+      CXX: clang++-19
     steps:
     - uses: actions/checkout@v4
     - name: Install dependencies
       run: |
         if [ "${{ contains(matrix.os, 'ubuntu') }}" = "true" ]; then
+          sudo apt update
           curl -fsSL https://bun.sh/install | bash
           echo "PATH=$HOME/.bun/bin:$PATH" >> $GITHUB_ENV
           sudo apt update
@@ -35,6 +36,12 @@ jobs:
             python3-pip \
             python3-setuptools
           python3 -m pip install meson ninja
+          # for clang
+          sudo apt install -y wget gpg gnupg software-properties-common
+          curl -LO https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 19 # install clang-19
+
         else
           brew update
           brew install meson ninja
