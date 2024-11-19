@@ -51,5 +51,5 @@ jobs:
       run: |
         bun install
         bun run codegen
-        bun run meson-setup.clang-release
+        bun run meson-setup clang-release
         bun run vs.example
