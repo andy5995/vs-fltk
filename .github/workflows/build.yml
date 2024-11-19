@@ -6,8 +6,20 @@ concurrency:
 on:
   push:
     branches: [ master ]
+    paths:
+    - '**'
+    - '!**.yml'
+    - '!docs/**'
+    - '!**.md'
+    - '**/build.yml'
   pull_request:
     branches: [ master ]
+    paths:
+    - '**'
+    - '!**.yml'
+    - '!docs/**'
+    - '!**.md'
+    - '**/build.yml'
 
 jobs:
   meson:
