@@ -7,7 +7,7 @@ In addition to that, this repo makes use of:
 - [meson](https://mesonbuild.com/) as its main build system. Any recent-ish version will do (unless you need `zig` to simplify cross-compiling; for that >= 1.60 is needed)
 - [bun](https://bun.sh/) as the ts/js runtime to support all the code generation tasks and some of the more complex pipelines.  
    I hate bash, and this is what replaces it.
-- [swiftc](https://www.swift.org/documentation/swift-compiler/) barely used for now, but many of the native components shipped will be written in it (or so I am planning).
+- [swiftc](https://www.swift.org/documentation/swift-compiler/) barely used for now, but many of the native components shipped will be written in it (or so I am planning). Swift 6 will be needed, but for now any version will do.
 - **libcurl-dev**, unless you are trying to compile a custom version without network support, which is supported.
 
 At the moment, only Linux is supported or tested, probably on any of the major CPU architectures. Wider support for POSIX systems is also likely.  
