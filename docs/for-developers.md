@@ -9,6 +9,9 @@ In addition to that, this repo makes use of:
    I hate bash, and this is what replaces it.
 - [swiftc](https://www.swift.org/documentation/swift-compiler/) barely used for now, but many of the native components shipped within vs will be written in swift (or so I am planning). Swift 6 will be needed, but for now any version will do.
 
+For now you will need to install [some dependencies](https://github.com/fltk/fltk/blob/master/README.Unix.txt) to support FLTK.  
+Specifically `libpng-dev` & `libglu1-mesa-dev` are likely missing on most distributions.
+
 There are also some more or less optional dependencies:
 - **libcurl-dev**, unless you are trying to compile a custom version without network support, which is supported.
 - **sqlite** is needed. If not provided by your system it will be automatically downloaded and distributed alongside `vs`.
@@ -24,13 +27,13 @@ Once it is ready enough TODO add link here.
 At the moment, only Linux is supported or tested, probably on any of the major CPU architectures. Wider support for POSIX systems is also likely.  
 This is just temporary limitation, as all dependencies are portable, but my own code is probably not.
 
-| **Platform**           | **Building** | **Running** |
-|------------------------|:------------:|:-----------:|
-| debian-trixie amd64    | ✅            | ✅           |
-| freedektop-24.08 amd64 | ✅*           | ✅*          |
-| macos-13 amd64         | ❓            | ❓           |
-| macos-14 arm64         | ❓            | ❓           |
-
+| **Platform**           | **Arch** | **Building** | **Running** |
+|------------------------|:--------:|:----:|:-----------:|
+| debian-trixie | amd64    | ✅            | ✅           |
+| freedektop-24.08 | amd64 | ✅*           | ✅*          |
+| macos-13 | amd64         | ❓            | ❓           |
+| macos-14 | arm64         | ❓            | ❓           |
+| win64 | amd64         | ❌            | ❓           |
 
 ## Building process
 
@@ -135,19 +138,6 @@ In either case, such files are not tracked by git.
 - **schemas** high level specs, souinrce of information for documentation and automatic code-gen.
 - **commons** extra public files (some auto-generated) which are part of every **vs** distribution.
 
-## Debug logging
-
-**vs** has some features to simplify debugging, mostly to support automatic tests and benchmarks, but they might be useful in other scenarios as well.
-`vs::globals::debug` is responsible for that, and it is exposed in several ways:
-- in embedded scripts
-- via a special xml `debug` tag
-- in the `vs.fltk` C interface as well
-While using it you can define a key and value. The current timestamp at nanoseconds resolution is also automatically recorded.  
-Records are saved to a file with name `VS_DEBUG_FILE` if set, otherwise no output will be emitted. Older content is destroyed.  
-The file format is just a simple CSV with horizontal tabs as separator of fields and newlines for rows. The order is *key*, *value* & *timestamp*.
-
-`vs::globals::debug` should not be confused with the ordinary logging functions which are also exposed in similar ways, but which are generally contextual and they mostly output to `stdout`.
-
 ## Variables of environment
 They are frequently used for both *benchmarks* and *tests*.  
 They can also be useful for the developer while testing new functionality, so they have been all covered in [here](./env-vars.md) for reference.
@@ -162,3 +152,21 @@ Exceptions should only be used in those cases when the application **must** stop
 ### Memory allocations
 As for memory allocations, spawning small dynamic objects is also discouraged. If possible, stack allocations are a better alternative. Arrays with variable length on stack are totally fine to be used in place of local objects allocated on heap.  
 `std::string` is also highly discouraged, make sure `std::string_view` is used instead whenever possible.
+
+### About log levels
+
+## Logging
+### Debug logging
+
+**vs** has some features to simplify debugging, mostly to support automatic tests and benchmarks, but they might be useful in other scenarios as well.
+`vs::globals::debug` is responsible for that, and it is exposed in several ways:
+- in embedded scripts
+- via a special xml `debug` tag
+- in the `vs.fltk` C interface as well
+While using it you can define a key and value. The current timestamp at nanoseconds resolution is also automatically recorded.  
+Records are saved to a file with name `VS_DEBUG_FILE` if set, otherwise no output will be emitted. Older content is destroyed.  
+The file format is just a simple CSV with horizontal tabs as separator of fields and newlines for rows. The order is *key*, *value* & *timestamp*.
+
+`vs::globals::debug` should not be confused with the ordinary logging functions which are also exposed in similar ways, but which are generally contextual and they mostly output to `stdout`.
+
+## Testing
