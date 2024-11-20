@@ -69,6 +69,11 @@ To run the dev demo where features under development are usually being tested:
 bun run vs.example
 ```
 
+### Docker
+
+A docker image is available that contains all the build dependencies. See
+[docker/README.md](https://github.com/KaruroChori/vs-fltk/docker/README.md)
+
 ### Patches
 
 Notice: this issue was only observed with `zig` as the backend and cannot be easily reproduced.
@@ -157,6 +162,7 @@ Exceptions should only be used in those cases when the application **must** stop
 
 As for memory allocations, spawning small dynamic objects is also discouraged. If possible, stack allocations are a better alternative. Arrays with variable length on stack are totally fine to be used in place of local objects allocated on heap.  
 `std::string` is also highly discouraged, make sure `std::string_view` is used instead whenever possible.
+<<<<<<< HEAD
 
 ### About log levels
 

@@ -1,0 +1,33 @@
+name: Test Build-Env Docker Image
+
+on:
+  pull_request:
+    branches: master
+    paths:
+    - '**Dockerfile'
+    - '**docker.yml'
+
+jobs:
+  build-test-env-image:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build image
+      run: docker build -t test-image -f docker/Dockerfile .
+
+    - name: Build Docker image
+      run: docker build -t test-image -f docker/Dockerfile ./docker
+
+    - name: Run commands in Docker container
+      run: |
+        docker run --rm -v ${{ github.workspace }}:/workspace \
+          -w /workspace \
+          -u builder \
+          test-image \
+          /bin/bash -l -c "sudo mkdir /workspace/build && sudo chmod 777 /workspace/build &&
+            bun install &&
+            bun run codegen &&
+            bun run meson-setup.clang-release &&
+            meson compile -C build/ vs:executable
+          "

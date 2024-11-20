@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  dev:
+    image: ghcr.io/KaruroChori/vs-fltk:build-env
+    container_name: vs-fltk-env
+    volumes:
+      - ${PWD}:/workspace
+    working_dir: /workspace
+    user: builder
+    command: >
+      bash -l -c "
+        bun install &&
+        bun run codegen &&
+        bun run meson-setup.clang-release &&
+        meson compile -C build/ vs:executable
+      "
+    stdin_open: true # Allows interactive mode
+    tty: true # Allocate a pseudo-TTY
