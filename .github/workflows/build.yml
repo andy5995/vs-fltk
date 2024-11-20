@@ -45,6 +45,7 @@ jobs:
           sudo apt install -y \
             libc++-14-dev \
             freeglut3-dev \
+            libpng-dev \
             libsqlite3-0 \
             libtcc-dev \
             python3-pip \
