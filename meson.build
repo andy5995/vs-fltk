@@ -1,8 +1,13 @@
 project(
     'vs-fltk',
     ['c', 'cpp', 'swift'],
+    version: 'v0.1.1-alpha-dev',
+    meson_version: '>= 1.1',
     default_options: ['c_std=gnu23', 'cpp_std=gnu++23'],
 )
+
+cc = meson.get_compiler('c')
+cxx = meson.get_compiler('cpp')
 
 #Used by pugi to enable compact mode. I might want to disable execptions too.
 add_global_arguments(['-DPUGIXML_COMPACT'], language : ['cpp','c'])
@@ -87,10 +92,24 @@ libtcc_dep = libtcc_proj.get_variable('libtcc_dep')
 mio_proj = cmake.subproject('mio')
 mio_dep = mio_proj.dependency('mio')
 
-#TODO convert to internald dep
-sqlitecpp_dep = subproject('sqlitecpp').get_variable('sqlitecpp_dep')
+sqlitecpp_dep = dependency('sqlitecpp', required: false)
+if not sqlitecpp_dep.found()
+    sqlitecpp_dep = cxx.find_library('SQLiteCpp', required: false)
+    if not sqlitecpp_dep.found()
+        sqlitecpp_dep = dependency(
+            'sqlitecpp',
+            fallback: ['sqlitecpp', 'sqlitecpp_dep'],
+            default_options: 'default_library=static',
+        )
+    endif
+endif
 
-sqlite_dep = subproject('sqlite3').get_variable('sqlite3_dep')
+sqlite_dep = dependency(
+  'sqlite3',
+  version: '>=3.0.0',
+  fallback: ['sqlite3', 'sqlite3_dep'],
+  default_options: 'default_library=static',
+)
 
 #TODO handle the case in which libcurl does not exist. Missing is fine, just no https/http prefix for paths.
 curl = dependency('libcurl', required: false)
