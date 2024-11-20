@@ -21,13 +21,14 @@ jobs:
 
     - name: Run commands in Docker container
       run: |
-        docker run --rm -v ${{ github.workspace }}:/workspace \
-          -w /workspace \
-          -u builder \
-          test-image \
-          /bin/bash -l -c "sudo mkdir /workspace/build && sudo chmod 777 /workspace/build &&
+        docker run --rm -v ${{ github.workspace }}:/workspace --user root \
+         -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) test-image /bin/bash -c "
+          usermod -u \$HOST_UID builder && groupmod -g \$HOST_GID builder &&
+          chown -R \$HOST_UID:\$HOST_GID /home/builder &&
+          su builder -l -c 'cd /workspace &&
             bun install &&
             bun run codegen &&
             bun run meson-setup.clang-release &&
-            meson compile -C build/ vs:executable
-          "
+            bun run vs.example
+          '"
+  
