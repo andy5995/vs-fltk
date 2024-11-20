@@ -7,7 +7,6 @@ services:
     volumes:
       - ${PWD}:/workspace
     working_dir: /workspace
-    user: builder
     command: >
       bash -l -c "
         bun install &&
@@ -15,5 +14,8 @@ services:
         bun run meson-setup.clang-release &&
         meson compile -C build/ vs:executable
       "
+    environment:
+      HOSTUID: $HOSTUID
+      HOSTUID: $HOSTGID
     stdin_open: true # Allows interactive mode
     tty: true # Allocate a pseudo-TTY

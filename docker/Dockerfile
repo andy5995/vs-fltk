@@ -37,4 +37,6 @@ RUN \
     echo "export PATH=\"\$BUN_INSTALL/bin:\$PATH\"" >> $HOME/.profile
 
 USER root
-CMD ["bash", "-l"]
+WORKDIR /
+ADD entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
