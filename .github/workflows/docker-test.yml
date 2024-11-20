@@ -13,11 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build image
-      run: docker build -t test-image -f docker/Dockerfile .
-
     - name: Build Docker image
-      run: docker build -t test-image -f docker/Dockerfile docker
+      run: docker build -t test-image -f docker/Dockerfile ./docker
 
     - name: Run commands in Docker container
       run: |
