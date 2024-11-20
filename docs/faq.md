@@ -2,7 +2,6 @@
 
 ![Good luck with vs!](./hero-img.webp)
 
-
 While `vs` shares many of its technologies and ideas with modern SFC frameworks, its design is significantly more opinionated and less free.  
 This document addresses several of these issues and provides some of the implied rationale.
 
@@ -51,7 +50,7 @@ For now, most efforts are focused in making the first two options viable. The th
 All flow control features and templating like `if` or `for-each` blocks which are typical in frameworks like [vue](https://vuejs.org/) are performed either:
 
 - As a build step for components if they can be evaluated statically.
-- Via custom elements and are not part of basic `vs` for a dynamic behaviour.  
+- Via custom elements and are not part of basic `vs` for a dynamic behaviour.
 
 This comparison is just meant to provide some basic understanding of how things are matched.  
 Still, the design patterns between `vs` and more traditional SFC frameworks are quite different.
@@ -83,7 +82,7 @@ It is possible to define custom draw functions and adopt mixins to override the 
 
 Short answer, no. However, most of the infrastructure and code of this repo has only minimal reliance over fltk.  
 It is possible for more and more of this code to be exported in a generic `vs` repo, and promote alternative backends from there.  
-One scenario which might be interesting to consider is [lgvl](https://lvgl.io/) for example.  
+One scenario which might be interesting to consider is [lgvl](https://lvgl.io/) for example.
 
 ## Likely pitfalls
 

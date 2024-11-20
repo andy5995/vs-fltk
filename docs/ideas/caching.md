@@ -12,7 +12,8 @@
 - `session://` prefix for temporary resources available during the current session.
 
 ## Extensions
-Some tags do have an `src` attribute:
+
+Some tags do have a `src` attribute:
 
 - Optional for `script` in case inline content is not provided. If defined and the src load fails its content is used instead.
   If used with `file`, `http(s)`, `app`, `user` it will try to match the full name. In case of failure if no typical extension is matched it will try to take it (considering the alternatives due to portability factors)
@@ -21,18 +22,20 @@ Some tags do have an `src` attribute:
 - Needed for `use`. Same rules as for script.
 
 All tags with `src` also have cache policy. Default is `session`.
+
 - `no-cache`
 - `session`
 - `forever`
 - Simple number Timestamp of invalidation.
 - Number with `+` prefix, max time before invalidation since last aquisition.
-Keep in mind, even if invalidated already rendered objects will not re-render on their own.
+  Keep in mind, even if invalidated already rendered objects will not re-render on their own.
 
 All `use` (or forwarded nodes from the list of imports) allows for the definition of `policy-safety`:
+
 - `unrestricted` is the default and lets any code to run
 - `safe` only wasm and quickjs can run, but globally defined and cached components can still
 - `safest` only wasm and quickjs can run.
-Children cannot be less safe of the parent. If so its original will be inherited.
+  Children cannot be less safe of the parent. If so its original will be inherited.
 
 Auth tokens are used to determine which application is running. Every `app` and `component` can set its own authtoken as a cryptohash of the provided uuid with the one of the user. Components cannot gather information about authtokens once computed, so the user secret is generally safe.
 Setting it to an empty string will generate a random one.  

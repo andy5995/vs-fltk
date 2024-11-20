@@ -13,6 +13,7 @@ For now you will need to install [some dependencies](https://github.com/fltk/flt
 Specifically `libpng-dev` & `libglu1-mesa-dev` are likely missing on most distributions.
 
 There are also some more or less optional dependencies:
+
 - **libcurl-dev**, unless you are trying to compile a custom version without network support, which is supported.
 - **sqlite** is needed. If not provided by your system it will be automatically downloaded and distributed alongside `vs`.
 - [flatpak-builder](https://docs.flatpak.org/en/latest/flatpak-builder.html) if you plan on packing and distributing a flatpak of `vs` (usually not needed, read more about it later in this document)
@@ -27,21 +28,21 @@ Once it is ready enough TODO add link here.
 At the moment, only Linux is supported or tested, probably on any of the major CPU architectures. Wider support for POSIX systems is also likely.  
 This is just temporary limitation, as all dependencies are portable, but my own code is probably not.
 
-| **Platform**           | **Arch** | **Building** | **Running** |
-|------------------------|:--------:|:----:|:-----------:|
-| debian-trixie | amd64    | ✅            | ✅           |
-| freedektop-24.08 | amd64 | ✅*           | ✅*          |
-| macos-13 | amd64         | ❓            | ❓           |
-| macos-14 | arm64         | ❓            | ❓           |
-| win64 | amd64         | ❌            | ❓           |
+| **Platform**     | **Arch** | **Building** | **Running** |
+| ---------------- | :------: | :----------: | :---------: |
+| debian-trixie    |  amd64   |      ✅      |     ✅      |
+| freedektop-24.08 |  amd64   |     ✅\*     |    ✅\*     |
+| macos-13         |  amd64   |      ❓      |     ❓      |
+| macos-14         |  arm64   |      ❓      |     ❓      |
+| win64            |  amd64   |      ❌      |     ❓      |
 
 ## Building process
 
 This project uses meson and not git submodules for the most part, but there is a specific exception to make `flatpak-builder` usable.  
 If you plan on using it to generate new flatpak images, please ensure submodules are also cloned.
 
-
 Start by installing all the `bun` dependencies needed:
+
 ```bash
 bun install
 ```
@@ -53,8 +54,7 @@ bun run codegen                     #Initial codegen from schemas
 bun run meson-setup.release         #Set up the meson build directory.
 ```
 
-You might want to use `meson-setup.clang-release` to use clang-19 if found on your system, and your default compiler or choice might not support some modern functions used in this project.  
-
+You might want to use `meson-setup.clang-release` to use clang-19 if found on your system, and your default compiler or choice might not support some modern functions used in this project.
 
 To perform tests and benchmarks:
 
@@ -99,6 +99,7 @@ Still, it is good to support it at these early stages, since many libraries & bu
 ```sh
 flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 ```
+
 if you never configured `--user` on your system.  
 Then
 
@@ -113,13 +114,14 @@ A significant portion of code in this repository is generated automatically and 
 Make sure you run `bun run codegen` before you attempt any further step with meson.  
 I will probably integrate it as part of the meson setup step, but I am still evaluating the potential drawbacks.
 
-The main source for automatic code generation is located in `/schemas` and are JSON files. *Component definitions* are compiled down into C++ classes, c bindings, typescript type definitions, XSD/RND schemas and XML data used in the embedded editor of `vs`.  
-Any component shipped with `vs` (not those externally distributed in `/components`) must have a JSON schema definition, even if their class definition is not automatically generated. In that case the property `use_main_header` is set, but *props* and *computed values* are still defined via JSON schemas.
+The main source for automatic code generation is located in `/schemas` and are JSON files. _Component definitions_ are compiled down into C++ classes, c bindings, typescript type definitions, XSD/RND schemas and XML data used in the embedded editor of `vs`.  
+Any component shipped with `vs` (not those externally distributed in `/components`) must have a JSON schema definition, even if their class definition is not automatically generated. In that case the property `use_main_header` is set, but _props_ and _computed values_ are still defined via JSON schemas.
 
 During development, you might want to use `codegen.quick` in place of `codegen`, as long as you are not altering the files involved or their naming. Some changes in schemas can also be incompatible with `codegen.quick`, so if you don't observe what you expect, just perform a full refresh.  
 While imperfect, this quick variant avoids the reconfiguration of the full meson project, making your next build much faster.
 
 ### Naming conventions
+
 - names following the pattern `**.autogen.*` are full c/cpp/h/hpp files to be included, compiled and/or linked.
 - names following the pattern `**.autofrag.*` are fragments introduced in the source of other files only. They are not directly listed in `meson.build`
 
@@ -139,33 +141,38 @@ In either case, such files are not tracked by git.
 - **commons** extra public files (some auto-generated) which are part of every **vs** distribution.
 
 ## Variables of environment
-They are frequently used for both *benchmarks* and *tests*.  
+
+They are frequently used for both _benchmarks_ and _tests_.  
 They can also be useful for the developer while testing new functionality, so they have been all covered in [here](./env-vars.md) for reference.
 
 ## Programming guidelines
 
 ### About exceptions
+
 Exceptions are fully allowed in the CLI at `/src/app`.  
-However, they are strongly discouraged anywhere else in the library code, and it is possible they will be fully disabled via `-fno-exceptions` at some point. The main reason is that the UI should be fault-tolerant and provide as much functionality as possible even if parts of it are broken, like malformed XML files, some scripts failing compilation, missing resources and so on. Exceptions, in this sense, are internally handled and semantically supported by providing subtrees to be rendered in case of failure events.   
-Exceptions should only be used in those cases when the application **must** stop, either because the error is not recoverable or because it would leave the rest of the application in an inconsistent state.  
+However, they are strongly discouraged anywhere else in the library code, and it is possible they will be fully disabled via `-fno-exceptions` at some point. The main reason is that the UI should be fault-tolerant and provide as much functionality as possible even if parts of it are broken, like malformed XML files, some scripts failing compilation, missing resources and so on. Exceptions, in this sense, are internally handled and semantically supported by providing subtrees to be rendered in case of failure events.  
+Exceptions should only be used in those cases when the application **must** stop, either because the error is not recoverable or because it would leave the rest of the application in an inconsistent state.
 
 ### Memory allocations
+
 As for memory allocations, spawning small dynamic objects is also discouraged. If possible, stack allocations are a better alternative. Arrays with variable length on stack are totally fine to be used in place of local objects allocated on heap.  
 `std::string` is also highly discouraged, make sure `std::string_view` is used instead whenever possible.
 
 ### About log levels
 
 ## Logging
+
 ### Debug logging
 
 **vs** has some features to simplify debugging, mostly to support automatic tests and benchmarks, but they might be useful in other scenarios as well.
 `vs::globals::debug` is responsible for that, and it is exposed in several ways:
+
 - in embedded scripts
 - via a special xml `debug` tag
 - in the `vs.fltk` C interface as well
-While using it you can define a key and value. The current timestamp at nanoseconds resolution is also automatically recorded.  
-Records are saved to a file with name `VS_DEBUG_FILE` if set, otherwise no output will be emitted. Older content is destroyed.  
-The file format is just a simple CSV with horizontal tabs as separator of fields and newlines for rows. The order is *key*, *value* & *timestamp*.
+  While using it you can define a key and value. The current timestamp at nanoseconds resolution is also automatically recorded.  
+  Records are saved to a file with name `VS_DEBUG_FILE` if set, otherwise no output will be emitted. Older content is destroyed.  
+  The file format is just a simple CSV with horizontal tabs as separator of fields and newlines for rows. The order is _key_, _value_ & _timestamp_.
 
 `vs::globals::debug` should not be confused with the ordinary logging functions which are also exposed in similar ways, but which are generally contextual and they mostly output to `stdout`.
 

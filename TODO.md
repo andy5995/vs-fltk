@@ -1,18 +1,21 @@
 # Missing for release 0.1.1
 
 ### Flatpak issues
+
 - [ ] libfltk and its subdeps are compiled into `/app/lib64`, which is not covered by paths
-  Investigation got results. Basically, all cmake libraries are in `/app/lib` while those through meson are in `/app/lib64` which is not added to the search path in that image.  
-  Even outside of flatpak this problem occurs, just with different folder names. I must ensure cmake and meson behave the same.
+      Investigation got results. Basically, all cmake libraries are in `/app/lib` while those through meson are in `/app/lib64` which is not added to the search path in that image.  
+      Even outside of flatpak this problem occurs, just with different folder names. I must ensure cmake and meson behave the same.
 - [ ] commons are not mounted in `/usr/local/share`. I must pass the relevant vars (already supported).  
-  I must register a variable in the user with where these files are located? Or embed it during compilation? Still not sure.
+      I must register a variable in the user with where these files are located? Or embed it during compilation? Still not sure.
 - [ ] Icons, signature and few more things are still missing.
 
 ### Scripts
+
 - [x] turn off (for now) app linking capabilities
 - [ ] Make all paths being used by the c and js pipeline portable.
 
 ### Setup github actions
+
 - [ ] ? To run tests and save its reports on some backend
 - [ ] ? To run benchmarks and save its reports on some backend (variable system load will destroy performance metrics?)
 - [ ] ? To run the full flatpak-builder. For referencehttps://github.com/flatpak/flatpak-github-actions
@@ -24,8 +27,8 @@ All these notes should be progressively removed from here and recorded as github
 ### Annoying memory consumption
 
 ~~The memory footprint (RSS) went up from 4.5MB from two weeks ago or so, to about 19MB in this latest version.~~  
-~~There is no clear reason why this happened out of nowhere, and the overall memory usage by heap/stack is still quite small.~~    
-What is causing this massive increase?  
+~~There is no clear reason why this happened out of nowhere, and the overall memory usage by heap/stack is still quite small.~~  
+What is causing this massive increase?
 
 **Answer:** thank you libcurl. Actually libgnutls and libcrypto. While some choices like having an `unordered_map` for the global cache and some buffer optimization I had to dial back led to some increase, it is all mostly justified by me installing `libcurl-dev` and enabling it in the build process. Even when not in use it claims quite some space.
 
@@ -34,6 +37,7 @@ What is causing this massive increase?
 XSD as an XML schema format is not that good. RelaxNG better captures the flexible nature of vs files, so I would be better off considering it as I did for `vs.templ` already.
 
 ### Loading XML issues
+
 ```
 [INFO]     : Loading component file://./two-buttons.xml @ [/app/fl:window/TwoButtons]
 [INFO]     : Requested loading of file `file://./two-buttons.xml`
@@ -42,16 +46,21 @@ XSD as an XML schema format is not that good. RelaxNG better captures the flexib
 ```
 
 At times it fails, at times it does not. Investigate and check against syntax in specs.
+
 ```
     <import src="this://two-buttons.xml" as="TwoButtons" />
 ```
-works but 
+
+works but
+
 ```
     <import src="file://./two-buttons.xml" as="TwoButtons" />
 ```
+
 does not somehow. But just `./two-buttons.xml` does? Check why!
 
 ### Infrastructural
+
 - [x] Add namespaces for vs elements and fltk elements
 - [x] Expose some sort of inverse for apply_prop, where selected fields can be read from a widget.
 - [ ] (?) Add special `inherit` value to props to remove the current one and let it be computed based on its parents? I have to decide if we want this one.
@@ -63,7 +72,7 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
 - [x] I probably want https://github.com/fmtlib/fmt
 - [ ] Signal/event propagation mechanisms
 - [x] Add special logging to generate output used by more complex tests. They must also be exposed to scripts.  
-      These logs are only recorded if VS_DEBUG_FILE is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test. 
+       These logs are only recorded if VS_DEBUG_FILE is set to a file name, and will result in a key,value dictionary which is later checked against reference as part of the test.
 - [x] Namespace support
   - [x] In the root of app or components search for `xmlns` attributes, and define local namespaces based on `vs`, `vs.templ` & `vs.fltk`.
   - [x] Codegen for reserved elements & attributes in the vs namespace. Like for `vs.fltk`.
@@ -78,9 +87,11 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
     - [x] Unable to append args to meson setup
 
 ### Scripting
+
 - [ ] Expose path and the fetcher to embedded script at some degree.
 
 ### Components
+
 - [x] Enable codegen
 - [x] Simplify codegen for all computed/props types which are not `raw` by writing more or the boilerplate.
 - [x] and port the current code over the new codegen architecture.
@@ -92,8 +103,8 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
 - [x] Add debug component
 
 ### Paths
-- [x] Extend support for more virtual paths (all but those based on sqlite which will be handled later on)
 
+- [x] Extend support for more virtual paths (all but those based on sqlite which will be handled later on)
 
 ### Dynamic Library linking
 
@@ -115,13 +126,14 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
 ### Caching
 
 - [ ] Caching all done (no SQLITE, for that there is a different milestone)
+
   - [x] Source files
     - [x] From fs
     - [x] From network
   - [ ] Pugi XML documents
     - [x] Cache support
     - [ ] Save XML trees while parsing
-  - [x] Scripts 
+  - [x] Scripts
 
 - [ ] Caching all done (SQLITE part)
   - [ ] kv
@@ -130,11 +142,12 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
   - [x] DB schemas
 
 # Props, computed, getters and setters
+
 I would like to implement an architectural change how these concepts are handled.  
 Schemas will be defining objects for which `getters` and `setters` are defined.  
 Some component might allow for arbitrary definitions (already the case for the dispatcher which could be recycled), but most are fixed.  
 Props are just calls to setters for which expression evaluation from a string is available.  
-They are just an artifact of XML components, native ones for the most part are only going to use `getters` and `setters` directly.  
+They are just an artifact of XML components, native ones for the most part are only going to use `getters` and `setters` directly.
 
 It is also possible to mark specific objects as `persistent`. Those will be recorded as secrets & recovered if so desired.
 It is also possible to mark specific objects as `semantic`. Those will be reported in the serialization.

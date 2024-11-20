@@ -2,15 +2,16 @@ WIP
 
 ## Debugging
 
-| **Name**     | **Type**                       | **Description**                                                                                        |
-| ------------ | -------------------------------|--------------------------------------------------------------------------------------------------------|
-| VS_DEBUG_FILE     | fs-path                        | If specified, file where debug record are appended. Else, there is no side effect for those operations |
-| VS_LOG_FILE     | fs-path                        | If specified, file where log records are appended. Else, std out |
-| VS_LOG_LEVEL | `silent,basic,verbose,debug`   | Globally set the baseline log level, so that some messages can be skipped if not relevant.             |
+| **Name**      | **Type**                     | **Description**                                                                                        |
+| ------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------ |
+| VS_DEBUG_FILE | fs-path                      | If specified, file where debug record are appended. Else, there is no side effect for those operations |
+| VS_LOG_FILE   | fs-path                      | If specified, file where log records are appended. Else, std out                                       |
+| VS_LOG_LEVEL  | `silent,basic,verbose,debug` | Globally set the baseline log level, so that some messages can be skipped if not relevant.             |
 
 ## Safety policies
 
 Policy level:
+
 - **all**
 - **none**
 - **trusted**
