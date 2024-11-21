@@ -8,7 +8,7 @@ on:
     branches: master
     paths:
     - '**Dockerfile'
-    - '**docker.yml'
+    - '**docker-test.yml'
 
 jobs:
   build-test-env-image:
