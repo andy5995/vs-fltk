@@ -11,3 +11,6 @@ subprojects/*
 /private
 /logs
 /.flatpak-builder
+
+# Contains variables specific for the user
+/docker/.env

@@ -1,0 +1,30 @@
+name: Test Build-Env Docker Image
+
+on:
+  pull_request:
+    branches: master
+    paths:
+    - '**Dockerfile'
+    - '**docker.yml'
+
+jobs:
+  build-test-env-image:
+    runs-on: ubuntu-latest
+    env:
+      SOURCE_ROOT: ${{ github.workspace }}
+      IMAGE: test-image
+      ENTRYPOINT: ${{ github.workspace }}/docker/default-entry.sh
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: sudo apt install -y docker-compose
+
+    - name: Build Docker image
+      run: docker build -t $IMAGE -f docker/Dockerfile ./docker
+
+    - name: Run commands in Docker container
+      run: |
+        export HOSTUID=$(id -u)
+        export HOSTGID=$(id -g)
+        docker-compose -f docker/docker-compose.yml run --rm  dev
