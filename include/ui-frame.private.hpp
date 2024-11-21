@@ -153,6 +153,7 @@ class frame{
     inline bool has_script() const {return script!=nullptr;}
 
     int call_dispatcher(const char* key, const char* value);
+    int call_on_test();
 
     frame(const char* name, frame_mode_t mode, ui_base* ui_node, frame* parent, frame_type_t type, frame_access_t access){
       static int counter = 0;

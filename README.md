@@ -14,7 +14,6 @@
 > Safety & Security policies have not been implemented or fully tested yet.
 > Running untrusted XML files on VS can lead to [arbitrary code execution](./docs/safety-policies.md) on your machine with your user privileges.
 
-
 Hey, you there! Yes you! May I entertain you with something slightly cursed?  
 Have you ever woken up in the middle of the night, thinking:
 
@@ -43,7 +42,7 @@ The obligatory "counter" [example](./examples/demo-c.xml):
     <fl:window box="0,0,320,240" label="Demo Counter">
         <mixin name="+fl:button" bg.colour="#aa3300" label.colour="#99ee4f" />
         <script lang="c">
-        <![CDATA[ 
+        <![CDATA[
         unsigned int counter = 0;
 
         void _update(){
@@ -72,7 +71,7 @@ The obligatory "counter" [example](./examples/demo-c.xml):
         <fl:button label="Remove" on.callback="on_dec" box="120,160,80,50" />
         <fl:button label="Console" box="220,160,80,50">
             <script lang="c">
-            <![CDATA[ 
+            <![CDATA[
             void callback(){
                 $log(LOG_LOG,"Hello world!");
             }
@@ -151,6 +150,7 @@ Unless a file comes with a custom licence in its header, they will inherit the o
 This project is based on the following dependencies:
 
 ### Core features
+
 - [fltk](https://www.fltk.org/) the UI toolkit library used.
 - [fmt](https://github.com/fmtlib/fmt) to format strings and as printf replacement.
 - [pugixml](https://pugixml.org/) to parse xml.
@@ -159,8 +159,8 @@ This project is based on the following dependencies:
 - [libuv](https://libuv.org/) for me not to care about portable code.
 - [vs.templ](https://github.com/karurochori/vs-templ) a library to parse markdown (not just to HTML).
 
-
 ### For embedded scripts
+
 - [libffi](https://github.com/libffi/libffi) to simplify symbol sharing between languages.
 - [tcc](https://github.com/KaruroChori/tcc-vs) the embeddable C compiler used for C scripts.
 - [quickjs](https://github.com/quickjs-ng) the embeddable JS runtime used for JS scripts.
@@ -168,8 +168,8 @@ This project is based on the following dependencies:
 - [wamr](https://github.com/bytecodealliance/wasm-micro-runtime) the embeddable WASM runtime used for scripts, portable compiled components & compilers.
 - [cello](https://libcello.org) an unholy macro machine for C to transform it into a dynamic language.
 
-
 ### For custom components
+
 - [treesitter](https://tree-sitter.github.io/tree-sitter/) to handle parsing of languages (used for some components and the self-hosted editor).
 - [md4c](https://github.com/mity/md4c) a library to parse markdown (not just to HTML).
 - [nlohmann-json](https://github.com/nlohmann/json) to parse json in some `data` directives

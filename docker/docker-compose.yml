@@ -1,0 +1,37 @@
+services:
+  dev:
+    image: $IMAGE
+    container_name: vs-fltk-env
+    entrypoint: $ENTRYPOINT
+    volumes:
+      - $SOURCE_ROOT:/workspace
+      - $ENTRYPOINT:$ENTRYPOINT
+      - ${PWD}/docker/main_entry.sh:/docker/main_entry.sh
+    environment:
+      HOSTUID: $HOSTUID
+      HOSTGID: $HOSTGID
+      ENTRYPOINT: $ENTRYPOINT
+    working_dir: /workspace
+    stdin_open: true # Allows interactive mode
+    tty: true # Allocate a pseudo-TTY
+    restart: "no"
+
+  xgui:
+    image: $IMAGE
+    container_name: vs-fltk-gui
+    entrypoint: $ENTRYPOINT
+    volumes:
+      - $SOURCE_ROOT:/workspace
+      - $ENTRYPOINT:$ENTRYPOINT
+      - ${PWD}/docker/main_entry.sh:/docker/main_entry.sh
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    environment:
+      HOSTUID: $HOSTUID
+      HOSTGID: $HOSTGID
+      ENTRYPOINT: $ENTRYPOINT
+      DISPLAY: $DISPLAY
+      QT_X11_NO_MITSHM: 1
+    working_dir: /workspace
+    stdin_open: true # Allows interactive mode
+    tty: true # Allocate a pseudo-TTY
+    restart: "no"

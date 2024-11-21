@@ -28,7 +28,14 @@ struct value_models_t{
 };
 
 enum class symbol_type_t{
-  VOID, UNKNOWN, CALLBACK, DRAW, SETTER, GETTER, DISPATCHER
+  VOID, //Function not to be defined
+  UNKNOWN, //Function whose prototype is unknown/non-standard
+  CALLBACK, //Event callback
+  DRAW, //Drawing function
+  SETTER, 
+  GETTER,
+  DISPATCHER, //Custom dispatcher
+  TEST  //Test function used by robots, run during testing
 };
 
 enum class symbol_mode_t{

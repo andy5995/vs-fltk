@@ -3,7 +3,6 @@ build/
 subprojects/*
 !subprojects/*.wrap
 !subprojects/packagefiles/
-/wraps/cfltk
 *.autogen.*
 *.autofrag.*
 /dist/
@@ -12,3 +11,6 @@ subprojects/*
 /private
 /logs
 /.flatpak-builder
+
+# Contains variables specific for the user
+/docker/.env
