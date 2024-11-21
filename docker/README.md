@@ -8,7 +8,7 @@ file in /docker. The contents should be similar to:
 ```text
 HOSTUID=1000
 HOSTGID=1000
-IMAGE="ghcr.io/KaruroChori/vs-fltk:build-env"
+IMAGE="ghcr.io/karurochori/vs-fltk:build-env"
 ENTRYPOINT:$PWD/docker/default-entry.sh
 SOURCE_ROOT=$PWD
 ```
@@ -35,7 +35,7 @@ To run the image without using compose:
 docker run -it --rm -v \
   --entrypoint=$PWD/docker/default-entry.sh \
   -v $PWD:/workspace \
-  ghcr.io/KaruroChori/vs-fltk:build-env
+  ghcr.io/karurochori/vs-fltk:build-env
 ```
 -->
 
@@ -58,7 +58,7 @@ information about working with containers. You may, for example, want to
 
 You can pull the image manually:
 
-    docker pull ghcr.io/KaruroChori/vs-fltk:build-env
+    docker pull ghcr.io/karurochori/vs-fltk:build-env
 
 If you use `docker-compose` or `docker run ...` the image will be pulled
 automatically the first time.

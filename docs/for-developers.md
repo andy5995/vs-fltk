@@ -205,7 +205,7 @@ Log levels are:
 - **VERBOSE** to be emitted when running the program in verbose mode only
 - **DEBUG** to be emitted always when running a debug build or in debugging mode.
 
-Each messagge must specify their semantic type and log level (normal by default). Usually:
+Each message must specify their semantic type and log level (normal by default). Usually:
 
 - `panic` messages have a `silent` log level
 - `ok` and `continue` messages are usually `verbose`

@@ -10,13 +10,16 @@ on:
 #  schedule:
 #    - cron: '30 11 20 */3 *'
 
-env:
-  REGISTRY_IMAGE: ghcr.io/${{ github.repository_owner }}/vs-fltk
-
 jobs:
   build-env-image:
     runs-on: ubuntu-24.04
     steps:
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+          REGISTRY_IMAGE: ghcr.io/${{ env.OWNER }}/vs-fltk
       - name: Checkout
         uses: actions/checkout@v4
 
