@@ -6,19 +6,21 @@ on:
     paths:
     - '**Dockerfile'
     - '**docker.yml'
-#  workflow_dispatch:
-#  schedule:
-#    - cron: '30 11 20 */3 *'
+  pull_request:
+    branches: master
+    paths:
+    - '**Dockerfile'
+    - '**docker.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '25 1 5 * *'
 
 jobs:
   build-env-image:
     runs-on: ubuntu-24.04
+    env:
+      REGISTRY_IMAGE: ghcr.io/karurochori/vs-fltk
     steps:
-      - name: set lower case owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
-        env:
-          OWNER: '${{ github.repository_owner }}'
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -32,13 +34,13 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push by digest
+      - name: Build and push
         id: build
         uses: docker/build-push-action@v6
-        env:
-          REGISTRY_IMAGE: ghcr.io/${{ env.OWNER_LC }}/vs-fltk
         with:
           file: ./docker/Dockerfile
-          platforms: ${{ matrix.platform }}
+          context: ./docker
+          push: true
+          tags: ${{ env.REGISTRY_IMAGE }}:test
           cache-from: type=registry,ref=${{ env.REGISTRY_IMAGE }}:build-env-buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY_IMAGE }}:build-env-buildcache,mode=max
