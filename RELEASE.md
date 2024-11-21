@@ -1,19 +1,18 @@
 ## v0.1.1-alpha
 
-This first alpha release is not meant to be usable in a real-world scenario nor sufficiently documented.  
-The actual objective is to implement & test the full pipeline which is involved in:
+This first alpha release is not meant to be usable in real-world scenarios, and documentation will not be there yet for the most part.  
+The main objective is to implement & test most of the pipelines needed to:
 
-- building
-- installing
-- generating flatpak (possibly packages as well)
-  It is just needed to implement a complete building & testing pipeline to support future releases.
+- build `vs`
+- install it
+- the generation of its flatpak image
 
 Still, `vs` is somewhat usable as a technical preview.  
-For now the build system is not well documented and hard to replicate. Also, installing it on most distribution might cause issues with your dependencies. Still, you should be able to try it out via flatpak.  
+For now, the building pipeline is not well documented and it can be hard to replicate. Also, installing it on most distributions might cause issues with your past or future dependencies. Still, you should be able to try it out via flatpak and the docker image provided by @andy5995.  
 I am seeking feedback, so you are very welcome to test it along!
 
 For reference, you can check what is the [intended scope](./README.md) of this project in terms of future developments and expected features.  
-The [milestone](./docs/milestones.md) page page also contained some related information.
+The [milestone](./docs/milestones.md) page also contains some related information.
 
 This is what has been implemented so far (and some missing feature for context):
 
@@ -31,7 +30,7 @@ This is what has been implemented so far (and some missing feature for context):
   - [ ] caching directives
   - [ ] dynamic data
 - Basic XML builder (no full caching, no multithreading)
-- Templating engine for vs components. Integration is complete, but there is ongoing work tracked at [separate repo](https://github.com/KaruroChori/vs-templ)
+- Templating engine for vs components. Integration is complete, but there is ongoing work tracked in a [separate repo](https://github.com/KaruroChori/vs-templ)
 - Embedded scripts:
   - Support for `c` via tcc
     - [x] Modules
@@ -51,8 +50,10 @@ This is what has been implemented so far (and some missing feature for context):
     - [ ] Setters/getters
     - [ ] FFI to external libraries
     - [x] Debug interface
-- Very early and partial c bindings for `vs.fltk`.
-- A simple in-memory caching for files, compiled scripts & parsed XML trees. The more complex sqlite cache is yet to be implemented in code.
+- Very early and limited c bindings for `vs.fltk`, mostly for testing purposes.
+- A simple in-memory caching for files, compiled scripts & parsed XML trees.  
+  The more complex sqlite cache is yet to be implemented in code.
 - An early (partial) implementation of policies and coarse-grained flags as a temporary stopgap.
-- Install process mostly implemented via meson (codegen will stay in ts).
+- Install process mostly implemented in meson (the pre-build codegen step will stay in typescript).
 - Functional flatpak build
+- A docker image for development

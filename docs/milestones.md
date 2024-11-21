@@ -3,7 +3,9 @@
 - [ ] Implement flex, grid, scroll & pack via codegen.
 - [ ] Tidy up the XML caching
 - [ ] Tidy up the JS scripting interface.
-- [ ] Complete the build process
+- [x] Complete the build process
+- [ ] Docker image
+- [x] Flatpak building pipeline
 - [ ] Prepare pipeline for github actions
 
 ## 0.1.5

@@ -7,9 +7,9 @@ In addition to that, this repo makes use of:
 - [meson](https://mesonbuild.com/) as its main build system. Any recent-ish version will do (unless you need `zig` to simplify cross-compiling; for that >= 1.60 is needed)
 - [bun](https://bun.sh/) as the ts/js runtime to support all the code generation tasks and some of the more complex pipelines.  
    I hate bash, and this is what replaces it.
-- [swiftc](https://www.swift.org/documentation/swift-compiler/) barely used for now, but many of the native components shipped within vs will be written in swift (or so I am planning). Swift 6 will be needed, but for now any version will do.
+- [swiftc](https://www.swift.org/documentation/swift-compiler/) barely used for now, but many of the native components shipped within `vs` will be written in swift (or so I am planning). Swift 6 will be needed, but for now any version will do.
 
-For now you will need to install [some dependencies](https://github.com/fltk/fltk/blob/master/README.Unix.txt) to support FLTK.  
+For now, you will need to install [some dependencies](https://github.com/fltk/fltk/blob/master/README.Unix.txt) to support FLTK.  
 Specifically `libpng-dev` & `libglu1-mesa-dev` are likely missing on most distributions.
 
 There are also some more or less optional dependencies:
@@ -43,8 +43,10 @@ This is just temporary limitation, as all dependencies are portable, but my own 
 
 ## Building process
 
-This project uses meson and not git submodules for the most part, but there is a specific exception to make `flatpak-builder` usable.  
-If you plan on using it to generate new flatpak images, please ensure submodules are also cloned.
+> [!NOTICE]  
+> This project uses meson, so there are no git submodules for the most part. 
+> One exception is made for `flatpak-builder` to be usable.  
+> If you plan on using it to generate new flatpak images, please ensure submodules are also cloned with the rest of the repository.
 
 Start by installing all the `bun` dependencies needed:
 
@@ -73,17 +75,6 @@ To run the dev demo where features under development are usually being tested:
 ```bash
 bun run vs.example
 ```
-
-### Patches
-
-Notice: this issue was only observed with `zig` as the backend and cannot be easily reproduced.
-If not using a precompiled version of sqlite on your system, the `meson.build` of its amalgamate might need patching:
-
-```
-  override_options: ['c_std=gnu23'],
-```
-
-at the end of the library generation. The issue is tracked [here](https://github.com/mesonbuild/wrapdb/issues/1747)
 
 ## Installation
 
@@ -172,7 +163,7 @@ As for memory allocations, spawning small dynamic objects is also discouraged. I
 **vs** has some features to simplify debugging, mostly to support automatic tests and benchmarks, but they might be useful in other scenarios as well.
 `vs::globals::debug` is responsible for that, and it is exposed in several ways:
 
-- in embedded scripts
+- within embedded scripts
 - via a special xml `debug` tag
 - in the `vs.fltk` C interface as well
   While using it you can define a key and value. The current timestamp at nanoseconds resolution is also automatically recorded.  
