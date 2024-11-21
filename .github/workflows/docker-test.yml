@@ -7,7 +7,8 @@ on:
   pull_request:
     branches: master
     paths:
-    - '**Dockerfile'
+    - 'docker/**'
+    - '!**.md'
     - '**docker-test.yml'
 
 jobs:

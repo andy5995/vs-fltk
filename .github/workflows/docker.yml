@@ -7,7 +7,8 @@ on:
   push:
     branches: master
     paths:
-    - '**Dockerfile'
+    - 'docker/**'
+    - '!**.md'
     - '**docker.yml'
   workflow_dispatch:
   schedule:
