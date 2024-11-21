@@ -156,6 +156,31 @@ As for memory allocations, spawning small dynamic objects is also discouraged. I
 
 ### About log levels
 
+Internally these are the log levels supported and their relative semantics:
+- **INFO** to present informational messages, often as a result of user requests
+- **OK** to notify that a certain operation completed successfully.
+- **WARNING** to notify that a certain operation was not able to fully succeed, something should be fixed, but everything is fine. 
+- **CONTINUE** to notify that a certain operation was skipped by design.
+- **PANIC** to notify that a certain operation failed in a way which cannot be recovered (but the application can still run)
+- **LOG** to introduce a log without any further connotation.
+
+For example, loading a remote resource:
+- If the file was already cached, a `continue` message will be notified
+- If no proper answer has been received from the remote host, a `panic` message is generated, since that content cannot be recovered
+- If everything loaded fine, an `ok` message can be used
+- If the component is using features which are not allowed by policies, `warning` messages can be generated.
+
+Log levels are:
+- **NORMAL** to be emitted when running the program normally
+- **SILENT** to be emitted when running the program even in silent mode
+- **VERBOSE** to be emitted when running the program in verbose mode only
+- **DEBUG** to be emitted always when running a debug build or in debugging mode.
+
+Each messagge must specify their semantic type and log level (normal by default). Usually:
+- `panic` messages have a `silent` log level
+- `ok` and `continue` messages are usually `verbose`
+- `info`, `warning` and `log` are usually `normal`
+
 ## Logging
 
 ### Debug logging
