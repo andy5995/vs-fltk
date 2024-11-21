@@ -38,7 +38,7 @@ jobs:
         env:
           REGISTRY_IMAGE: ghcr.io/${{ env.OWNER_LC }}/vs-fltk
         with:
-          file: ../docker/Dockerfile
+          file: ./docker/Dockerfile
           platforms: ${{ matrix.platform }}
           cache-from: type=registry,ref=${{ env.REGISTRY_IMAGE }}:build-env-buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY_IMAGE }}:build-env-buildcache,mode=max
