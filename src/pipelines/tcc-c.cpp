@@ -150,6 +150,9 @@ std::shared_ptr<smap<symbol_t>>  tcc_c_pipeline_apply(const std::shared_ptr<tcc>
         if(strcmp("callback", name)==0){
         ctx->log(ctx->ref,"Registering default callback symbol `%s`",name);
         ctx->symbols.emplace(name, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::CALLBACK,value});
+        }else if(strcmp("test", name)==0){
+        ctx->log(ctx->ref,"Registering default test symbol `%s`",name);
+        ctx->symbols.emplace("#test", symbol_t{symbol_mode_t::NATIVE,symbol_type_t::TEST,value});
         }else if(strcmp("draw", name)==0){
         ctx->log(ctx->ref,"Registering default drawing symbol `%s`",name);
         ctx->symbols.emplace(name, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::DRAW,value});
