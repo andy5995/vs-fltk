@@ -38,5 +38,4 @@ RUN \
 
 USER root
 WORKDIR /
-ADD entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["bash", "-l"]

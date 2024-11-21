@@ -2,23 +2,57 @@
 
 ## Using docker-compose
 
-You may build your changes by using the compose file:
+You may build your changes by using the compose file. First create an `.env`
+file in /docker. The contents should be similar to:
 
-    docker-compose -f ./docker/docker-compose.yml up
+```text
+HOSTUID=1000
+HOSTGID=1000
+IMAGE="ghcr.io/KaruroChori/vs-fltk:build-env"
+ENTRYPOINT:$PWD/docker/default-entry.sh
+SOURCE_ROOT=$PWD
+```
 
-## Entering the build environment
+Replace the values for HOSTUID and HOSTGID with your system uid and gid. Then,
+from the source root:
 
-While in the repository root, to enter the environment and be presented with a
-shell:
+    docker-compose -f docker/docker-compose.yml run --rm  dev
 
-    docker run -it --rm \
-      -e HOSTUID=$(id -u) -e HOSTGID=$(id -g)\
-      -v $PWD:/workspace ghcr.io/KaruroChori/vs-fltk:build-env "bash -l"
+This will start the container and build the app.
 
-This will mount your current directory as */workspace* inside the container.
-Your username will be *builder*. By default, you will not have root privileges
-(which are not necessary to build and test). However, you can use `sudo` if
-you need to run `apt` or any other commands that require root access.
+To enter the build environment without actually building the app:
+
+    export ENTRYPOINT=$PWD/docker/shell-entry.sh
+    docker-compose -f docker/docker-compose.yml run --rm  dev
+
+Remember to unset ENTRYPOINT when you wish to use the default again.
+
+<!--
+This doesn't work unless the files are "mounted"
+To run the image without using compose:
+
+```sh
+docker run -it --rm -v \
+  --entrypoint=$PWD/docker/default-entry.sh \
+  -v $PWD:/workspace \
+  ghcr.io/KaruroChori/vs-fltk:build-env
+```
+-->
+
+All of the above methods will mount your current directory as */workspace*
+inside the container. Your username will be *builder*. By default, you will
+not have root privileges (which are not necessary to build and test). However,
+you can use `sudo` if you need to run `apt` or any other commands that require
+root access.
+
+## Notes
+
+In the examples above, we've included `--rm` as an argument. This normally
+removes the container after it's exited. `docker ps -a` displays containers
+that still exist so you may periodically want to make sure you don't have
+unused or unwanted containers. See the official [Docker docs] for more
+information about working with containers. You may, for example, want to
+"reuse" a container, in which case, simply omit the `--rm`.
 
 ## Getting the image
 
@@ -60,15 +94,14 @@ necessary devices. Here's a general guide:
 
 3. **Run the container with access to the display:**
    When starting the container, pass the display environment variable
-   (`$DISPLAY`) and mount the X11 socket:
+   (`$DISPLAY`) and mount the X11 socket. Instead of *dev" for the last
+   argument of `docker-compose` (see above), use *xgui*, which essentially
+   adds these three arguments (through the compose configuration):
 
-```bash
-docker run -it --rm \
-  -v $PWD:/workspace \
+```sh
   --env="DISPLAY" \
   --env="QT_X11_NO_MITSHM=1" \
-  --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
-  ghcr.io/KaruroChori/vs-fltk:build-env
+  --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"
 ```
 
    - `--env="DISPLAY"`: Passes the display from the host to the container.
@@ -83,13 +116,10 @@ docker run -it --rm \
 1. **Share the Wayland display:**
    If your system uses Wayland, you need to pass the Wayland display and devices:
 
-```bash
-docker run -it --rm -u builder \
-  -v $PWD:/workspace \
+```sh
   --env="WAYLAND_DISPLAY=$WAYLAND_DISPLAY" \
   --volume="/run/user/$(id -u)/wayland:/run/user/$(id -u)/wayland" \
   --device=/dev/dri \
-  ghcr.io/KaruroChori/vs-fltk:build-env
 ```
 
    - `--env="WAYLAND_DISPLAY=$WAYLAND_DISPLAY"`: Passes the Wayland display variable.
@@ -102,7 +132,7 @@ docker run -it --rm -u builder \
 OpenGL), you may also need to pass through GPU devices to the container. For
 example, with NVIDIA, you can use the NVIDIA Docker runtime:
 
-   docker run --gpus all -it ghcr.io/KaruroChori/vs-fltk:build-env
+   --gpus all -it
 
 - **X11 access security**: Allowing Docker to connect to your X server with `xhost +local:docker` is not secure. After you're done, revoke access:
 
