@@ -23,6 +23,11 @@ There are also some more or less optional dependencies:
 There is an ongoing effort to write and release a minimal LSP and vscode extension.  
 Once it is ready enough TODO add link here.
 
+## Docker
+
+A docker image is available that contains all the build dependencies. See
+[docker/README.md](https://github.com/KaruroChori/vs-fltk/docker/README.md)
+
 ## Supported platforms
 
 At the moment, only Linux is supported or tested, probably on any of the major CPU architectures. Wider support for POSIX systems is also likely.  
