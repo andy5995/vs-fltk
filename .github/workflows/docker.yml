@@ -19,7 +19,6 @@ jobs:
           echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
         env:
           OWNER: '${{ github.repository_owner }}'
-          REGISTRY_IMAGE: ghcr.io/${{ env.OWNER }}/vs-fltk
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -36,6 +35,8 @@ jobs:
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@v6
+        env:
+          REGISTRY_IMAGE: ghcr.io/${{ env.OWNER_LC }}/vs-fltk
         with:
           file: ./Dockerfile
           platforms: ${{ matrix.platform }}
