@@ -7,9 +7,9 @@ In addition to that, this repo makes use of:
 - [meson](https://mesonbuild.com/) as its main build system. Any recent-ish version will do (unless you need `zig` to simplify cross-compiling; for that >= 1.60 is needed)
 - [bun](https://bun.sh/) as the ts/js runtime to support all the code generation tasks and some of the more complex pipelines.  
    I hate bash, and this is what replaces it.
-- [swiftc](https://www.swift.org/documentation/swift-compiler/) barely used for now, but many of the native components shipped within vs will be written in swift (or so I am planning). Swift 6 will be needed, but for now any version will do.
+- [swiftc](https://www.swift.org/documentation/swift-compiler/) barely used for now, but many of the native components shipped within `vs` will be written in swift (or so I am planning). Swift 6 will be needed, but for now any version will do.
 
-For now you will need to install [some dependencies](https://github.com/fltk/fltk/blob/master/README.Unix.txt) to support FLTK.  
+For now, you will need to install [some dependencies](https://github.com/fltk/fltk/blob/master/README.Unix.txt) to support FLTK.  
 Specifically `libpng-dev` & `libglu1-mesa-dev` are likely missing on most distributions.
 
 There are also some more or less optional dependencies:
@@ -22,6 +22,11 @@ There are also some more or less optional dependencies:
 
 There is an ongoing effort to write and release a minimal LSP and vscode extension.  
 Once it is ready enough TODO add link here.
+
+## Docker
+
+A docker image is available that contains all the build dependencies. See
+[docker/README.md](https://github.com/KaruroChori/vs-fltk/docker/README.md)
 
 ## Supported platforms
 
@@ -38,8 +43,10 @@ This is just temporary limitation, as all dependencies are portable, but my own 
 
 ## Building process
 
-This project uses meson and not git submodules for the most part, but there is a specific exception to make `flatpak-builder` usable.  
-If you plan on using it to generate new flatpak images, please ensure submodules are also cloned.
+> [!NOTICE]  
+> This project uses meson, so there are no git submodules for the most part.
+> One exception is made for `flatpak-builder` to be usable.  
+> If you plan on using it to generate new flatpak images, please ensure submodules are also cloned with the rest of the repository.
 
 Start by installing all the `bun` dependencies needed:
 
@@ -68,22 +75,6 @@ To run the dev demo where features under development are usually being tested:
 ```bash
 bun run vs.example
 ```
-
-### Docker
-
-A docker image is available that contains all the build dependencies. See
-[docker/README.md](https://github.com/KaruroChori/vs-fltk/docker/README.md)
-
-### Patches
-
-Notice: this issue was only observed with `zig` as the backend and cannot be easily reproduced.
-If not using a precompiled version of sqlite on your system, the `meson.build` of its amalgamate might need patching:
-
-```
-  override_options: ['c_std=gnu23'],
-```
-
-at the end of the library generation. The issue is tracked [here](https://github.com/mesonbuild/wrapdb/issues/1747)
 
 ## Installation
 
@@ -150,6 +141,32 @@ In either case, such files are not tracked by git.
 They are frequently used for both _benchmarks_ and _tests_.  
 They can also be useful for the developer while testing new functionality, so they have been all covered in [here](./env-vars.md) for reference.
 
+## Logging
+
+### Debug logging
+
+**vs** has some features to simplify debugging, mostly to support automatic tests and benchmarks, but they might be useful in other scenarios as well.
+`vs::globals::debug` is responsible for that, and it is exposed in several ways:
+
+- within embedded scripts
+- via a special xml `debug` tag
+- in the `vs.fltk` C interface as well
+  While using it you can define a key and value. The current timestamp at nanoseconds resolution is also automatically recorded.  
+  Records are saved to a file with name `VS_DEBUG_FILE` if set, otherwise no output will be emitted. Older content is destroyed.  
+  The file format is just a simple CSV with horizontal tabs as separator of fields and newlines for rows. The order is _key_, _value_ & _timestamp_.
+
+`vs::globals::debug` should not be confused with the ordinary logging functions which are also exposed in similar ways, but which are generally contextual and they mostly output to `stdout`.
+
+## Testing & Benchmarking
+
+### Testing features of the vs-fltk library
+
+### Memory profile of vs
+
+### Benchmarking features of the vs-fltk library
+
+### Runtime tests in vs
+
 ## Programming guidelines
 
 ### About exceptions
@@ -162,24 +179,34 @@ Exceptions should only be used in those cases when the application **must** stop
 
 As for memory allocations, spawning small dynamic objects is also discouraged. If possible, stack allocations are a better alternative. Arrays with variable length on stack are totally fine to be used in place of local objects allocated on heap.  
 `std::string` is also highly discouraged, make sure `std::string_view` is used instead whenever possible.
-<<<<<<< HEAD
 
 ### About log levels
 
-## Logging
+Internally these are the log levels supported and their relative semantics:
 
-### Debug logging
+- **INFO** to present informational messages, often as a result of user requests
+- **OK** to notify that a certain operation completed successfully.
+- **WARNING** to notify that a certain operation was not able to fully succeed, something should be fixed, but everything is fine.
+- **CONTINUE** to notify that a certain operation was skipped by design.
+- **PANIC** to notify that a certain operation failed in a way which cannot be recovered (but the application can still run)
+- **LOG** to introduce a log without any further connotation.
 
-**vs** has some features to simplify debugging, mostly to support automatic tests and benchmarks, but they might be useful in other scenarios as well.
-`vs::globals::debug` is responsible for that, and it is exposed in several ways:
+For example, loading a remote resource:
 
-- in embedded scripts
-- via a special xml `debug` tag
-- in the `vs.fltk` C interface as well
-  While using it you can define a key and value. The current timestamp at nanoseconds resolution is also automatically recorded.  
-  Records are saved to a file with name `VS_DEBUG_FILE` if set, otherwise no output will be emitted. Older content is destroyed.  
-  The file format is just a simple CSV with horizontal tabs as separator of fields and newlines for rows. The order is _key_, _value_ & _timestamp_.
+- If the file was already cached, a `continue` message will be notified
+- If no proper answer has been received from the remote host, a `panic` message is generated, since that content cannot be recovered
+- If everything loaded fine, an `ok` message can be used
+- If the component is using features which are not allowed by policies, `warning` messages can be generated.
 
-`vs::globals::debug` should not be confused with the ordinary logging functions which are also exposed in similar ways, but which are generally contextual and they mostly output to `stdout`.
+Log levels are:
 
-## Testing
+- **NORMAL** to be emitted when running the program normally
+- **SILENT** to be emitted when running the program even in silent mode
+- **VERBOSE** to be emitted when running the program in verbose mode only
+- **DEBUG** to be emitted always when running a debug build or in debugging mode.
+
+Each messagge must specify their semantic type and log level (normal by default). Usually:
+
+- `panic` messages have a `silent` log level
+- `ok` and `continue` messages are usually `verbose`
+- `info`, `warning` and `log` are usually `normal`

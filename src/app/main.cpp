@@ -68,9 +68,16 @@ int run(const char* path, const char *entry, const char* profile){
   }
 }
 
+int test(const char* path, const char *entry_file, const char* action_file, const char* profile){
+  std::cerr<<"Not implemented yet\n";
+  return 1;
+}
+
 int main(int argc, char **argv) {
+  const char* profile = getenv("VS_PROFILE");
+
   if(argc==1){
-    return run(argv[0],"vs://hub.xml",nullptr);       
+    return run(argv[0],"vs://hub.xml",profile);       
   }
   else{
     if(strcmp(argv[1],"run")==0){
@@ -79,7 +86,16 @@ int main(int argc, char **argv) {
         return 1;
       }
 
-      auto t =run(argv[0],argv[2],nullptr);
+      auto t =run(argv[0],argv[2],profile);
+      return t;
+    }
+    else if(strcmp(argv[1],"test")==0){
+      if(argc<2){
+        std::cerr<<"This application in test mode requires the path to a valid xml file or native component as first argument, and an xml file of actions as its second\n";
+        return 1;
+      }
+
+      auto t =test(argv[0],argv[2],argv[3],profile);
       return t;
     }
     else if(strcmp(argv[1],"version")==0){
@@ -96,23 +112,19 @@ int main(int argc, char **argv) {
                   <<"libuv:    "<<versions.libuv<<"\n";
         return 0;
     }
-    else if(strcmp(argv[1],"run-profile")==0){
-        if(argc<3){
-          std::cerr<<"This application requires the path to a profile and a valid xml file or native component passed as first argument\n";
-          return 1;
-        }
-        
-        return run(argv[0],argv[3],argv[2]);       
-    }
     else if(strcmp(argv[1],"editor")==0){
-        return run(argv[0],"vs://editor.xml",nullptr);       
+        return run(argv[0],"vs://editor.xml",profile);       
     }
     else if(strcmp(argv[1],"hub")==0){
-        return run(argv[0],"vs://hub.xml",nullptr);       
+        return run(argv[0],"vs://hub.xml",profile);       
     }
     else if(strcmp(argv[1],"help")==0){
-        std::cerr<<"Not implemented\n";
-        return 0;    
+      const char docs[] = {
+        #embed "../../commons/HELP.md" suffix(, 0)      
+      };
+      //TODO: Show in window as a markdown once the processor is ready.
+      std::cout<<docs<<"\n";
+      return 0;    
     }
     else{
       std::cerr<<"Unrecognized option\n";
