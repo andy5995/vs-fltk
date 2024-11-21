@@ -9,11 +9,6 @@ on:
     paths:
     - '**Dockerfile'
     - '**docker.yml'
-  pull_request:
-    branches: master
-    paths:
-    - '**Dockerfile'
-    - '**docker.yml'
   workflow_dispatch:
   schedule:
     - cron: '25 1 5 * *'
@@ -44,6 +39,6 @@ jobs:
           file: ./docker/Dockerfile
           context: ./docker
           push: true
-          tags: ${{ env.REGISTRY_IMAGE }}:test
+          tags: ${{ env.REGISTRY_IMAGE }}:build-env
           cache-from: type=registry,ref=${{ env.REGISTRY_IMAGE }}:build-env-buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY_IMAGE }}:build-env-buildcache,mode=max
