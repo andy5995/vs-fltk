@@ -44,7 +44,7 @@ This is just temporary limitation, as all dependencies are portable, but my own 
 ## Building process
 
 > [!NOTICE]  
-> This project uses meson, so there are no git submodules for the most part. 
+> This project uses meson, so there are no git submodules for the most part.
 > One exception is made for `flatpak-builder` to be usable.  
 > If you plan on using it to generate new flatpak images, please ensure submodules are also cloned with the rest of the repository.
 
@@ -141,46 +141,6 @@ In either case, such files are not tracked by git.
 They are frequently used for both _benchmarks_ and _tests_.  
 They can also be useful for the developer while testing new functionality, so they have been all covered in [here](./env-vars.md) for reference.
 
-## Programming guidelines
-
-### About exceptions
-
-Exceptions are fully allowed in the CLI at `/src/app`.  
-However, they are strongly discouraged anywhere else in the library code, and it is possible they will be fully disabled via `-fno-exceptions` at some point. The main reason is that the UI should be fault-tolerant and provide as much functionality as possible even if parts of it are broken, like malformed XML files, some scripts failing compilation, missing resources and so on. Exceptions, in this sense, are internally handled and semantically supported by providing subtrees to be rendered in case of failure events.  
-Exceptions should only be used in those cases when the application **must** stop, either because the error is not recoverable or because it would leave the rest of the application in an inconsistent state.
-
-### Memory allocations
-
-As for memory allocations, spawning small dynamic objects is also discouraged. If possible, stack allocations are a better alternative. Arrays with variable length on stack are totally fine to be used in place of local objects allocated on heap.  
-`std::string` is also highly discouraged, make sure `std::string_view` is used instead whenever possible.
-
-### About log levels
-
-Internally these are the log levels supported and their relative semantics:
-- **INFO** to present informational messages, often as a result of user requests
-- **OK** to notify that a certain operation completed successfully.
-- **WARNING** to notify that a certain operation was not able to fully succeed, something should be fixed, but everything is fine. 
-- **CONTINUE** to notify that a certain operation was skipped by design.
-- **PANIC** to notify that a certain operation failed in a way which cannot be recovered (but the application can still run)
-- **LOG** to introduce a log without any further connotation.
-
-For example, loading a remote resource:
-- If the file was already cached, a `continue` message will be notified
-- If no proper answer has been received from the remote host, a `panic` message is generated, since that content cannot be recovered
-- If everything loaded fine, an `ok` message can be used
-- If the component is using features which are not allowed by policies, `warning` messages can be generated.
-
-Log levels are:
-- **NORMAL** to be emitted when running the program normally
-- **SILENT** to be emitted when running the program even in silent mode
-- **VERBOSE** to be emitted when running the program in verbose mode only
-- **DEBUG** to be emitted always when running a debug build or in debugging mode.
-
-Each messagge must specify their semantic type and log level (normal by default). Usually:
-- `panic` messages have a `silent` log level
-- `ok` and `continue` messages are usually `verbose`
-- `info`, `warning` and `log` are usually `normal`
-
 ## Logging
 
 ### Debug logging
@@ -197,4 +157,56 @@ Each messagge must specify their semantic type and log level (normal by default)
 
 `vs::globals::debug` should not be confused with the ordinary logging functions which are also exposed in similar ways, but which are generally contextual and they mostly output to `stdout`.
 
-## Testing
+## Testing & Benchmarking
+
+### Testing features of the vs-fltk library
+
+### Memory profile of vs
+
+### Benchmarking features of the vs-fltk library
+
+### Runtime tests in vs
+
+## Programming guidelines
+
+### About exceptions
+
+Exceptions are fully allowed in the CLI at `/src/app`.  
+However, they are strongly discouraged anywhere else in the library code, and it is possible they will be fully disabled via `-fno-exceptions` at some point. The main reason is that the UI should be fault-tolerant and provide as much functionality as possible even if parts of it are broken, like malformed XML files, some scripts failing compilation, missing resources and so on. Exceptions, in this sense, are internally handled and semantically supported by providing subtrees to be rendered in case of failure events.  
+Exceptions should only be used in those cases when the application **must** stop, either because the error is not recoverable or because it would leave the rest of the application in an inconsistent state.
+
+### Memory allocations
+
+As for memory allocations, spawning small dynamic objects is also discouraged. If possible, stack allocations are a better alternative. Arrays with variable length on stack are totally fine to be used in place of local objects allocated on heap.  
+`std::string` is also highly discouraged, make sure `std::string_view` is used instead whenever possible.
+
+### About log levels
+
+Internally these are the log levels supported and their relative semantics:
+
+- **INFO** to present informational messages, often as a result of user requests
+- **OK** to notify that a certain operation completed successfully.
+- **WARNING** to notify that a certain operation was not able to fully succeed, something should be fixed, but everything is fine.
+- **CONTINUE** to notify that a certain operation was skipped by design.
+- **PANIC** to notify that a certain operation failed in a way which cannot be recovered (but the application can still run)
+- **LOG** to introduce a log without any further connotation.
+
+For example, loading a remote resource:
+
+- If the file was already cached, a `continue` message will be notified
+- If no proper answer has been received from the remote host, a `panic` message is generated, since that content cannot be recovered
+- If everything loaded fine, an `ok` message can be used
+- If the component is using features which are not allowed by policies, `warning` messages can be generated.
+
+Log levels are:
+
+- **NORMAL** to be emitted when running the program normally
+- **SILENT** to be emitted when running the program even in silent mode
+- **VERBOSE** to be emitted when running the program in verbose mode only
+- **DEBUG** to be emitted always when running a debug build or in debugging mode.
+
+Each messagge must specify their semantic type and log level (normal by default). Usually:
+
+- `panic` messages have a `silent` log level
+- `ok` and `continue` messages are usually `verbose`
+- `info`, `warning` and `log` are usually `normal`
