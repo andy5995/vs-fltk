@@ -22,15 +22,7 @@
 
 using namespace vs;
 
-/**
- * @brief Construct an app_loader based.
- * 
- * @param path 
- * @param entry 
- * @param profile 
- * @return std::optional<app_loader> 
- */
-std::optional<app_loader> prepare(const char* path, const char *entry, const char* profile){
+int run(const char* path, const char *entry, const char* profile, const char* tests=nullptr){
   globals::policy.debug();  //To set an initial record in the debug file.
   globals::policy.inherit(policies_t::from_env());
   globals::path_env = mk_env(path, entry);
@@ -42,6 +34,7 @@ std::optional<app_loader> prepare(const char* path, const char *entry, const cha
             <<"data: "<<globals::path_env.userdata_path.as_string()<<"\n"
             <<"repo: "<<globals::path_env.packages_path.as_string()<<"\n"
             <<"tmp:  "<<globals::path_env.tmp_path.as_string()<<"\n";
+
 
   try{
     std::filesystem::create_directories(globals::path_env.userdata_path.location);
@@ -56,25 +49,10 @@ std::optional<app_loader> prepare(const char* path, const char *entry, const cha
         if(t==nullptr)std::filesystem::copy_file(globals::path_env.app_path.location+"commons/db.sqlite",db_path);
       }
     }
-
-    return app_loader(profile,entry);
-  }
-  catch(const char* exception){
-    std::cerr<<"Error: "<< exception<<"\n";
-    return {};
-  }
-  catch(const std::exception& exception){
-    std::cerr<<"Error: "<< exception.what()<<"\n";
-    return {};
-  }
-}
-
-
-int run(const char* path, const char *entry, const char* profile){
-  auto loader = prepare(path,entry,profile);
-
-  try{
-    auto t= loader.value().run();
+    app_loader loader(profile,entry);
+  
+    //TODO implement test
+    auto t= loader.run();
     std::cout<<"\n";
     return t;
   }
@@ -88,24 +66,6 @@ int run(const char* path, const char *entry, const char* profile){
   }
 }
 
-int test(const char* path, const char *entry_file, const char* action_file, const char* profile){
-  auto loader = prepare(path,entry_file,profile);
-
-  try{
-    //TODO: Implement test before run.
-    auto t= loader.value().run();
-    std::cout<<"\n";
-    return t;
-  }
-  catch(const char* exception){
-    std::cerr<<"Error: "<< exception<<"\n";
-    return 1;
-  }
-  catch(const std::exception& exception){
-    std::cerr<<"Error: "<< exception.what()<<"\n";
-    return 1;
-  }
-}
 
 int main(int argc, char **argv) {
   const char* profile = getenv("VS_PROFILE");
@@ -129,7 +89,7 @@ int main(int argc, char **argv) {
         return 1;
       }
 
-      auto t =test(argv[0],argv[2],argv[3],profile);
+      auto t =run(argv[0],argv[2],profile,argv[3]);
       return t;
     }
     else if(strcmp(argv[1],"version")==0){

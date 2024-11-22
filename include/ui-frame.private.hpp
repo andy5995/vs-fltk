@@ -1,6 +1,5 @@
 #pragma once 
 
-#include <iostream>
 #include <memory>
 
 #include <FL/Fl_Widget.H>
@@ -239,7 +238,6 @@ class frame{
     //TODO helpers for mixin?
 
     virtual ~frame() {
-      std::cout<<"aaa\n";
       //Not needed right now, as frames are destroyed alongside their owners from a list
       return;
       prune();
