@@ -267,8 +267,8 @@ install_headers(['./include/cbindings/vs.h','./include/cbindings/components.auto
 
 install_subdir('commons', exclude_files:['.gitignore'], install_dir:'share/vs-fltk',strip_directory:true)
 install_subdir('docs',install_dir:'share/vs-fltk')
-install_subdir('examples',install_dir:'share/vs-fltk')
-install_subdir('bindings',install_dir:'share/vs-fltk')
+#install_subdir('examples',install_dir:'share/vs-fltk')
+#nstall_subdir('bindings',install_dir:'share/vs-fltk')
 install_data(['./LICENCE.md','./README.md', './RELEASE.md'],install_dir:'share/vs-fltk/')
 
 #install_man()

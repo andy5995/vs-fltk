@@ -1,5 +1,7 @@
+#include "globals.hpp"
 #include "ui-frame.hpp"
 #include "ui.hpp"
+#include "utils/paths.hpp"
 #include <cstddef>
 
 #include <iostream>
@@ -45,8 +47,9 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     script->add_lib_path("./subprojects/libtcc");
 
     script->set_out_type(tcc::memory);
-    //script->add_sysinclude_path("./subprojects/libtcc/include/");
-    script->add_include_path("./bindings/native/include");
+    script->add_sysinclude_path((globals::path_env.root.location+"./bindings/native/tcc/include").c_str());
+    
+    script->add_include_path((globals::path_env.root.location+"./bindings/native/include").c_str());
     
     //script->add_lib("ld");
     //script->add_lib("tcc1");
@@ -118,14 +121,14 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
 
     if(compact){
         script->compile_str_embedded(
-            "#include <vs.h>\n#include <stub.h>\n#file embedded \nint callback(){\n#line 0\n", //TODO: Add custom header if linked with an external thing
+            "#include <vs.h>\n#include <stub.h>\n//#file embedded \nint callback(){\n#line 0\n", //TODO: Add custom header if linked with an external thing
             src,
             "\n}"
         );
     }
     else{
         script->compile_str_embedded(
-            "#include <vs.h>\n#include <stub.h>\n#file embedded \n#line 0\n", //TODO: Add custom header if linked with an external thing
+            "#include <vs.h>\n#include <stub.h>\n//#file embedded \n#line 0\n", //TODO: Add custom header if linked with an external thing
             src,
             ""
         );
