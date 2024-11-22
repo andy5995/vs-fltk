@@ -202,7 +202,7 @@ std::shared_ptr<smap<symbol_t>> qjs_js_pipeline_apply(const std::shared_ptr<quic
             symbols->emplace(name, symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::DISPATCHER,(void*)count});
         }
         else if(strcmp("vs_set_env", name)==0){
-            symbols->emplace(name, symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::UNKNOWN,(void*)count});
+            symbols->emplace("#set_env", symbol_t{symbol_mode_t::QUICKJS,symbol_type_t::UNKNOWN,(void*)count});
         }
         else{
             //TODO use the type to show it back again

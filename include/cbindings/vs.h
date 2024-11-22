@@ -22,7 +22,8 @@ enum vs_symbol_type_t{
   VS_SYMBOL_TYPE_DRAW, 
   VS_SYMBOL_TYPE_SETTER, 
   VS_SYMBOL_TYPE_GETTER, 
-  VS_SYMBOL_TYPE_DISPATCHER
+  VS_SYMBOL_TYPE_DISPATCHER,
+  VS_SYMBOL_TYPE_TEST
 };
 typedef enum vs_symbol_type_t vs_symbol_type_t;
 
@@ -92,6 +93,7 @@ const char* vs_node_name_get(const vs_node*);
 void vs_node_getter_use(const vs_symbol_ret_t* sym, void ** value);
 void vs_node_setter_use(const vs_symbol_ret_t* sym, void * value);
 void vs_node_callback_use(const vs_symbol_ret_t* sym, vs_node * value);
+void vs_node_test_use(const vs_symbol_ret_t* sym);
 
 /*
 void vs_node_localscript_attach(const vs_opaque_script* ref);

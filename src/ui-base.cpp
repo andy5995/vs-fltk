@@ -133,6 +133,14 @@ const ui_base* ui_base::resolve_name(const char * str) const{
   }
 }
 
+ symbol_ret_t ui_base::resolve_symbol_local(const char * str) const{
+  if(local_frame!=nullptr){
+    return local_frame->resolve_symbol_local(str);
+  }
+  else return {symbol_t::VOID, symbol_t::VOID, nullptr};
+}
+
+
 void ui_base::set_dispatcher(symbol_t value){
     mk_frame();
     local_frame->custom_dispatcher = value;
@@ -260,6 +268,10 @@ void ui_base::refresh_style(const char* local_mixins){
   }
 }
 
+int ui_base::run_test(){
+  return use_test(this->resolve_symbol_local("#test"));
+}
+
 int ui_base::use_getter(const symbol_ret_t& sym, value_t ** value){
   symbol_ret_t::get_fn fn = (symbol_ret_t::get_fn)sym.symbol.symbol;
 
@@ -328,6 +340,39 @@ int ui_base::use_callback(const symbol_ret_t& sym, ui_base * node){
   }
   return 1;
 }
+
+int ui_base::use_test(const symbol_ret_t& sym){
+  symbol_ret_t::test_fn fn = (symbol_ret_t::test_fn)sym.symbol.symbol;
+
+  if(sym.found_at->get_mode()==frame_mode_t::NATIVE){
+    if(sym.ctx_apply.symbol!=nullptr){
+      const ui_base* (*ctx_apply)(const ui_base*) = ( const ui_base* (*)(const ui_base*) ) sym.ctx_apply.symbol;
+      const ui_base* tmp =ctx_apply(sym.found_at->widget());
+      fn();
+      ctx_apply(tmp);
+      return 0;
+    }
+    else{
+      fn();
+      return 0;
+    }
+  }
+  //TODO: To implement
+  else if(sym.found_at->get_mode()==frame_mode_t::QUICKJS){
+    //TODO: Add support for quickjs script modules
+    pipelines::quickjs_t* script = (pipelines::quickjs_t*)sym.found_at->script.get();
+    auto globalThis = JS_GetGlobalObject(script->ctx);
+    auto ret= JS_Call(script->ctx,std::get<2>(script->handles[(size_t)sym.symbol.symbol-1]),globalThis,0,nullptr);
+    JS_FreeValue(script->ctx, ret);
+    JS_FreeValue(script->ctx, globalThis);
+    return 0;
+  }
+  else{
+    //Callback type not supported yet.
+  }
+  return 1;
+}
+
 
 
 void ui_callback_handler(Fl_Widget* _, void* _data){

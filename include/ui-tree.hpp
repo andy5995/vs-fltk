@@ -30,6 +30,9 @@ struct ui_tree {
   // Support during navigation
   frame_mode_t mode = frame_mode_t::AUTO;
 
+  //Run test propagating from the root.
+  int run_test();
+
   bool string2key256(const char* str, uint8_t array[256/32] );
 
   //TODO: It is likely  I want this stuff moved from here.

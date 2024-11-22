@@ -22,8 +22,15 @@
 
 using namespace vs;
 
-
-int run(const char* path, const char *entry, const char* profile){
+/**
+ * @brief Construct an app_loader based.
+ * 
+ * @param path 
+ * @param entry 
+ * @param profile 
+ * @return std::optional<app_loader> 
+ */
+std::optional<app_loader> prepare(const char* path, const char *entry, const char* profile){
   globals::policy.debug();  //To set an initial record in the debug file.
   globals::policy.inherit(policies_t::from_env());
   globals::path_env = mk_env(path, entry);
@@ -35,9 +42,6 @@ int run(const char* path, const char *entry, const char* profile){
             <<"data: "<<globals::path_env.userdata_path.as_string()<<"\n"
             <<"repo: "<<globals::path_env.packages_path.as_string()<<"\n"
             <<"tmp:  "<<globals::path_env.tmp_path.as_string()<<"\n";
-
-  //std::filesystem::create_directories(globals::path_env.tmp_path.as_string()); TODO: enable once it has unique suffix
-
 
   try{
     std::filesystem::create_directories(globals::path_env.userdata_path.location);
@@ -53,8 +57,24 @@ int run(const char* path, const char *entry, const char* profile){
       }
     }
 
-    app_loader loader(profile, entry);
-    auto t= loader.run();
+    return app_loader(profile,entry);
+  }
+  catch(const char* exception){
+    std::cerr<<"Error: "<< exception<<"\n";
+    return {};
+  }
+  catch(const std::exception& exception){
+    std::cerr<<"Error: "<< exception.what()<<"\n";
+    return {};
+  }
+}
+
+
+int run(const char* path, const char *entry, const char* profile){
+  auto loader = prepare(path,entry,profile);
+
+  try{
+    auto t= loader.value().run();
     std::cout<<"\n";
     return t;
   }
@@ -69,8 +89,22 @@ int run(const char* path, const char *entry, const char* profile){
 }
 
 int test(const char* path, const char *entry_file, const char* action_file, const char* profile){
-  std::cerr<<"Not implemented yet\n";
-  return 1;
+  auto loader = prepare(path,entry_file,profile);
+
+  try{
+    //TODO: Implement test before run.
+    auto t= loader.value().run();
+    std::cout<<"\n";
+    return t;
+  }
+  catch(const char* exception){
+    std::cerr<<"Error: "<< exception<<"\n";
+    return 1;
+  }
+  catch(const std::exception& exception){
+    std::cerr<<"Error: "<< exception.what()<<"\n";
+    return 1;
+  }
 }
 
 int main(int argc, char **argv) {

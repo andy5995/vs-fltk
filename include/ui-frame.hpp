@@ -66,6 +66,7 @@ struct symbol_ret_t{
   typedef void(*draw_fn)(); //TODO: to be defined
   typedef int(*set_fn)(const value_t* src);
   typedef int(*get_fn)(value_t** src);
+  typedef int(*test_fn)();
 };
 
 enum class frame_type_t{

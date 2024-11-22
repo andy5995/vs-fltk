@@ -62,23 +62,6 @@ int frame::call_dispatcher(const char* key, const char* value){
   else return 1;
 }
 
-int frame::call_on_test(){
-  auto it = symbols->find("#test");
-  if(it!=symbols->end()){
-    if(it->second.mode==symbol_mode_t::NATIVE){
-        //Even in single script it wants a reference to the caller.
-        int(*fn)() = (  int(*)()) it->second.symbol;
-        return fn();
-    }
-    else if(custom_dispatcher.mode==symbol_mode_t::QUICKJS){
-      //TODO: Implement custom dispatching properly
-      return 1;
-    }
-    else return 1;
-  }
-  else return 1;
-}
-
 symbol_t symbol_t::VOID= {symbol_mode_t::AUTO,symbol_type_t::VOID,nullptr};
 
 

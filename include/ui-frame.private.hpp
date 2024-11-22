@@ -1,5 +1,6 @@
 #pragma once 
 
+#include <iostream>
 #include <memory>
 
 #include <FL/Fl_Widget.H>
@@ -110,7 +111,7 @@ class frame{
       if(symbols!=nullptr){
         auto t = symbols->find(name);
         if(t!=symbols->end() && !is_script_module){return {t->second,symbol_t::VOID,this};}
-        else if(t!=symbols->end() && is_script_module){return {t->second,symbols->find("vs_set_env")->second,this};}
+        else if(t!=symbols->end() && is_script_module){return {t->second,symbols->find("#set_env")->second,this};}
       } 
 
       //If I am a container I cannot let this progress any further.
@@ -118,7 +119,7 @@ class frame{
         return symbol_ret_t{
           {symbol_mode_t::AUTO,symbol_type_t::VOID,nullptr},
           {symbol_mode_t::AUTO,symbol_type_t::VOID,nullptr},
-           nullptr
+          nullptr
         };
       } else if (parent != nullptr) {
         return parent->_resolve_symbol(name, origin);
@@ -126,9 +127,24 @@ class frame{
         return symbol_ret_t{
           {symbol_mode_t::AUTO,symbol_type_t::VOID,nullptr},
           {symbol_mode_t::AUTO,symbol_type_t::VOID,nullptr},
-           nullptr
+          nullptr
         };
     }
+
+    symbol_ret_t _resolve_symbol_local(const char* name) const{
+      if(symbols!=nullptr){
+        auto t = symbols->find(name);
+        if(t!=symbols->end() && !is_script_module){return {t->second,symbol_t::VOID,this};}
+        else if(t!=symbols->end() && is_script_module){return {t->second,symbols->find("#set_env")->second,this};}
+      } 
+
+      return symbol_ret_t{
+        {symbol_mode_t::AUTO,symbol_type_t::VOID,nullptr},
+        {symbol_mode_t::AUTO,symbol_type_t::VOID,nullptr},
+        nullptr
+      };
+    }
+
 
     std::pair<const smap<std::string>*,const frame*>_resolve_mixin(const char* name, const frame* origin) const{
       auto t = mixins.find(name);
@@ -153,7 +169,6 @@ class frame{
     inline bool has_script() const {return script!=nullptr;}
 
     int call_dispatcher(const char* key, const char* value);
-    int call_on_test();
 
     frame(const char* name, frame_mode_t mode, ui_base* ui_node, frame* parent, frame_type_t type, frame_access_t access){
       static int counter = 0;
@@ -169,6 +184,7 @@ class frame{
     inline const ui_base* widget()const{return ui_node;}
     inline const frame* resolve_name(const char* name) const {return _resolve_name(name, this);}
     inline symbol_ret_t resolve_symbol(const char* name) const {return _resolve_symbol(name, this);}
+    inline symbol_ret_t resolve_symbol_local(const char* name) const {return _resolve_symbol_local(name);}
     inline std::pair<const smap<std::string>*,const frame*> resolve_mixin(const char* name) const{return _resolve_mixin(name, this);}
     smap<std::string> compile_mixins(const char* mixins_list) const;
 
@@ -223,6 +239,7 @@ class frame{
     //TODO helpers for mixin?
 
     virtual ~frame() {
+      std::cout<<"aaa\n";
       //Not needed right now, as frames are destroyed alongside their owners from a list
       return;
       prune();

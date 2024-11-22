@@ -27,13 +27,17 @@ class ui_base{
     symbol_t get_symbol(const char* name);
     void unregister_symbol(const char* name);
     void reset_symbols();
+
     void set_dispatcher(symbol_t value);
+
+    int run_test();
 
     //This is to centralize implementations in one place instead of having them spread all across for no good reason.
     //Return 0 if success, 1 if failure for all of them.
     static int use_getter(const symbol_ret_t& sym, value_t ** value);
     static int use_setter(const symbol_ret_t& sym, const value_t * value);
     static int use_callback(const symbol_ret_t& sym, ui_base * node);
+    static int use_test(const symbol_ret_t& sym);
     //use_draw, use_function. use_dispatched does not exist as its usage is extremely constrained.
     //TODO: Add vs_event or something like that to let scripts access the global event queue information.
 
@@ -76,6 +80,7 @@ class ui_base{
     //Resolve the namespace, basically the first parent which is not "transparent".
     frame* resolve_namespace() const;
     symbol_ret_t resolve_symbol(const char* str) const;
+    symbol_ret_t resolve_symbol_local(const char* str) const;
     const ui_base* resolve_name(const char * str) const;
     const ui_base* resolve_name_path(const char * str) const;
 

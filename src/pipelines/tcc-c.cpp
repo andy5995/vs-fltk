@@ -159,7 +159,7 @@ std::shared_ptr<smap<symbol_t>>  tcc_c_pipeline_apply(const std::shared_ptr<tcc>
         }else if(strcmp("dispatcher", name)==0){
         ctx->log(ctx->ref,"Registering default dispatching symbol `%s`",name);
         }else if(strcmp("vs_set_env",name)==0){
-        ctx->symbols.emplace(name, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::UNKNOWN,value});
+        ctx->symbols.emplace("#set_env", symbol_t{symbol_mode_t::NATIVE,symbol_type_t::UNKNOWN,value});
         }else if(strncmp("__EXPORT_CB__", name, 13)==0){
         ctx->log(ctx->ref,"Registering public callback symbol `%s`",name+13);
         ctx->symbols.emplace(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::CALLBACK,(const void*)(((size_t*)value)[0])});
