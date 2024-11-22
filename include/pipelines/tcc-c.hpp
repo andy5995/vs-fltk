@@ -27,11 +27,11 @@ extern void tcc_log_symbol_func_xml(const pugi::xml_node& env, const char * msg,
  * @param link_with path of a library to be linked against (exposing the standard vs interface)
  * @return std::shared_ptr<tcc> 
  */
-extern std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), const char *link_with);
+extern std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), bool compact, const char *link_with);
 extern std::shared_ptr<smap<symbol_t>> tcc_c_pipeline_apply(const std::shared_ptr<tcc>& script,vs::ui_base* obj,void* ctx,void(*register_fn)(void*,const char*, const char*));
 
-inline std::shared_ptr<tcc> tcc_c_pipeline_xml(bool is_runtime, vs::ui_base* obj, pugi::xml_node& ctx,  const char *link_with){
-    return tcc_c_pipeline(is_runtime,obj,ctx.text().as_string(),&ctx,(void(*)(void*,const char*))tcc_error_func_xml,link_with);
+inline std::shared_ptr<tcc> tcc_c_pipeline_xml(bool is_runtime, vs::ui_base* obj, pugi::xml_node& ctx, bool compact, const char *link_with){
+    return tcc_c_pipeline(is_runtime,obj,ctx.text().as_string(),&ctx,(void(*)(void*,const char*))tcc_error_func_xml, compact, link_with);
 }
 
 }

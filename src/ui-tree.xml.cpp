@@ -376,6 +376,9 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
       bool is_module=false;
 
       auto script_type=root.attribute("type").as_string("");
+      auto compact=root.attribute("mode").as_bool(false);
+      if(compact)current->apply_prop("on.callback", "callback");
+
       //Check if it is a module or single user; if module check for cache and use it.
       if(strcmp(script_type,"module")==0){
         is_module=true;
@@ -414,7 +417,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
       if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::AUTO) {          
         const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
         if (strcmp(lang, "c") == 0) {
-          auto compiler = pipelines::tcc_c_pipeline_xml(true, is_module?nullptr:current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
+          auto compiler = pipelines::tcc_c_pipeline_xml(true, is_module?nullptr:current, root, compact, (link_with==nullptr)?nullptr:tmp_link.c_str());
           if(compiler!=nullptr){
             current->set_mode(frame_mode_t::NATIVE);
             current->attach_script(compiler,is_module);

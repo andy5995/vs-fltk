@@ -6,6 +6,7 @@
 #include <ui-tree.hpp>
 
 #include "pipelines/quickjs-js.hpp"
+#include "quickjs.h"
 #include "ui-frame.hpp"
 #include "utils/strings.hpp"
 
@@ -345,27 +346,17 @@ int ui_base::use_test(const symbol_ret_t& sym){
   symbol_ret_t::test_fn fn = (symbol_ret_t::test_fn)sym.symbol.symbol;
 
   if(sym.found_at->get_mode()==frame_mode_t::NATIVE){
-    if(sym.ctx_apply.symbol!=nullptr){
-      const ui_base* (*ctx_apply)(const ui_base*) = ( const ui_base* (*)(const ui_base*) ) sym.ctx_apply.symbol;
-      const ui_base* tmp =ctx_apply(sym.found_at->widget());
-      fn();
-      ctx_apply(tmp);
-      return 0;
-    }
-    else{
-      fn();
-      return 0;
-    }
+    return fn();
   }
-  //TODO: To implement
   else if(sym.found_at->get_mode()==frame_mode_t::QUICKJS){
-    //TODO: Add support for quickjs script modules
     pipelines::quickjs_t* script = (pipelines::quickjs_t*)sym.found_at->script.get();
     auto globalThis = JS_GetGlobalObject(script->ctx);
     auto ret= JS_Call(script->ctx,std::get<2>(script->handles[(size_t)sym.symbol.symbol-1]),globalThis,0,nullptr);
+    int retval;
+    JS_ToInt32(script->ctx, &retval, ret);
     JS_FreeValue(script->ctx, ret);
     JS_FreeValue(script->ctx, globalThis);
-    return 0;
+    return retval;
   }
   else{
     //Callback type not supported yet.

@@ -89,6 +89,12 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
 ### Scripting
 
 - [ ] Expose path and the fetcher to embedded script at some degree.
+- [ ] Make errors in C scripts less useless
+  - [x] Add `#line` to C library to properly count lines for error location
+  - [ ] Add `#file` based on the path in the path where it happens
+- [ ] Support for compact scripts
+  - [x] C script
+  - [ ] JS script
 
 ### Components
 

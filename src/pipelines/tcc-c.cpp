@@ -25,7 +25,7 @@ static void vs_test_debug(const char* k, const char* v){globals::debug(k,v);}
 #define LIB(x)  script->add_sym(#x, (void*) x)
 #define LIBT(x,t)  script->add_sym(#x, (void*) t x)
 
-std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), const char *link_with){
+std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), bool compact, const char *link_with){
     auto script = std::make_shared<tcc>();
 
     //This part is a bit of a mess.
@@ -116,11 +116,21 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     script->add_file("./bindings/native/src/commons.c");
     script->add_file("./bindings/native/src/stub.c");
 
-    script->compile_str_embedded(
-        "#include <vs.h>\n#include <stub.h>\n", //TODO: Add custom header if linked with an external thing
-        src,
-        ""
-    );
+    if(compact){
+        script->compile_str_embedded(
+            "#include <vs.h>\n#include <stub.h>\n#file embedded \nint callback(){\n#line 0\n", //TODO: Add custom header if linked with an external thing
+            src,
+            "\n}"
+        );
+    }
+    else{
+        script->compile_str_embedded(
+            "#include <vs.h>\n#include <stub.h>\n#file embedded \n#line 0\n", //TODO: Add custom header if linked with an external thing
+            src,
+            ""
+        );
+    }
+
 
     //TODO Tcc error handling if compile fails to show error but fail to generate the tcc smart pointer.
     script->relocate();
