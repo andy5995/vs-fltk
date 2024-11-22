@@ -31,12 +31,10 @@
         <fl:button label="Add" on.callback="on_add" box="20,160,80,50" />
         <fl:button label="Remove" on.callback="on_dec" box="120,160,80,50" />
         <fl:button label="Console" box="220,160,80,50">
-            <script lang="c">
-            <![CDATA[ 
-            void callback(){
-                $log(LOG_LOG,"Hello world!");
-            }
-            ]]>
+            <script lang="c" compact="true">
+                <![CDATA[ 
+                $log(LOG_LOG,"Hello world2!");
+                ]]>
             </script>
         </fl:button>
     </fl:window>

@@ -47,8 +47,8 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     script->add_lib_path("./subprojects/libtcc");
 
     script->set_out_type(tcc::memory);
+
     script->add_sysinclude_path((globals::path_env.root.location+"./bindings/native/tcc/include").c_str());
-    
     script->add_include_path((globals::path_env.root.location+"./bindings/native/include").c_str());
     
     //script->add_lib("ld");
@@ -121,7 +121,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
 
     if(compact){
         script->compile_str_embedded(
-            "#include <vs.h>\n#include <stub.h>\n//#file embedded \nint callback(){\n#line 0\n", //TODO: Add custom header if linked with an external thing
+            "#include <vs.h>\n#include <stub.h>\n//#file embedded \nvoid callback(){\n#line 0\n", //TODO: Add custom header if linked with an external thing
             src,
             "\n}"
         );

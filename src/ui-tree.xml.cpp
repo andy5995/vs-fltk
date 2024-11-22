@@ -377,7 +377,6 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
 
       auto script_type=root.attribute("type").as_string("");
       auto compact=root.attribute("mode").as_bool(false);
-      if(compact)current->apply_prop("on.callback", "callback");
 
       //Check if it is a module or single user; if module check for cache and use it.
       if(strcmp(script_type,"module")==0){
@@ -390,6 +389,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
           current->attach_script(((cache::script_t*)found->ref.get())->script,is_module);
           current->set_symbols(((cache::script_t*)found->ref.get())->symbols);
 
+          if(compact)current->apply_prop("on.callback", "callback");
           //All done, precomputed and rightfully applied!
           continue;
         }
@@ -430,6 +430,8 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
               globals::mem_storage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
               local_unique_counter++;
             }
+
+            if(compact)current->apply_prop("on.callback", "callback");
           }
           continue;
         }
@@ -450,6 +452,8 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
                 globals::mem_storage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
                 local_unique_counter++;
               }
+
+              if(compact)current->apply_prop("on.callback", "callback");
             }
           continue;
         }
