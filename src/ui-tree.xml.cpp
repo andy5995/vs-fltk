@@ -37,6 +37,7 @@
   for(auto& i : root.children()){_build(i,root_ui);}\
   t->widget().end();\
   t->widget().show();\
+  return;\
 } 
 //TODO: Avoid parsing its head                                                 
 #define mkLeafWidget($ns,$name,$class_name) else if(strcmp(root.name(),#$name)==0){build_base_widget<$class_name>(root,root_ui); }                                                  
@@ -48,6 +49,7 @@
   for(auto& i : root.children()){_build(i,root_ui);}\
   t->widget().end();\
   t->widget().show();\
+  return;\
 } 
 
 #define mkNSLeafWidget($ns,$name,$class_name) else if(strcmp(root.name(),(ns.fltk +  #$name).c_str())==0 ){\
@@ -79,7 +81,7 @@ void ui_xml_tree::log(int severety, const void* _ctx, const char* str, ...){
   vfprintf(log_device,rstr.c_str(), args);
   va_end(args);
 
-  fflush(stdout);
+  fflush(log_device);
 }
 
 
@@ -170,6 +172,11 @@ int ui_xml_tree::load(const char* file, type_t type, const pugi::xml_node* calle
 }
 
 ui_xml_tree::~ui_xml_tree(){if(root!=nullptr)delete root;}
+
+void ui_xml_tree::cleanup(){
+  this->doc.reset();
+}
+
 
 int ui_xml_tree::build(){
   

@@ -12,5 +12,6 @@ struct app_loader{
     app_loader(const char* profile, const char* path);
     ~app_loader();
     int run();
+    int test();
 };
 }

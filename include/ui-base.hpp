@@ -30,14 +30,13 @@ class ui_base{
 
     void set_dispatcher(symbol_t value);
 
-    int run_test();
-
+    int all_tests() const;
+    
     //This is to centralize implementations in one place instead of having them spread all across for no good reason.
     //Return 0 if success, 1 if failure for all of them.
     static int use_getter(const symbol_ret_t& sym, value_t ** value);
     static int use_setter(const symbol_ret_t& sym, const value_t * value);
     static int use_callback(const symbol_ret_t& sym, ui_base * node);
-    static int use_test(const symbol_ret_t& sym);
     //use_draw, use_function. use_dispatched does not exist as its usage is extremely constrained.
     //TODO: Add vs_event or something like that to let scripts access the global event queue information.
 

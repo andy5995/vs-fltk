@@ -85,6 +85,7 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
   - [x] flatpak
     - [x] Swift6 is added, but meson cannot find swiftc. Why?
     - [x] Unable to append args to meson setup
+- [ ] Escape vs_debug (tabs).
 
 ### Scripting
 

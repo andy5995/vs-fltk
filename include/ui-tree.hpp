@@ -31,7 +31,6 @@ struct ui_tree {
   frame_mode_t mode = frame_mode_t::AUTO;
 
   //Run test propagating from the root.
-  int run_test();
 
   bool string2key256(const char* str, uint8_t array[256/32] );
 
@@ -72,7 +71,10 @@ struct ui_tree {
   static bool h_flag(bool *dst, const char *expr,
                        const ui_base *env);
 
-  ~ui_tree();
+  virtual ~ui_tree();
+  virtual void cleanup();
+  virtual int runtime_testsuite();
+
 };
 
 

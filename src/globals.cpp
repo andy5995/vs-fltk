@@ -13,6 +13,8 @@ cache::mem_storage_t mem_storage;
 
 vs_test_debug_t debug;
 
+bool is_testing = false;
+
 vs_test_debug_t::vs_test_debug_t(){auto file=getenv("VS_DEBUG_FILE");if(file!=nullptr)fd=fopen(file,"w+");}
 vs_test_debug_t::~vs_test_debug_t(){if(fd!=nullptr)fclose(fd);}
 

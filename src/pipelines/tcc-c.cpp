@@ -14,6 +14,8 @@ namespace pipelines{
 
 void tcc_error_func_xml(const pugi::xml_node& ctx, const char * msg) {
     printf("\n\033[41;37;1m[TCC]\033[0m      : %s @ [\033[93;3m%s\033[0m]", msg,ctx.path().c_str());
+    fflush(stdout);
+
 }
 
 void tcc_log_symbol_func_xml(const pugi::xml_node& ctx, const char * msg, const char * name) {
@@ -22,7 +24,7 @@ void tcc_log_symbol_func_xml(const pugi::xml_node& ctx, const char * msg, const 
 
 //'/home/checkroom/Documents/projects/vs-fltk/subprojects/libtcc/tcc'  test.c  -I../../subprojects/libtcc/include/ -L.  -L../../subprojects/libtcc -lapp 
 
-static void vs_test_debug(const char* k, const char* v){globals::debug(k,v);}
+static void vs_debug(const char* k, const char* v){globals::debug(k,v);}
 
 #define LIB(x)  script->add_sym(#x, (void*) x)
 #define LIBT(x,t)  script->add_sym(#x, (void*) t x)
@@ -68,7 +70,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
 
     // Custom symbol
     //script->add_sym("vs_self", (void *)obj==0?(void*)-1:obj);  //Needed as obj nullptr would remove the symbol for some stupid reason.
-    script->add_sym("vs_test_debug", (void *)vs_test_debug);
+    script->add_sym("vs_debug", (void *)vs_debug);
     script->add_sym("vs_log", (void *)vs_log);
     script->add_sym("vs_resolve_name", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return (const ui_base*)nullptr;return  w->resolve_name(s, true); });
     script->add_sym("vs_resolve_name_path", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return (const ui_base*)nullptr;return  w->resolve_name_path(s, true); });
@@ -134,17 +136,21 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
         );
     }
 
-
-    //TODO Tcc error handling if compile fails to show error but fail to generate the tcc smart pointer.
+    //TODO Tcc error handling if compile fails to show error but fail to generate the tcc smart pointer. I need to flush cout :/
     script->relocate();
 
     auto on_compiled = (uint64_t(*)())script->get_sym("on_compiled");
     if(on_compiled!=nullptr)on_compiled();
+
+    auto on_static_test = (int(*)())script->get_sym("static_test");
+    if(on_static_test!=nullptr && globals::is_testing)on_static_test();
+
     if(obj!=nullptr){
         //Apply the environment for single use scripts.
         auto vs_set_env = (void(*)(void*))script->get_sym("vs_set_env");
         vs_set_env(obj);
     }
+
     return script;
 }
 
@@ -163,9 +169,6 @@ std::shared_ptr<smap<symbol_t>>  tcc_c_pipeline_apply(const std::shared_ptr<tcc>
         if(strcmp("callback", name)==0){
         ctx->log(ctx->ref,"Registering default callback symbol `%s`",name);
         ctx->symbols.emplace(name, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::CALLBACK,value});
-        }else if(strcmp("on_test", name)==0){
-        ctx->log(ctx->ref,"Registering default test symbol `%s`",name);
-        ctx->symbols.emplace("#test", symbol_t{symbol_mode_t::NATIVE,symbol_type_t::TEST,value});
         }else if(strcmp("draw", name)==0){
         ctx->log(ctx->ref,"Registering default drawing symbol `%s`",name);
         ctx->symbols.emplace(name, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::DRAW,value});

@@ -276,8 +276,22 @@ void ui_base::refresh_style(const char* local_mixins){
   }
 }
 
-int ui_base::run_test(){
-  return use_test(this->resolve_symbol_local("#test",false));
+int ui_base::all_tests() const{
+  /*
+  if(local_frame!=nullptr){
+    auto sym =this->resolve_symbol_local("#test",false);
+    int tmp = 0;
+    if(sym.symbol.type!=symbol_type_t::VOID){
+      tmp =  use_test(sym);
+    }
+    for(auto& it: local_frame->children){
+      auto element = it.second->widget();
+      tmp += element->all_tests();
+    }
+    return tmp;
+  }
+  */
+  return 0;
 }
 
 int ui_base::use_getter(const symbol_ret_t& sym, value_t ** value){
@@ -348,29 +362,6 @@ int ui_base::use_callback(const symbol_ret_t& sym, ui_base * node){
   }
   return 1;
 }
-
-int ui_base::use_test(const symbol_ret_t& sym){
-  symbol_ret_t::test_fn fn = (symbol_ret_t::test_fn)sym.symbol.symbol;
-
-  if(sym.found_at->get_mode()==frame_mode_t::NATIVE){
-    return fn();
-  }
-  else if(sym.found_at->get_mode()==frame_mode_t::QUICKJS){
-    pipelines::quickjs_t* script = (pipelines::quickjs_t*)sym.found_at->script.get();
-    auto globalThis = JS_GetGlobalObject(script->ctx);
-    auto ret= JS_Call(script->ctx,std::get<2>(script->handles[(size_t)sym.symbol.symbol-1]),globalThis,0,nullptr);
-    int retval;
-    JS_ToInt32(script->ctx, &retval, ret);
-    JS_FreeValue(script->ctx, ret);
-    JS_FreeValue(script->ctx, globalThis);
-    return retval;
-  }
-  else{
-    //Callback type not supported yet.
-  }
-  return 1;
-}
-
 
 
 void ui_callback_handler(Fl_Widget* _, void* _data){

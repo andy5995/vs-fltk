@@ -49,9 +49,17 @@ int run(const char* path, const char *entry, const char* profile, const char* te
         if(t==nullptr)std::filesystem::copy_file(globals::path_env.app_path.location+"commons/db.sqlite",db_path);
       }
     }
+
+    //TODO implement test
+    if(tests!=nullptr){
+      globals::is_testing=true;
+    }
+
     app_loader loader(profile,entry);
   
     //TODO implement test
+    if(tests!=nullptr){
+    }
     auto t= loader.run();
     std::cout<<"\n";
     return t;
@@ -75,7 +83,7 @@ int main(int argc, char **argv) {
   }
   else{
     if(strcmp(argv[1],"run")==0){
-      if(argc<2){
+      if(argc<3){
         std::cerr<<"This application requires the path to a valid xml file or native component passed as first argument\n";
         return 1;
       }
@@ -84,7 +92,7 @@ int main(int argc, char **argv) {
       return t;
     }
     else if(strcmp(argv[1],"test")==0){
-      if(argc<2){
+      if(argc<4){
         std::cerr<<"This application in test mode requires the path to a valid xml file or native component as first argument, and an xml file of actions as its second\n";
         return 1;
       }

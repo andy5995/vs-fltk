@@ -56,7 +56,9 @@ public:
 
     int load(const char* file, type_t type, const pugi::xml_node* caller_node=nullptr, ui_base* caller_ui_node=nullptr, const scoped_rpath_t* caller_path=nullptr, const policies_t& base_policies=globals::policy);
 
-    ~ui_xml_tree();
+    virtual ~ui_xml_tree();
+    virtual void cleanup();
+    virtual int runtime_testsuite(){if(this->root!=nullptr)return this->root->all_tests();return 0;}
 
     // Logging
 

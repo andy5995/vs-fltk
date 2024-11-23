@@ -51,8 +51,14 @@ app_loader::app_loader(const char *profile, const char* path){
   }
 }
 
+int app_loader::test(){
+  return root->runtime_testsuite();
+  //TODO
+}
+
 int app_loader::run(){
   globals::mem_storage.cleanup();
+  root->cleanup();
   if(!globals::policy.headless){
     auto t= Fl::run();
     delete root;
