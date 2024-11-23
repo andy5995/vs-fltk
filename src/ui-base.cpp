@@ -50,7 +50,8 @@ const std::string& ui_base::get_name() const{
 void ui_base::path(std::stringstream& dst, bool scoped)const{
     frame* current = this->local_frame;
     while(current!=nullptr){
-        dst<<current->name<<"/";
+        if(current->name[0]=='#'){dst<<"???"<<"/";}  //Symbols and namesstarting with # are private and not exposed
+        else dst<<current->name<<"/";
         if(scoped==true && (current->type==frame_type_t::CONTAINER or current->type==frame_type_t::SLOT_CONTAINER))break;
         current=current->parent;
     }
@@ -87,14 +88,14 @@ frame* ui_base::resolve_namespace() const{
   return nullptr;
 }
 
-const ui_base* ui_base::resolve_name_path(const char * str) const{
+const ui_base* ui_base::resolve_name_path(const char * str, bool safe) const{
   static char buffer[64];
   const ui_base* current = this;
   for(int i=0;str[i]!=0;){
     int j=i;
     for(;str[j]!='/' && str[j]!=0 && (j-i <64);j++)buffer[j-i]=str[j];    //TODO exception if going beyond the buffer limits?
     buffer[j-i]=0;
-    current=current->resolve_name(buffer);
+    current=current->resolve_name(buffer, safe);
     i=j;
     if(str[i]!=0)i++;
     if(current==nullptr)return nullptr;
@@ -102,7 +103,9 @@ const ui_base* ui_base::resolve_name_path(const char * str) const{
   return current;
 }
 
-const ui_base* ui_base::resolve_name(const char * str) const{
+const ui_base* ui_base::resolve_name(const char * str, bool safe) const{
+  if(safe && str[0]=='#')return nullptr;
+
   if(local_frame!=nullptr){
     auto tmp = local_frame->resolve_name(str);
     if(tmp==nullptr)return nullptr;
@@ -121,7 +124,9 @@ const ui_base* ui_base::resolve_name(const char * str) const{
   }
 }
 
- symbol_ret_t ui_base::resolve_symbol(const char * str) const{
+ symbol_ret_t ui_base::resolve_symbol(const char * str, bool safe) const{
+  if(safe && str[0]=='#')return {symbol_t::VOID, symbol_t::VOID, nullptr};
+
   if(local_frame!=nullptr){
     return local_frame->resolve_symbol(str);
   }
@@ -134,7 +139,9 @@ const ui_base* ui_base::resolve_name(const char * str) const{
   }
 }
 
- symbol_ret_t ui_base::resolve_symbol_local(const char * str) const{
+ symbol_ret_t ui_base::resolve_symbol_local(const char * str, bool safe) const{
+  if(safe && str[0]=='#')return {symbol_t::VOID, symbol_t::VOID, nullptr};
+
   if(local_frame!=nullptr){
     return local_frame->resolve_symbol_local(str);
   }
@@ -270,7 +277,7 @@ void ui_base::refresh_style(const char* local_mixins){
 }
 
 int ui_base::run_test(){
-  return use_test(this->resolve_symbol_local("#test"));
+  return use_test(this->resolve_symbol_local("#test",false));
 }
 
 int ui_base::use_getter(const symbol_ret_t& sym, value_t ** value){

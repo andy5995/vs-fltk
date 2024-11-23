@@ -50,7 +50,7 @@ static JSValue js_resolve_name_path(JSContext * ctx , JSValueConst this_val, int
         const char* str;
         JS_ToBigUint64(ctx, &node, argv[0]);
         str = JS_ToCString(ctx, argv[1]);
-        auto t = JS_NewBigUint64(ctx,(uint64_t)((ui_base*)node)->resolve_name_path(str));
+        auto t = JS_NewBigUint64(ctx,(uint64_t)((ui_base*)node)->resolve_name_path(str,true));
         JS_FreeCString(ctx, str);
         return t;
 

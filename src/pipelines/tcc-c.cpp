@@ -43,8 +43,8 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     //- The location where it s headers are placed.
     //- The path for bindings shall be computed as absolute based on VS_SHARE or whatever it is called.
 
-    script->add_lib_path("/usr/lib/x86_64-linux-gnu/"); //I dont' want to hardcode this one.
-    script->add_lib_path("./subprojects/libtcc");
+    //script->add_lib_path("/usr/lib/x86_64-linux-gnu/"); //I dont' want to hardcode this one.
+    //script->add_lib_path("./subprojects/libtcc");
 
     script->set_out_type(tcc::memory);
 
@@ -70,13 +70,13 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     //script->add_sym("vs_self", (void *)obj==0?(void*)-1:obj);  //Needed as obj nullptr would remove the symbol for some stupid reason.
     script->add_sym("vs_test_debug", (void *)vs_test_debug);
     script->add_sym("vs_log", (void *)vs_log);
-    script->add_sym("vs_resolve_name", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return (const ui_base*)nullptr;return  w->resolve_name(s); });
-    script->add_sym("vs_resolve_name_path", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return (const ui_base*)nullptr;return  w->resolve_name_path(s); });
-    script->add_sym("vs_resolve_symbol", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return symbol_ret_t {symbol_t::VOID, symbol_t::VOID, nullptr};return w->resolve_symbol(s); });
+    script->add_sym("vs_resolve_name", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return (const ui_base*)nullptr;return  w->resolve_name(s, true); });
+    script->add_sym("vs_resolve_name_path", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return (const ui_base*)nullptr;return  w->resolve_name_path(s, true); });
+    script->add_sym("vs_resolve_symbol", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return symbol_ret_t {symbol_t::VOID, symbol_t::VOID, nullptr};return w->resolve_symbol(s, true); });
     script->add_sym("vs_apply_prop", (void *)+[](ui_base* w,const char* k, const char* v){if(w==nullptr)return -1;return w->apply_prop(k,v); });
     script->add_sym("vs_get_computed", (void *)+[](ui_base* w,const char* k, const char** v){if(w==nullptr)return -1;return w->get_computed(k,v); });
-    script->add_sym("vs_set", (void *)+[](ui_base* w,const char* k, const value_t* v){if(w==nullptr)return -1;return w->use_setter(w->resolve_symbol(k), v);});
-    script->add_sym("vs_get", (void *)+[](ui_base* w,const char* k, value_t** v){if(w==nullptr)return -1;return w->use_getter(w->resolve_symbol(k), v);});
+    script->add_sym("vs_set", (void *)+[](ui_base* w,const char* k, const value_t* v){if(w==nullptr)return -1;return w->use_setter(w->resolve_symbol(k, true), v);});
+    script->add_sym("vs_get", (void *)+[](ui_base* w,const char* k, value_t** v){if(w==nullptr)return -1;return w->use_getter(w->resolve_symbol(k, true), v);});
     
 
     // Fragments of stdlib
@@ -123,7 +123,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
         script->compile_str_embedded(
             "#include <vs.h>\n#include <stub.h>\n//#file embedded \nvoid callback(){\n#line 0\n", //TODO: Add custom header if linked with an external thing
             src,
-            "\n}"
+            "\n}\n"
         );
     }
     else{

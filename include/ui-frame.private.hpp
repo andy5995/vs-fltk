@@ -171,7 +171,7 @@ class frame{
 
     frame(const char* name, frame_mode_t mode, ui_base* ui_node, frame* parent, frame_type_t type, frame_access_t access){
       static int counter = 0;
-      if(name==nullptr)this->name=std::string("%__")+std::to_string(counter++); //TODO: replace with hash to make them not predictable. Filter out %__ prefixed names from any serialization
+      if(name==nullptr)this->name=std::string("#")+std::to_string(counter++); //TODO: replace with hash to make them not predictable. Filter out %__ prefixed names from any serialization
       else this->name=name;
       this->mode=mode;
       this->ui_node=ui_node;
