@@ -10,7 +10,11 @@ In addition to that, this repo makes use of:
 - [swiftc](https://www.swift.org/documentation/swift-compiler/) barely used for now, but many of the native components shipped within `vs` will be written in swift (or so I am planning). Swift 6 will be needed, but for now any version will do.
 
 For now, you will need to install [some dependencies](https://github.com/fltk/fltk/blob/master/README.Unix.txt) to support FLTK.  
-Specifically `libpng-dev` & `libglu1-mesa-dev` are likely missing on most distributions.
+Specifically, the following are likely missing on most distributions:
+
+- **libpng-dev**
+- **libglu1-mesa-dev**
+- **libpango1.0-dev**
 
 There are also some more or less optional dependencies:
 

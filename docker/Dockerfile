@@ -13,6 +13,7 @@ RUN \
         curl \
         freeglut3-dev \
         git \
+        libpango1.0-dev \
         libpng-dev \
         libsqlite3-0 \
         libsqlitecpp-dev \
