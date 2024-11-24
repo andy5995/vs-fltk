@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- VS_COMMONS_DIR=$(pwd)/build/commons/  VS_DEBUG_FILE=./log.csv ./build/vs test ./examples/demo-c-test.xml ./no-actions-for-now -->
 <app xmlns:fl="vs.fltk">
     <fl:window box="0,0,320,240" label="Demo Counter">
         <mixin name="+fl:button" bg.colour="#aa3300" label.colour="#99ee4f" />

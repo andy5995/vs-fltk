@@ -163,6 +163,12 @@ They can also be useful for the developer while testing new functionality, so th
 
 ## Testing & Benchmarking
 
+- Static build tests for `vs` to ensure it can be compiled on all and for all supported platforms.
+- Static tests/benchmarks on `vs.fltk` functionalities provided by the library, like path resolution, mixin logic etc.
+- Runtime tests/benchmarks on `vs`in headless mode with automatic actions, with optional memory profiling.
+- Runtime tests on `vs` with a headless x11 server to obtain screenshot to highlight possible visual regressions.
+
+
 ### Testing features of the vs-fltk library
 
 ### Memory profile of vs
@@ -170,6 +176,8 @@ They can also be useful for the developer while testing new functionality, so th
 ### Benchmarking features of the vs-fltk library
 
 ### Runtime tests in vs
+
+Supported actions are described in [here](./auto-ui-actions.md).
 
 ## Programming guidelines
 
