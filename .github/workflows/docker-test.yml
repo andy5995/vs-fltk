@@ -4,6 +4,7 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  workflow_dispatch:
   pull_request:
     branches: master
     paths:
@@ -16,15 +17,32 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SOURCE_ROOT: ${{ github.workspace }}
-      IMAGE: test-image
       ENTRYPOINT: ${{ github.workspace }}/docker/default-entry.sh
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set variables
+      run: |
+        OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}
+        echo "OWNER_LC=$OWNER_LC" >>${GITHUB_ENV}
+        echo "IMAGE=ghcr.io/$OWNER_LC/vs-fltk:build-env" >>${GITHUB_ENV}
 
     - name: Install dependencies
       run: sudo apt install -y docker-compose
 
+    - name: Check if Dockerfile has changed
+      run: |
+        FILES=$(git log -1 -p ./ | grep +++ | cut -d '/' -f 2-| sed -e 's|dev/null||g')
+        if echo "$FILES" | grep -qE "^(Dockerfile)$"; then
+          echo "changed=true" >> $GITHUB_ENV
+        else
+          echo "changed=false" >> $GITHUB_ENV
+        fi
+
     - name: Build Docker image
+      if: ${{ env.changed == 'true' }}
       run: docker build -t $IMAGE -f docker/Dockerfile ./docker
 
     - name: Run commands in Docker container
