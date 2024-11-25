@@ -1,11 +1,15 @@
 name: Test Build-Env Docker Image
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
 
 on:
   pull_request:
     branches: master
     paths:
-    - '**Dockerfile'
-    - '**docker.yml'
+    - 'docker/**'
+    - '!**.md'
+    - '**docker-test.yml'
 
 jobs:
   build-test-env-image:
