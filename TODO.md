@@ -86,13 +86,13 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
     - [x] Swift6 is added, but meson cannot find swiftc. Why?
     - [x] Unable to append args to meson setup
 - [ ] Escape vs_debug (tabs).
+- [ ] Add TESTING flag in scripts to determine if some content should be run or not.
 
 ### Scripting
 
 - [ ] Expose path and the fetcher to embedded script at some degree.
-- [ ] Make errors in C scripts less useless
+- [x] Make errors in C scripts less useless
   - [x] Add `#line` to C library to properly count lines for error location
-  - [ ] Add `#file` based on the path in the path where it happens
 - [ ] Support for compact scripts
   - [x] C script
   - [ ] JS script
