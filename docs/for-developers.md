@@ -19,6 +19,7 @@ Specifically, the following are likely missing on most distributions:
 There are also some more or less optional dependencies:
 
 - **libcurl-dev**, unless you are trying to compile a custom version without network support, which is supported.
+- [gnuplot](http://www.gnuplot.info/) if you want to generate plots from testing & benchmarking reports.
 - **sqlite** is needed. If not provided by your system it will be automatically downloaded and distributed alongside `vs`.
 - [flatpak-builder](https://docs.flatpak.org/en/latest/flatpak-builder.html) if you plan on packing and distributing a flatpak of `vs` (usually not needed, read more about it later in this document)
 

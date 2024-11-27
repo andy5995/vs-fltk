@@ -27,3 +27,31 @@ These actions are designed for machine usage and macros. Typical scenarios can b
 Documentation for vs projects is intended to be written in Markdown.  
 As such, XML code can be directly embedded in it, which means vs components are usable (please notice that based on the local policies, this functionality might be disabled).  
 The special component `fl:inline-helper` can embed UI actions in it, which will run on request.
+
+## Additional props to handle semantics
+Additional explicit information should be provided to ensure the semantic of the exposed UI components is explained.  
+This is done by nesting a `semantics` element to each element needing that. Elements with `semantics` specified should also have a `name` attribute.    
+For example:
+```
+<fl:container>
+<script>
+    void on_new(){}
+    void on_open(){}
+    void on_delete(){}
+
+    $cb(on_new)
+    $cb(on_open)
+    $cb(on_delete)
+</script>
+<semantics>
+    <callback name="on_new">Explanation</callback>
+    <callback name="on_open">Explanation</callback>
+    <callback name="on_delete">Explanation</callback>
+</semantics>
+<fl:button on.callback="on_new" label="New"/>
+<fl:button on.callback="on_open" label="New"/>
+<fl:button on.callback="on_delete" label="New"/>
+</fl:container>
+```
+
+This additional context is extremely good to automatically generate documentation, but also to ensure proper contextual information is given to autonomous agents using the UI.

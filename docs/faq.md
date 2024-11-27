@@ -198,7 +198,7 @@ There are many local minima in which such frameworks could end up stuck during t
 *Vision* is the only thing which allows a project to jump across, or at least get quickly out from the local minima of comfort-food.  
 I am not saying my vision is "right" nor immutable, just that I have few high level objectives for this project, and others might not share the same while being somewhat similar in execution.  
 Allowing `vs` to be freely forked at this stage comes with the very real risk of me being thrown in a competition I never asked for, unable to provide more than shallow promises on why my intention & my objectives would be "better".  
-As I don't plan on making the development of this project an exercise in demagogy and convincing, I temporary opted for a licencing model which prevents that.  
+As I don't plan on making the development of this project an exercise in demagogy and convincing, I temporarily opted for a licencing model which prevents that.  
 Once this project is robust enough to survive a hostile fork, I would be very glad to relicense it under permissive terms.  
 
 That being said, if you feel something in the direction of the project or the technical solutions proposed are not good, please reach out!  
