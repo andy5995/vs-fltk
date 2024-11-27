@@ -177,13 +177,18 @@ This strategy was not employed as it makes the loading process much slower for m
 ## Licensing
 
 ### Can I contribute to this project?
-Sure! Please be mindful of two things:
-- Make sure you understand that this project uses different licenses for different parts. You should be ok distributing your contributions under those same (or less restrictive) terms. You will be credited, and you are clearly able to distribute any standalone contribution of your beyond the scope of `vs`.  
-- This project is very early, and your contribution might end up in the crossfire of roadmaps changing and goals shifting. If you want to contribute major features, I would *strongly* recommend to reach out or to publish some form of written proposal. 
+Sure! Please be mindful of few things:
+- Make sure you understand that this project uses different licenses for different parts. 
+- You should be ok with us including your contributions under those same terms. 
+- This project is very early, and your contribution might end up in the crossfire of roadmaps changing and goals shifting. 
+- If you want to contribute major features, I would *strongly* recommend to reach out or to publish some form of written proposal. 
+- You should also accept that the CC Attribution–NoDerivs 4.0 covering most of the project will be relaxed at some point. 
+- You will be credited, at the very least by preserving the git history of the project.
+- You are clearly able to distribute any standalone contribution you made as you wish. It is your code.  
 
 ### What about those parts covered by the no-derivatives clauses?
 Those clauses are just intended to protect this project in its early life, not to prevent people from contributing.  
-If you don't plan to make your own fork to distribute an alternative version of `vs`, that is totally fine!
+If your plan is not to make your own fork and distribute an alternative version of `vs`, we are totally fine with that!
 
 ### Why this strange licence?
 You are strange!  
@@ -193,12 +198,12 @@ Or at the very least, I am trying to make it as hard as legally possible.
 `vs` is extremely opinionated, and with opinions come division.  
 XML or JSON, runtime DOM or not, and of course... data sources or arbitrary fetches in embedded scripts.  
 My reluctance in adopting a less restrictive licence at this stage is well explained in the [gemini's faq](https://geminiprotocol.net/docs/faq.gmi).  
-If I had to explain it more in my own words, let's think about a cost function describing the utility of frameworks like `vs`.   
-There are many local minima in which such frameworks could end up stuck during their development, be it as a necessary but temporary phase or the unfortunate outcome of a short-sighted design.  
-*Vision* is the only thing which allows a project to jump across, or at least get quickly out from the local minima of comfort-food.  
-I am not saying my vision is "right" nor immutable, just that I have few high level objectives for this project, and others might not share the same while being somewhat similar in execution.  
+If I had to explain it more with my own words, let's think about a cost function describing the utility of frameworks like `vs`.   
+There are many local minima in which such frameworks could end up stuck during development, be it as a necessary but temporary phase or as the unfortunate outcome of short-sighted design decisions.  
+A good *vision* is the only thing which allows a project to jump across, or at least get quickly out from the local minima of comfort-food.  
+I am not saying my own is "right" nor immutable, just that I have few high-level objectives for this project that others might not share.  
 Allowing `vs` to be freely forked at this stage comes with the very real risk of me being thrown in a competition I never asked for, unable to provide more than shallow promises on why my intention & my objectives would be "better".  
-As I don't plan on making the development of this project an exercise in demagogy and convincing, I temporarily opted for a licencing model which prevents that.  
+As I don't plan on making the development of this project a painful exercise in demagogy and convincing, I temporarily opted for a licencing model which prevents that.  
 Once this project is robust enough to survive a hostile fork, I would be very glad to relicense it under permissive terms.  
 
 That being said, if you feel something in the direction of the project or the technical solutions proposed are not good, please reach out!  
