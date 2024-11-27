@@ -46,7 +46,7 @@ int run(const char* path, const char *entry, const char* profile, const char* te
       else db_path=globals::path_env.userdata_path.location+"db.sqlite";
 
       if(!std::filesystem::exists(db_path)){
-        if(t==nullptr)std::filesystem::copy_file(globals::path_env.app_path.location+"commons/db.sqlite",db_path);
+        if(t==nullptr)std::filesystem::copy_file(globals::path_env.root.location+"db.sqlite",db_path);
       }
     }
 

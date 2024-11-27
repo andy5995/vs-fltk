@@ -36,7 +36,7 @@ app_loader::app_loader(const char *profile, const char* path){
         std::cout << "Loading embedded profile instead\n\n";
       }
       else{
-        doc.load_string("");
+        doc.load_string("<root></root>");
       }
     }
 
