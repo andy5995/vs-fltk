@@ -106,22 +106,16 @@ const ui_base* ui_base::resolve_name_path(const char * str, bool safe) const{
 const ui_base* ui_base::resolve_name(const char * str, bool safe) const{
   if(safe && str[0]=='#')return nullptr;
 
-  if(local_frame!=nullptr){
-    auto tmp = local_frame->resolve_name(str);
+  auto frame =  this->local_frame;
+  if(local_frame==nullptr)frame=this->resolve_frame();
+
+  if(frame!=nullptr){
+    auto tmp = frame->resolve_name(str);
     if(tmp==nullptr)return nullptr;
     else return tmp->widget(); 
   }
-  else{
-
-    auto frame =  this->resolve_frame();
-
-    if(frame!=nullptr){
-      auto tmp = frame->resolve_name(str);
-      if(tmp==nullptr)return nullptr;
-      else return tmp->widget(); 
-    }
-    else return nullptr;
-  }
+  else return nullptr;
+  
 }
 
  symbol_ret_t ui_base::resolve_symbol(const char * str, bool safe) const{

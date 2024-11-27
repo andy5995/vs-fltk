@@ -66,4 +66,5 @@
         "editor.formatOnPaste": false
     },
     "mesonbuild.linter.muon.enabled": false,
+    "svg.preview.background": "white",
 }

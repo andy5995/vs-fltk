@@ -52,12 +52,13 @@ class frame{
       if(t!=children.end()){return t->second;}
 
       //Failure? Try to check inside in case children are passthrough.
-      for(const auto& i : children){
+      //NO LONGER ALLOWED IN GENERAL CASES.
+      /*for(const auto& i : children){
         if(type==frame_type_t::NODE || type==frame_type_t::CONTAINER){
             auto w = i.second->_resolve_name_down(name, origin);
             if(w!=nullptr) return w;
         }
-      }
+      }*/
       return nullptr;
     }
 

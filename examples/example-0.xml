@@ -28,9 +28,9 @@
         <fl:button label="callback-top">
             <script lang="c">
             <![CDATA[ 
-            #include <app.h>
+            //#include <app.h>
             void callback(){
-                add(1,2);
+                //add(1,2);
                 $log(0,"Tying call %p",$("..."));
                 $$prop($("..."),"ciao","mondo");
                 return;

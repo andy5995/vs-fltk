@@ -132,18 +132,21 @@ You can read more about which features are planned in the [milestones page](./do
 
 ## Licences
 
-Currently, most of this project is source available, under the terms of CC BY-ND.  
-Still, any derivative work for private use, or for the sake of merging functionalities to the main repository is allowed and encouraged.  
-I am taking PR, but contributors should understand that the project is very early, and changes in direction might make their time wasted.  
-They should also be ok with their code being relicensed to a more permissive licence later on, as this is the general direction for this project once stable enough.
+`vs` is copyrighted by [karurochari](https://github.com/KaruroChori) & [other contributors](https://github.com/KaruroChori/vs-fltk/graphs/contributors).  
+Please, check the git history to track authorship.  
+
+Currently, most of this project is *source available*, under the terms of CC BY-ND. You can find out more in the [FAQ](./docs/faq.md) 
+Still, any derivative work for private use, or for the sake of merging functionalities back to the main repository is allowed and encouraged.  
+I am taking PR, but contributors should understand that the project is very early, and changes in its direction might waste their time.  
+They should also be ok with their code being relicensed under more permissive terms later on, as this is the general intent behind the project once stable enough.
 
 Still, some part of this repo are licenced separately:
 
 - All `bindings` are CC0
 - `examples` and `docs` are CC BY-SA
-- Each of the subprojects imported clearly keep its own licence and copyright notice.
+- Each of the subprojects imported clearly keeps its own licence and copyright notice.
 
-Unless a file comes with a custom licence in its header, they will inherit the one of the closest parent folder.
+Unless a file comes with a custom licence in its header, it will inherit the one of the closest parent folder.
 
 ## Dependencies
 
@@ -157,16 +160,17 @@ This project is based on the following dependencies:
 - [mio](https://github.com/vimpunk/mio) memory mapping for loading files.
 - [hashlib](https://github.com/KaruroChori/hash-library) for cryptographic functions (and not).
 - [libuv](https://libuv.org/) for me not to care about portable code.
-- [vs.templ](https://github.com/karurochori/vs-templ) a library to parse markdown (not just to HTML).
+- [vs.templ](https://github.com/lazy-eggplant/vs-templ) a library to parse markdown (not just to HTML).
+- [vs.robot](https://github.com/lazy-eggplant/vs-robot) a library to perform automatic actions on FLTK.
 
 ### For embedded scripts
 
 - [libffi](https://github.com/libffi/libffi) to simplify symbol sharing between languages.
 - [tcc](https://github.com/KaruroChori/tcc-vs) the embeddable C compiler used for C scripts.
+- [cello](https://libcello.org) an unholy macro machine for C to transform it into a dynamic language.
 - [quickjs](https://github.com/quickjs-ng) the embeddable JS runtime used for JS scripts.
 - [lua](https://www.lua.org/) and [luajit](http://luajit.org/) to support Lua scripts.
 - [wamr](https://github.com/bytecodealliance/wasm-micro-runtime) the embeddable WASM runtime used for scripts, portable compiled components & compilers.
-- [cello](https://libcello.org) an unholy macro machine for C to transform it into a dynamic language.
 
 ### For custom components
 

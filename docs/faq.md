@@ -173,3 +173,34 @@ It is a process in two stages for each component:
 At the end of this process the XML is freed.  
 XML files are assumed to be fully loaded in memory during processing. However, it is possible to write a streaming parser with much lower memory footprint, as long as the XML is following the strict schema shipped with this repo (it has a rigid order for some tags).  
 This strategy was not employed as it makes the loading process much slower for multithreaded systems with reasonable amounts of memory, and would only be better for low-end embedded systems where fltk is unlikely to be suitable.
+
+## Licensing
+
+### Can I contribute to this project?
+Sure! Please be mindful of two things:
+- Make sure you understand that this project uses different licenses for different parts. You should be ok distributing your contributions under those same (or less restrictive) terms. You will be credited, and you are clearly able to distribute any standalone contribution of your beyond the scope of `vs`.  
+- This project is very early, and your contribution might end up in the crossfire of roadmaps changing and goals shifting. If you want to contribute major features, I would *strongly* recommend to reach out or to publish some form of written proposal. 
+
+### What about those parts covered by the no-derivatives clauses?
+Those clauses are just intended to protect this project in its early life, not to prevent people from contributing.  
+If you don't plan to make your own fork to distribute an alternative version of `vs`, that is totally fine!
+
+### Why this strange licence?
+You are strange!  
+Jokes aside, I *really* don't want this project to be taken apart by sharks before it is able to run on its own legs.  
+Or at the very least, I am trying to make it as hard as legally possible.
+
+`vs` is extremely opinionated, and with opinions come division.  
+XML or JSON, runtime DOM or not, and of course... data sources or arbitrary fetches in embedded scripts.  
+My reluctance in adopting a less restrictive licence at this stage is well explained in the [gemini's faq](https://geminiprotocol.net/docs/faq.gmi).  
+If I had to explain it more in my own words, let's think about a cost function describing the utility of frameworks like `vs`.   
+There are many local minima in which such frameworks could end up stuck during their development, be it as a necessary but temporary phase or the unfortunate outcome of a short-sighted design.  
+*Vision* is the only thing which allows a project to jump across, or at least get quickly out from the local minima of comfort-food.  
+I am not saying my vision is "right" nor immutable, just that I have few high level objectives for this project, and others might not share the same while being somewhat similar in execution.  
+Allowing `vs` to be freely forked at this stage comes with the very real risk of me being thrown in a competition I never asked for, unable to provide more than shallow promises on why my intention & my objectives would be "better".  
+As I don't plan on making the development of this project an exercise in demagogy and convincing, I temporary opted for a licencing model which prevents that.  
+Once this project is robust enough to survive a hostile fork, I would be very glad to relicense it under permissive terms.  
+
+That being said, if you feel something in the direction of the project or the technical solutions proposed are not good, please reach out!  
+I really appreciate any structured criticism, and I am grateful of any time others might want to put into that.  
+I am not the kind of person which get stuck in their own positions just because they hold them at some point 😊. 
