@@ -32,7 +32,7 @@
         <fl:button label="Remove" on.callback="on_dec" box="120,160,80,50" />
         <fl:button label="Console" box="220,160,80,50">
             <script lang="c" compact="true">
-                $log(LOG_LOG,"Hello world2!");
+                $log(LOG_LOG,"Hello world!");
             </script>
         </fl:button>
     </fl:window>

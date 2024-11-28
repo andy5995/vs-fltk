@@ -10,7 +10,7 @@ cc = meson.get_compiler('c')
 cxx = meson.get_compiler('cpp')
 
 #Used by pugi to enable compact mode. I might want to disable execptions too.
-add_global_arguments(['-DPUGIXML_COMPACT'], language : ['cpp','c'])
+add_global_arguments(['-DPUGIXML_COMPACT'], language: ['cpp', 'c'])
 
 cmake = import('cmake')
 
@@ -59,10 +59,7 @@ md4c_dep = md4c_proj.dependency('md4c')
 
 opt_fmt = cmake.subproject_options()
 opt_fmt.add_cmake_defines(
-    {
-        'CMAKE_POSITION_INDEPENDENT_CODE': true,
-        'BUILD_SHARED_LIBS': false
-    },
+    {'CMAKE_POSITION_INDEPENDENT_CODE': true, 'BUILD_SHARED_LIBS': false},
 )
 fmt_proj = cmake.subproject('fmt', options: opt_fmt)
 fmt_dep = fmt_proj.dependency('fmt')
@@ -78,7 +75,6 @@ pugixml_dep = pugixml_proj.get_variable('pugixml_dep')
 
 vs_templ_proj = subproject('vs-templ')
 vs_templ_dep = vs_templ_proj.get_variable('vs_templ_dep')
-
 
 treesitter_proj = subproject('tree-sitter')
 treesitter_dep = treesitter_proj.get_variable('tree_sitter_dep')
@@ -105,10 +101,10 @@ if not sqlitecpp_dep.found()
 endif
 
 sqlite_dep = dependency(
-  'sqlite3',
-  version: '>=3.0.0',
-  fallback: ['sqlite3', 'sqlite3_dep'],
-  default_options: 'default_library=static',
+    'sqlite3',
+    version: '>=3.0.0',
+    fallback: ['sqlite3', 'sqlite3_dep'],
+    default_options: 'default_library=static',
 )
 
 #TODO handle the case in which libcurl does not exist. Missing is fine, just no https/http prefix for paths.
@@ -204,14 +200,14 @@ vs_fltk = shared_library(
         './src/cbindings/vs.cpp',
         './src/cbindings/components.autogen.cpp',
 
-        './src/globals.cpp'
+        './src/globals.cpp',
     ],
     dependencies: vs_fltk_deps,
     include_directories: include_dirs,
     override_options: ['c_std=gnu23', 'cpp_std=gnu++23'],
     cpp_args: vs_fltk_flags,
     c_args: vs_fltk_flags,
-    install: true
+    install: true,
 )
 
 vs_fltk_dep = declare_dependency(
@@ -230,7 +226,13 @@ shared_library('vs-cello', dependencies: [cello_dep])
 #vs_codegen = custom_target(command: 'vs-codegen', output: 'vs-codegen', command: [vs_codegen_cmd], depends:[])
 
 vs_commons_cmd = find_program('./scripts/gen-commons.sh')
-vs_commons = custom_target('vs-commons', output: 'commons', command: [vs_commons_cmd], depends:[])
+vs_commons = custom_target(
+    'vs-commons',
+    output: 'commons',
+    command: [vs_commons_cmd],
+    depends: [],
+    build_always_stale: true,
+)
 
 executable(
     'vs',
@@ -263,19 +265,35 @@ endif
 
 # Install stuff
 
-install_headers(['./include/cbindings/vs.h','./include/cbindings/components.autogen.h','./include/cbindings/module.modulemap'], preserve_path: false, subdir: 'vs-fltk')
+install_headers(
+    [
+        './include/cbindings/vs.h',
+        './include/cbindings/components.autogen.h',
+        './include/cbindings/module.modulemap',
+    ],
+    preserve_path: false,
+    subdir: 'vs-fltk',
+)
 
-install_subdir('commons', exclude_files:['.gitignore'], install_dir:'share/vs-fltk',strip_directory:true)
-install_subdir('docs',install_dir:'share/vs-fltk')
+install_subdir(
+    'commons',
+    exclude_files: ['.gitignore'],
+    install_dir: 'share/vs-fltk',
+    strip_directory: true,
+)
+install_subdir('docs', install_dir: 'share/vs-fltk')
 #install_subdir('examples',install_dir:'share/vs-fltk')
 #nstall_subdir('bindings',install_dir:'share/vs-fltk')
-install_data(['./LICENCE.md','./README.md', './RELEASE.md'],install_dir:'share/vs-fltk/')
+install_data(
+    ['./LICENCE.md', './README.md', './RELEASE.md'],
+    install_dir: 'share/vs-fltk/',
+)
 
 #install_man()
 
 pconf = import('pkgconfig')
 pconf.generate(
-  vs_fltk,
-  description: 'VS fltk library (C interface only)',
-  url: 'https://github.com/KaruroChori/vs-fltk/',
+    vs_fltk,
+    description: 'VS fltk library (C interface only)',
+    url: 'https://github.com/KaruroChori/vs-fltk/',
 )
