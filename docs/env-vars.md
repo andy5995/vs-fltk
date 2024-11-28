@@ -5,7 +5,7 @@ WIP
 | **Name**        | **Type**                     | **Description**                                                                                        |
 | --------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------ |
 | VS_ACTIONS_FILE | fs-path                      | If specified, an xml file including a list of actions to operate on the UI (for automatic testing)     |
-| VS_DEBUG_FILE   | fs-path                      | If specified, file where debug record are appended. Else, there is no side effect for those operations |
+| VS_DEBUG_FILE   | fs-path                      | If specified, file where debug records are appended. Else, there is no side effect for those operations |
 | VS_LOG_FILE     | fs-path                      | If specified, file where log records are appended. Else, std out                                       |
 | VS_LOG_LEVEL    | `silent,basic,verbose,debug` | Globally set the baseline log level, so that some messages can be skipped if not relevant.             |
 
