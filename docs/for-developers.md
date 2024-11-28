@@ -31,7 +31,7 @@ Once it is ready enough TODO add link here.
 ## Docker
 
 A docker image is available that contains all the build dependencies. See
-[docker/README.md](https://github.com/KaruroChori/vs-fltk/docker/README.md)
+[docker/README.md](../docker/README.md)
 
 ## Supported platforms
 

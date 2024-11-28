@@ -17,7 +17,7 @@
 Hey, you there! Yes you! May I entertain you with something slightly cursed?  
 Have you ever woken up in the middle of the night, thinking:
 
-> "Maaan, I'd really love to put a pinch of C, JS and WASM into my XML files and get a UI with vibes out of the 90' for my fancy codebase".
+> "Maaan, I'd really love to put a pinch of C, JS and WASM into my XML files and get a UI with vibes out of the 90's for my fancy codebase".
 
 Well, you should eat lighter before nighttime.  
 Still, it is your lucky day, & this project might be for you!

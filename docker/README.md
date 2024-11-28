@@ -54,9 +54,10 @@ root access.
 In the examples above, we've included `--rm` as an argument. This normally
 removes the container after it's exited. `docker ps -a` displays containers
 that still exist, so you may periodically want to make sure you don't have
-unused or unwanted containers. See the official [Docker docs] for more
-information about working with containers. You may, for example, want to
-"reuse" a container, in which case, simply omit the `--rm`.
+unused or unwanted containers. See the official [Docker
+docs](https://docs.docker.com/) for more information about working with
+containers. You may, for example, want to "reuse" a container, in which case,
+simply omit the `--rm`.
 
 ## Getting the image
 
