@@ -50,8 +50,8 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
 
     script->set_out_type(tcc::memory);
 
-    script->add_sysinclude_path((globals::path_env.root.location+"./bindings/native/tcc/include").c_str());
-    script->add_include_path((globals::path_env.root.location+"./bindings/native/include").c_str());
+    script->add_sysinclude_path((globals::path_env.root.location+"bindings/native/tcc/include").c_str());
+    script->add_include_path((globals::path_env.root.location+"bindings/native/include").c_str());
     
     //script->add_lib("ld");
     //script->add_lib("tcc1");
