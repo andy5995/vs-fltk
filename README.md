@@ -133,9 +133,9 @@ You can read more about which features are planned in the [milestones page](./do
 ## Licences
 
 `vs` is copyrighted by [karurochari](https://github.com/KaruroChori) & [other contributors](https://github.com/KaruroChori/vs-fltk/graphs/contributors).  
-Please, check the git history to track authorship.  
+Please, check the git history to track authorship.
 
-Currently, most of this project is *source available*, under the terms of CC BY-ND. You can find out more in the [FAQ](./docs/faq.md) 
+Currently, most of this project is _source available_, under the terms of CC BY-ND. You can find out more in the [FAQ](./docs/faq.md)
 Still, any derivative work for private use, or for the sake of merging functionalities back to the main repository is allowed and encouraged.  
 I am taking PR, but contributors should understand that the project is very early, and changes in its direction might waste their time.  
 They should also be ok with their code being relicensed under more permissive terms later on, as this is the general intent behind the project once stable enough.
@@ -160,8 +160,8 @@ This project is based on the following dependencies:
 - [mio](https://github.com/vimpunk/mio) memory mapping for loading files.
 - [hashlib](https://github.com/KaruroChori/hash-library) for cryptographic functions (and not).
 - [libuv](https://libuv.org/) for me not to care about portable code.
-- [vs.templ](https://github.com/lazy-eggplant/vs-templ) a library to parse markdown (not just to HTML).
-- [vs.robot](https://github.com/lazy-eggplant/vs-robot) a library to perform automatic actions on FLTK.
+- [vs.templ](https://github.com/lazy-eggplant/vs.templ) a library to parse markdown (not just to HTML).
+- [vs.robot](https://github.com/lazy-eggplant/vs.robot) a library to perform automatic actions on FLTK.
 
 ### For embedded scripts
 

@@ -25,8 +25,10 @@ There are also some more or less optional dependencies:
 
 ### IDE integrations
 
-There is an ongoing effort to write and release a minimal LSP and vscode extension.  
-Once it is ready enough TODO add link here.
+There is an ongoing effort to better support `vs` with a proper [lsp](https://github.com/lazy-eggplant/vs.lsp).  
+In the same repo there is also a vscode client extension.
+
+`vs` is expected to leverage this lsp directly in its embedded editor once integrated.
 
 ## Docker
 
