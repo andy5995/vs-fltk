@@ -1,12 +1,18 @@
 ## 0.1.1-alpha
 
+- [x] Complete the build process
+- [x] Docker image
+- [x] Flatpak building pipeline
+- [x] Prepare pipeline for github actions
+
+## 0.1.3
+
+- [ ] New getters and setters design (and updated schemas).
 - [ ] Implement flex, grid, scroll & pack via codegen.
 - [ ] Tidy up the XML caching
 - [ ] Tidy up the JS scripting interface.
 - [x] Complete the build process
-- [ ] Docker image
 - [x] Flatpak building pipeline
-- [ ] Prepare pipeline for github actions
 
 ## 0.1.5
 
@@ -23,10 +29,10 @@
 
 - Fully functional c & js support in embedded scripts.
   - DOM-like operations (constained due to its mostly immutable structure).
-  - Constrained operations on files.
-  - Constrained fetch requests.
+  - ~~Constrained operations on files.~~ no we use the storage and data sources
+  - ~~Constrained fetch requests.~~ no we use data sources
 - Loading of native components.
-- HTTP/HTTPS ~~& gemini~~
+- HTTP/HTTPS ~~& gemini~~ gemini require additional effort as it is not supported by curl
 - A good coverage of basic fltk components via codegen.
 
 ## 0.3.x
