@@ -5,6 +5,19 @@
 
 namespace vs{
 
+
+enum struct component_t{
+    NONE,
+    XML,
+    WASM,
+    LIB,
+    CNATIVE,
+};
+component_t component_t_i(const char* t);
+constexpr const char* component_t_s(component_t t);
+
+std::tuple<resolve_path::reason_t::t, scoped_rpath_t, component_t> fetch_component();
+
 /**
  * @brief Fetch resource using its path and some contextual information (or get it if already on cache)
  * 

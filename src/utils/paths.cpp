@@ -1,4 +1,3 @@
-#include <iostream>
 #include <utils/paths.hpp>
 
 namespace vs{

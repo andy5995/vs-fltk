@@ -3,6 +3,43 @@
 
 namespace vs{
 
+component_t component_t_i(const char* t){
+    if(false);
+    else if(strcmp(t,".vs")==1)return component_t::XML;
+    else if(strcmp(t,".xml")==1)return component_t::XML;
+    else if(strcmp(t,".wasm")==1)return component_t::WASM;
+#   if defined(__linux__)
+    else if(strcmp(t,".so")==1)return component_t::LIB;
+#   elif defined(_WIN32) || defined(_WIN64)
+    else if(strcmp(t,".dll")==1)return component_t::LIB;
+#   elif defined(__APPLE__)
+    else if(strcmp(t,".dylib")==1)return component_t::LIB;
+#   endif
+    else if(strcmp(t,".c")==1)return component_t::CNATIVE;
+    else return component_t::NONE;
+}
+
+constexpr const char* component_t_s(component_t t){
+    if(t==component_t::NONE)return nullptr;
+    else if(t==component_t::XML)return ".vs";
+    else if(t==component_t::WASM)return ".wasm";
+    else if(t==component_t::LIB){
+#   if defined(__linux__)
+        return ".so";
+#   elif defined(_WIN32) || defined(_WIN64)
+        return ".dll";
+#   elif defined(__APPLE__)
+        return ".dylib";
+#   endif
+    }
+    else if(t==component_t::CNATIVE)return ".c";
+    else return nullptr;
+}
+
+std::tuple<resolve_path::reason_t::t, scoped_rpath_t, component_t> fetch_component(){
+    //TODO:
+}
+
 std::tuple<resolve_path::reason_t::t,cache::buffer_t, scoped_rpath_t> fetcher(resolve_path& base, resolve_path::from_t from,const char* src, bool promote, bool preserve){
     auto ret = base(from,src);
     if(ret.first==resolve_path::reason_t::OK){

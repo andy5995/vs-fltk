@@ -179,6 +179,7 @@ struct resolve_path{
 
     ///Try to resolve the path described by src based on the policies, env, and current path.
     std::pair<reason_t::t,scoped_rpath_t> operator()(from_t from,const char* src);
+
 };
 
 #undef tnk

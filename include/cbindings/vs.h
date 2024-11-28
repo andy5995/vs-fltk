@@ -70,6 +70,14 @@ enum vs_frame_access_t{
 };
 typedef enum vs_frame_access_t vs_frame_access_t;
 
+enum struct vs_component_t{
+    VS_COMPONENT_NONE,
+    VS_COMPONENT_XML,
+    VS_COMPONENT_WASM,
+    VS_COMPONENT_LIB,
+    VS_COMPONENT_CNATIVE,
+};
+typedef enum vs_component_t vs_component_t;
 
 typedef vs_symbol_mode_t vs_frame_mode_t;
 
