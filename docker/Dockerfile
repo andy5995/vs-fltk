@@ -24,8 +24,7 @@ RUN \
         sudo \
         swiftlang \
         unzip \
-        wget && \
-    update-ca-certificates -f
+        wget
 
 RUN useradd -m builder && passwd -d builder
 RUN echo "builder ALL=(ALL) ALL" >> /etc/sudoers
