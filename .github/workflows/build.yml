@@ -23,10 +23,6 @@ on:
     - '!**.md'
     - '**/build.yml'
 
-env:
-  CC: clang-19
-  CXX: clang++-19
-
 jobs:
   meson:
     strategy:
@@ -34,6 +30,9 @@ jobs:
       matrix:
         os: [ubuntu-24.04]
     runs-on: ${{ matrix.os }}
+    env:
+      CC: clang-19
+      CXX: clang++-19
     steps:
     - uses: actions/checkout@v4
     - name: Install dependencies
@@ -94,7 +93,6 @@ jobs:
 
     - name: Configure and build
       run: |
-        $CXX --version
         cmake --version
         bun install
         bun run codegen
