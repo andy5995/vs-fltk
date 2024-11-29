@@ -70,3 +70,29 @@ jobs:
         bun run codegen
         bun run meson-setup.clang-release
         meson compile -C build/ vs:executable
+
+  macos:
+    runs-on: macos-14
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install dependencies
+      run: |
+        curl -fsSL https://bun.sh/install | bash
+        echo "PATH=$HOME/.bun/bin:$PATH" >> $GITHUB_ENV
+        brew update
+        brew install \
+          freeglut \
+          libpng \
+          meson \
+          ninja \
+          sqlite \
+          swift
+
+    - name: Configure and build
+      run: |
+        cmake --version
+        bun install
+        bun run codegen
+        bun run meson-setup.clang-release
+        meson compile -C build/ vs:executable
+
