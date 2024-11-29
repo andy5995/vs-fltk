@@ -74,6 +74,9 @@ jobs:
 
   macos:
     runs-on: macos-14
+    env:
+      LDFLAGS: '-L/opt/homebrew/opt/llvm/lib'
+      CPPFLAGS: '-I/opt/homebrew/opt/llvm/include'
     steps:
     - uses: actions/checkout@v4
     - name: Install dependencies
@@ -87,6 +90,7 @@ jobs:
           libpng \
           meson \
           ninja
+        echo 'PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> $GITHUB_ENV
 
     - name: Configure and build
       run: |
