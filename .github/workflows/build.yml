@@ -81,12 +81,11 @@ jobs:
         echo "PATH=$HOME/.bun/bin:$PATH" >> $GITHUB_ENV
         brew update
         brew install \
+          llvm@19 \
           freeglut \
           libpng \
           meson \
-          ninja \
-          sqlite \
-          swift
+          ninja
 
     - name: Configure and build
       run: |
