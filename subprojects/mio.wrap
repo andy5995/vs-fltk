@@ -1,5 +1,5 @@
 [wrap-git]
 url = https://github.com/vimpunk/mio
-revision = head
+revision = HEAD
 depth = 1
 method = cmake

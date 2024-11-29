@@ -1,6 +1,6 @@
 [wrap-git]
 url = https://github.com/lazy-eggplant/vs.templ.git
-revision = head
+revision = HEAD
 depth = 1
 method = meson
 [provide]
