@@ -5,12 +5,13 @@ ENV DEBIAN_FRONTEND=$DEBIAN_FRONTEND
 
 RUN \
     apt update && apt upgrade -y && \
+    apt install -y curl && \
+    curl -s https://archive.swiftlang.xyz/install.sh | bash && \
     apt install -y \
         build-essential \
         ca-certificates \
         clang-19 \
         cmake \
-        curl \
         freeglut3-dev \
         git \
         libpango1.0-dev \
@@ -33,7 +34,7 @@ USER builder
 
 RUN curl -fsSL https://bun.sh/install | bash
 RUN \
-    echo "export BUN_INSTALL=\"\$HOME/.bun\"" >> $HOME/.profile && \
+    echo "export BUN_INSTALL=\"\$HOME/.bun\"" >> $HOME/.profile &&  \
     echo "export PATH=\"\$BUN_INSTALL/bin:\$PATH\"" >> $HOME/.profile
 
 USER root

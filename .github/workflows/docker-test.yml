@@ -59,7 +59,7 @@ jobs:
       run: |
         docker buildx build \
           ./docker \
-          -f docker/Dockerfile
+          -f docker/Dockerfile \
           -t $IMAGE \
           --cache-to=type=local,dest=${{ env.DOCKER_CACHE_DEST }} \
           --cache-from=type=local,src=${{ env.DOCKER_CACHE_DEST }} \
