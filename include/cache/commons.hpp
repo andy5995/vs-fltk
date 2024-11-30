@@ -24,7 +24,7 @@ enum class resource_t{
             BUFFER,                     //uint8_t[]
             XML_TREE,                   //pugi::xml_document
             SCRIPT,                     //struct script_t
-            DYNAMIC_LIB,                //?
+            PATH,                       //a string used as path reference, basically like buffer. Used to save info about path resolution.
             OTHER_RESOURCE,             //?
 };
 

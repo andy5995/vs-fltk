@@ -36,7 +36,7 @@ constexpr const char* component_t_s(component_t t){
     else return nullptr;
 }
 
-std::tuple<resolve_path::reason_t::t, scoped_rpath_t, component_t> fetch_component(){
+std::tuple<resolve_path::reason_t::t, cache::mem_storage_t::entry_it*, component_t> fetch_component(){
     //TODO:
 }
 

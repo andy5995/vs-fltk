@@ -2,6 +2,7 @@
 #include <cache/memory-storage.hpp>
 #include <iostream>
 #include <memory>
+#include <new>
 #include <sys/types.h>
 #include <unordered_map>
 
@@ -15,6 +16,27 @@ namespace vs{
 
 namespace cache{
 
+
+mem_storage_t::entry_it  mem_storage_t::fetch_from_buffer(const mem_key_t& path, std::span<uint8_t const> str){
+    uint8_t* buffer = new uint8_t[str.size()];
+    memcpy(buffer,str.data(),str.size());
+    auto w =std::shared_ptr<buffer_t>(new buffer_t{buffer,str.size()}, +[](buffer_t* p){delete[] p->data;delete p;});
+    auto it = entries.emplace(path, w);
+
+    if(it.second==true)return it.first;
+    else return entries.end();
+}
+
+mem_storage_t::entry_it  mem_storage_t::fetch_from_cstring(const mem_key_t& path, std::string_view str){
+    uint8_t* buffer = new uint8_t[str.size()+1];
+    memcpy(buffer,str.data(),str.size());
+    buffer[str.size()]=0;
+    auto w =std::shared_ptr<buffer_t>(new buffer_t{buffer,str.size()+1}, +[](buffer_t* p){delete[] p->data;delete p;});
+    auto it = entries.emplace(path, w);
+
+    if(it.second==true)return it.first;
+    else return entries.end();
+}
 
 mem_storage_t::entry_it  mem_storage_t::fetch_from_fs(const mem_key_t& path){
     uint8_t* buffer = nullptr;
@@ -36,7 +58,7 @@ mem_storage_t::entry_it  mem_storage_t::fetch_from_fs(const mem_key_t& path){
         else return entries.end();
     }
     //Special destructor that must also destroy the buffer itself once done.
-    auto w =std::shared_ptr<buffer_t>(new buffer_t{buffer,fsize}, +[](buffer_t* p){delete[] p->data;delete p;});
+    auto w =std::shared_ptr<buffer_t>(new buffer_t{buffer,fsize+1}, +[](buffer_t* p){delete[] p->data;delete p;});
     auto it = entries.emplace(path, w);
     if(it.second==true)return it.first;
     else return entries.end();
@@ -73,6 +95,7 @@ mem_storage_t::entry_it mem_storage_t::fetch_from_http(const mem_key_t& path){
             return entries.end();
         }
         else{
+            //TODO: Check if I need NULL termination and explcit fsize+1;
             auto w =std::shared_ptr<buffer_t>(new buffer_t{buffer,fsize}, +[](buffer_t* p){free((void*) p->data);delete p;});
             auto it = entries.emplace(path, w);
             curl_easy_cleanup(curl);
@@ -118,6 +141,7 @@ mem_storage_t::entry_it mem_storage_t::fetch_from_http(const mem_key_t& path){
             return entries.end();
         }
         else{
+            //TODO: Check if I need NULL termination and explcit fsize+1;
             auto w =std::shared_ptr<buffer_t>(new buffer_t{buffer,fsize}, +[](buffer_t* p){free((void*)p->data);delete p;});
             auto it = entries.emplace(path, w);
             curl_easy_cleanup(curl);
@@ -136,7 +160,7 @@ mem_storage_t::entry_it mem_storage_t::fetch_from_http(const mem_key_t& path){
 #endif
 
  mem_storage_t::entry_it mem_storage_t::fetch_from_res_storage(const mem_key_t& path){
-    //I need to have SQLITE integrate first.
+    //TODO: I need to have SQLITE integrate first.
     return entries.end();
 }
 
@@ -145,7 +169,6 @@ mem_storage_t::entry_it mem_storage_t::fetch_from_http(const mem_key_t& path){
     auto it = entries.emplace(k,src);
     if(it.second==true)return it.first;
     else return entries.end();
-;
 }
 
 void mem_storage_t::drop(const mem_key_t& key){

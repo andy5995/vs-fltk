@@ -70,7 +70,7 @@ enum vs_frame_access_t{
 };
 typedef enum vs_frame_access_t vs_frame_access_t;
 
-enum struct vs_component_t{
+enum vs_component_t{
     VS_COMPONENT_NONE,
     VS_COMPONENT_XML,
     VS_COMPONENT_WASM,

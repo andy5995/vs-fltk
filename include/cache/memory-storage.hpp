@@ -8,6 +8,7 @@
 
 //Its content is not exposed via any sort of API to embedded scripts.
 
+#include <span>
 #include <utils/strings.hpp>
 #include <ui-frame.hpp>
 #include <cstddef>
@@ -69,7 +70,10 @@ class mem_storage_t{
         inline entry_it end() {return entries.end();}
         static inline mem_key_t empty_key = {"",0,resource_t::NONE};
     public:
+        //Add a memory entry from various sources. Interpreting it is a task for the consumer later on, based on the resource type tag.
 
+        entry_it fetch_from_buffer(const mem_key_t& path, std::span<uint8_t const> str);
+        entry_it fetch_from_cstring(const mem_key_t& path, std::string_view str);
         entry_it fetch_from_fs(const mem_key_t& path);
 #       ifdef HAS_CURL
             entry_it fetch_from_http(const mem_key_t& path);

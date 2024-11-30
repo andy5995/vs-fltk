@@ -16,7 +16,16 @@ enum struct component_t{
 component_t component_t_i(const char* t);
 constexpr const char* component_t_s(component_t t);
 
-std::tuple<resolve_path::reason_t::t, scoped_rpath_t, component_t> fetch_component();
+/*Fully fetches a component by:
+- Looking for the best match which exists
+- Save the path resolution to cache
+- Load it based on its type:
+    - XML load and store as xml document (compile it if needed, and store the template as its own xml document?)
+    - WASM load in memory as binary (buffer) or a script once WASM scripts are supported?.
+    - LIB skip, the library will be loaded on demand
+    - CNATIVE compile and save it as script. Technically it is not, but I am not going to compile it over and over
+*/
+std::tuple<resolve_path::reason_t::t, cache::mem_storage_t::entry_it*, component_t> fetch_component();
 
 /**
  * @brief Fetch resource using its path and some contextual information (or get it if already on cache)
