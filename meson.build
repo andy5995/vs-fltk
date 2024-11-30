@@ -13,6 +13,8 @@ cxx = meson.get_compiler('cpp')
 add_global_arguments(['-DPUGIXML_COMPACT'], language: ['cpp', 'c'])
 
 meson.add_devenv({'VS_COMMONS_DIR': join_paths(meson.project_source_root(), 'build', 'commons')})
+meson.add_devenv({'VS_LOG_LEVEL': 'debug'})
+#TODO: Add a custom profile to devenv to avoid "polluting" or making user's one invalid.
 
 cmake = import('cmake')
 
