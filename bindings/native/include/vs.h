@@ -78,17 +78,19 @@ extern int vs_get_computed(node_t, const char* k, const char** v);
 extern int vs_set(node_t, const char* k, const char* v);
 #define $$set(self,k,v) vs_set(self,k,v)
 #define $set(k,v) vs_set(vs_self,k,v)
-extern int vs_get(node_t, const char* k, const char** v);
-#define $$get(self,k,v) vs_set(self,k,&v)
-#define $get(k,v) vs_set(vs_self,k,&v)
+extern int vs_get(node_t, const char* k, char** v);
+#define $$get(self,k,v) vs_get(self,k,&v)
+#define $get(k,v) vs_get(vs_self,k,&v)
 
 extern void vs_debug(const char* key, const char* value);
 #define $$debug(k,v) vs_debug(k,v)
 
 //Utility functions to export symbols
-#define $callback(x)  void* __EXPORT_CB__##x = &x;
-#define $cb(x)        void* __EXPORT_CB__##x = &x;
-#define $plotter(x)   void* __EXPORT_DRW_##x = &x;
-#define $getter(x)    void* __EXPORT_GET_##x = &x;
-#define $setter(x)    void* __EXPORT_SET_##x = &x;
-#define $fn(x)        void* __EXPORT_UKN_##x = &x;
+#define $callback(x)  void* __EXPORT_CB__##x = x;
+#define $cb(x)        void* __EXPORT_CB__##x = x;
+#define $plotter(x)   void* __EXPORT_DRW_##x = x;
+#define $getter(f,x)  void* __EXPORT_GET_##f = x;
+#define $setter(f,x)  void* __EXPORT_SET_##f = x;
+#define $field(f,x,y) void* __EXPORT_SET_##f = x;\
+                      void* __EXPORT_GET_##f = y;
+#define $fn(x)        void* __EXPORT_UKN_##x = x;

@@ -77,8 +77,9 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     script->add_sym("vs_resolve_symbol", (void *)+[](ui_base* w,const char* s){if(w==nullptr)return symbol_ret_t {symbol_t::VOID, symbol_t::VOID, nullptr};return w->resolve_symbol(s, true); });
     script->add_sym("vs_apply_prop", (void *)+[](ui_base* w,const char* k, const char* v){if(w==nullptr)return -1;return w->apply_prop(k,v); });
     script->add_sym("vs_get_computed", (void *)+[](ui_base* w,const char* k, const char** v){if(w==nullptr)return -1;return w->get_computed(k,v); });
-    script->add_sym("vs_set", (void *)+[](ui_base* w,const char* k, const value_t* v){if(w==nullptr)return -1;return w->use_setter(w->resolve_symbol(k, true), v);});
-    script->add_sym("vs_get", (void *)+[](ui_base* w,const char* k, value_t** v){if(w==nullptr)return -1;return w->use_getter(w->resolve_symbol(k, true), v);});
+    //TODO: remove tmp strings
+    script->add_sym("vs_set", (void *)+[](ui_base* w,const char* k, const value_t* v){if(w==nullptr)return -1;std::string tmp = std::string("#s_")+k;return w->use_setter(w->resolve_symbol_local(tmp.c_str(), false), v);});
+    script->add_sym("vs_get", (void *)+[](ui_base* w,const char* k, value_t** v){if(w==nullptr)return -1;std::string tmp = std::string("#g_")+k;return w->use_getter(w->resolve_symbol_local(tmp.c_str(), false), v);});
     
 
     // Fragments of stdlib
@@ -180,11 +181,17 @@ std::shared_ptr<smap<symbol_t>>  tcc_c_pipeline_apply(const std::shared_ptr<tcc>
         ctx->log(ctx->ref,"Registering public callback symbol `%s`",name+13);
         ctx->symbols.emplace(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::CALLBACK,(const void*)(((size_t*)value)[0])});
         }else if(strncmp("__EXPORT_GET_", name, 13)==0){
-        ctx->log(ctx->ref,"Registering public getter symbol `%s`",name+13);
-        ctx->symbols.emplace(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::GETTER,(const void*)(((size_t*)value)[0])});
+        if(((size_t*)value)[0]!=0){
+            ctx->log(ctx->ref,"Registering public getter symbol `%s`",name+13);
+            std::string tmp = std::string("#g_") + (name+13);   //TODO: Avoid temp string
+            ctx->symbols.emplace(tmp, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::GETTER,(const void*)(((size_t*)value)[0])});
+        }
         }else if(strncmp("__EXPORT_SET_", name, 13)==0){
-        ctx->log(ctx->ref,"Registering public setter symbol `%s`",name+13);
-        ctx->symbols.emplace(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::GETTER,(const void*)(((size_t*)value)[0])});
+        if(((size_t*)value)[0]!=0){
+            std::string tmp = std::string("#s_") + (name+13);   //TODO: Avoid temp string
+            ctx->log(ctx->ref,"Registering public setter symbol `%s`",name+13);
+            ctx->symbols.emplace(tmp, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::SETTER,(const void*)(((size_t*)value)[0])});
+        }
         }else if(strncmp("__EXPORT_UKN_", name, 13)==0){
         ctx->log(ctx->ref,"Registering public unknown symbol `%s`",name+13);
         ctx->symbols.emplace(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::UNKNOWN,(const void*)(((size_t*)value)[0])});

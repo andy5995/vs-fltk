@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <app xmlns:fl="vs.fltk">
-    <fl:window box="0,0,320,240" label="Demo Counter">
+    <fl:window box="0,0,320,240" label="Demo Counter (C)">
         <mixin name="+fl:button" bg.colour="#aa3300" label.colour="#99ee4f" />
         <script lang="c">
         <![CDATA[ 

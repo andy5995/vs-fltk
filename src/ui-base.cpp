@@ -289,8 +289,9 @@ int ui_base::all_tests() const{
 }
 
 int ui_base::use_getter(const symbol_ret_t& sym, value_t ** value){
-  symbol_ret_t::get_fn fn = (symbol_ret_t::get_fn)sym.symbol.symbol;
+  if(sym.symbol.type!=symbol_type_t::GETTER)return -1;
 
+  symbol_ret_t::get_fn fn = (symbol_ret_t::get_fn)sym.symbol.symbol;
   if(sym.found_at->get_mode()==frame_mode_t::NATIVE){
     if(sym.ctx_apply.symbol!=nullptr){
       const ui_base* (*ctx_apply)(const ui_base*) = ( const ui_base* (*)(const ui_base*) ) sym.ctx_apply.symbol;
@@ -308,6 +309,8 @@ int ui_base::use_getter(const symbol_ret_t& sym, value_t ** value){
   return 1;
 }
 int ui_base::use_setter(const symbol_ret_t& sym, const value_t * value){
+  if(sym.symbol.type!=symbol_type_t::SETTER)return -1;
+
   symbol_ret_t::set_fn fn = (symbol_ret_t::set_fn)sym.symbol.symbol;
 
   if(sym.found_at->get_mode()==frame_mode_t::NATIVE){
@@ -327,6 +330,8 @@ int ui_base::use_setter(const symbol_ret_t& sym, const value_t * value){
   return 1;
 }
 int ui_base::use_callback(const symbol_ret_t& sym, ui_base * node){
+  if(sym.symbol.type!=symbol_type_t::CALLBACK)return -1;
+
   symbol_ret_t::cb_fn fn = (symbol_ret_t::cb_fn)sym.symbol.symbol;
 
   if(sym.found_at->get_mode()==frame_mode_t::NATIVE){
