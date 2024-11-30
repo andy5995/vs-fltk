@@ -81,7 +81,7 @@ jobs:
     - name: Install dependencies
       run: |
         curl -fsSL https://bun.sh/install | bash
-        echo "PATH=$HOME/.bun/bin:$PATH" >> $GITHUB_ENV
+        PATH=$HOME/.bun/bin:$PATH
         brew update
         brew install \
           llvm@19 \
@@ -89,7 +89,8 @@ jobs:
           libpng \
           meson \
           ninja
-        echo "PATH=/opt/homebrew/opt/llvm/bin:$PATH" >> $GITHUB_ENV
+        PATH=/opt/homebrew/opt/llvm/bin:$PATH
+        echo "PATH=$PATH" >> $GITHUB_ENV
 
     - name: Configure and build
       run: |
