@@ -5,12 +5,12 @@
         <script lang="c">
         <![CDATA[ 
 
-        int setter(const void* value){
+        int setter(const char* value){
             $log(LOG_LOG,"Setter");
             return 0;
         }
 
-        int getter(void** value){
+        int getter(char** value){
             $log(LOG_LOG,"Getter");
             return 0;
         }
@@ -24,7 +24,9 @@
             if($get("foo",ptr)!=0)$log(LOG_PANIC,"Getter failed");
         }
 
-        $field(foo,setter,getter);
+        $field{"foo",setter,getter};
+        $field{"foo2",setter,getter};
+        
         $cb(on_set)
         $cb(on_get)
         ]]>

@@ -180,7 +180,7 @@ std::shared_ptr<smap<symbol_t>>  tcc_c_pipeline_apply(const std::shared_ptr<tcc>
         }else if(strncmp("__EXPORT_CB__", name, 13)==0){
         ctx->log(ctx->ref,"Registering public callback symbol `%s`",name+13);
         ctx->symbols.emplace(name+13, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::CALLBACK,(const void*)(((size_t*)value)[0])});
-        }else if(strncmp("__EXPORT_GET_", name, 13)==0){
+        }/*else if(strncmp("__EXPORT_GET_", name, 13)==0){
         if(((size_t*)value)[0]!=0){
             ctx->log(ctx->ref,"Registering public getter symbol `%s`",name+13);
             std::string tmp = std::string("#g_") + (name+13);   //TODO: Avoid temp string
@@ -191,6 +191,22 @@ std::shared_ptr<smap<symbol_t>>  tcc_c_pipeline_apply(const std::shared_ptr<tcc>
             std::string tmp = std::string("#s_") + (name+13);   //TODO: Avoid temp string
             ctx->log(ctx->ref,"Registering public setter symbol `%s`",name+13);
             ctx->symbols.emplace(tmp, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::SETTER,(const void*)(((size_t*)value)[0])});
+        }
+        }*/
+        else if(strncmp("__EXPORT_FIELD_", name, 15)==0){
+        if(((size_t*)value)[0]!=0){
+            struct vs_field_t{
+                const char* name;
+                int(*setter)(const char*);
+                int(*getter)(char**);
+            };
+            vs_field_t* fvalue = (vs_field_t* )value;
+            
+            std::string stmp = std::string("#s_") + (fvalue->name);   //TODO: Avoid temp string
+            std::string gtmp = std::string("#g_") + (fvalue->name);   //TODO: Avoid temp string
+            ctx->log(ctx->ref,"Registering public field `%s`",fvalue->name);
+            ctx->symbols.emplace(stmp, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::SETTER,(const void*)fvalue->setter});
+            ctx->symbols.emplace(gtmp, symbol_t{symbol_mode_t::NATIVE,symbol_type_t::GETTER,(const void*)fvalue->getter});
         }
         }else if(strncmp("__EXPORT_UKN_", name, 13)==0){
         ctx->log(ctx->ref,"Registering public unknown symbol `%s`",name+13);

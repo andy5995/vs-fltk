@@ -49,6 +49,14 @@ struct symbol_ret_t{
 
 typedef struct symbol_ret_t symbol_ret_t;
 
+struct vs_field_t{
+  const char* name;
+  int(*setter)(const char*);
+  int(*getter)(char**);
+};
+
+typedef struct vs_field_t vs_field_t;
+
 
 //extern int printf(const char*restrict, ...);
 
@@ -85,12 +93,19 @@ extern int vs_get(node_t, const char* k, char** v);
 extern void vs_debug(const char* key, const char* value);
 #define $$debug(k,v) vs_debug(k,v)
 
+
+#define STRINGIZE(x) STRINGIZE2(x)
+#define STRINGIZE2(x) #x
+#define LINE_STRING STRINGIZE(__LINE__)
+
+#define CONCAT_(prefix, suffix) prefix##suffix
+/// Concatenate `prefix, suffix` into `prefixsuffix`
+#define CONCAT(prefix, suffix) CONCAT_(prefix, suffix)
+#define MAKE_UNIQUE_VARIABLE_NAME(prefix) CONCAT(prefix##_, __LINE__)
+
 //Utility functions to export symbols
 #define $callback(x)  void* __EXPORT_CB__##x = x;
 #define $cb(x)        void* __EXPORT_CB__##x = x;
 #define $plotter(x)   void* __EXPORT_DRW_##x = x;
-#define $getter(f,x)  void* __EXPORT_GET_##f = x;
-#define $setter(f,x)  void* __EXPORT_SET_##f = x;
-#define $field(f,x,y) void* __EXPORT_SET_##f = x;\
-                      void* __EXPORT_GET_##f = y;
+#define $field        vs_field_t MAKE_UNIQUE_VARIABLE_NAME(__EXPORT_FIELD_)= 
 #define $fn(x)        void* __EXPORT_UKN_##x = x;
