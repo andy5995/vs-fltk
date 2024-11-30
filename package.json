@@ -6,6 +6,7 @@
   "scripts": {
     "codegen": "bun ./scripts/codegen/index.ts",
     "codegen.quick": "bun ./scripts/codegen/index.ts quick",
+    "meson-devenv": "meson devenv -C build",
     "meson-setup.release": "meson setup --reconfigure build/ --buildtype=release",
     "meson-setup.clang-release": "meson setup --reconfigure build/ --buildtype=release --native-file toolchains/clang.ini",
     "meson-setup.clang-debug": "meson setup --reconfigure build/ --buildtype=debug --native-file toolchains/clang.ini",
