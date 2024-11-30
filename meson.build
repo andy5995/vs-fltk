@@ -12,7 +12,11 @@ cxx = meson.get_compiler('cpp')
 #Used by pugi to enable compact mode. I might want to disable execptions too.
 add_global_arguments(['-DPUGIXML_COMPACT'], language: ['cpp', 'c'])
 
-meson.add_devenv({'VS_COMMONS_DIR': join_paths(meson.project_source_root(), 'build', 'commons')})
+meson.add_devenv(
+    {
+        'VS_COMMONS_DIR': join_paths(meson.project_source_root(), 'build', 'commons'),
+    },
+)
 meson.add_devenv({'VS_LOG_LEVEL': 'debug'})
 #TODO: Add a custom profile to devenv to avoid "polluting" or making user's one invalid.
 
@@ -191,6 +195,10 @@ vs_fltk = shared_library(
 
         './src/ui-tree.cpp',
         './src/ui-tree.xml.cpp',
+        './src/ui-tree.wasm.cpp',
+        './src/ui-tree.cnative.cpp',
+        './src/ui-tree.dylib.cpp',
+
         './src/ui-tree.symbols.cpp',
 
         './src/pipelines/tcc-c.cpp',
@@ -247,7 +255,7 @@ executable(
     ],
     dependencies: [vs_fltk_dep],
     link_depends: [vs_commons],
-    override_options: ['c_std=gnuc23', 'cpp_std=c++23'],
+    override_options: ['c_std=gnuc23', 'cpp_std=gnu++23'],
     install: true,
     #install_rpath: ''
 )

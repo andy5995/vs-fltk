@@ -8,7 +8,7 @@
 
 namespace vs{
 
-struct ui_xml_tree : ui_tree {
+struct ui_tree_xml : ui_tree {
 private:
     struct ns_t{
         std::string vs = "";             //Namespace for vs basic components (default none, suggested vs: if needed)
@@ -56,7 +56,7 @@ public:
 
     int load(const char* file, type_t type, const pugi::xml_node* caller_node=nullptr, ui_base* caller_ui_node=nullptr, const scoped_rpath_t* caller_path=nullptr, const policies_t& base_policies=globals::policy);
 
-    virtual ~ui_xml_tree();
+    virtual ~ui_tree_xml();
     virtual void cleanup();
     virtual int runtime_testsuite(){if(this->root!=nullptr)return this->root->all_tests();return 0;}
 

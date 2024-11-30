@@ -41,7 +41,7 @@ app_loader::app_loader(const char *profile, const char* path){
     }
 
 
-  root=new ui_xml_tree();
+  root=new ui_tree_xml();
   if(root->load(path,ui_tree::type_t::APP)!=0){
     throw "Unable to process file";
   }

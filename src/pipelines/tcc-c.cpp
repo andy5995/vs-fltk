@@ -19,7 +19,7 @@ void tcc_error_func_xml(const pugi::xml_node& ctx, const char * msg) {
 }
 
 void tcc_log_symbol_func_xml(const pugi::xml_node& ctx, const char * msg, const char * name) {
-    ui_xml_tree::log(severety_t::INFO, ctx , msg, name);
+    ui_tree_xml::log(severety_t::INFO, ctx , msg, name);
 }
 
 //'/home/checkroom/Documents/projects/vs-fltk/subprojects/libtcc/tcc'  test.c  -I../../subprojects/libtcc/include/ -L.  -L../../subprojects/libtcc -lapp 

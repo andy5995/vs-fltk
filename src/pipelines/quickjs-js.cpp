@@ -18,7 +18,7 @@ void qjs_error_func_xml(const pugi::xml_node& env, const char * msg) {
 }
 
 void qjs_log_symbol_func_xml(const pugi::xml_node& ctx, const char * msg, const char * name) {
-    ui_xml_tree::log(severety_t::INFO, ctx , msg, name);
+    ui_tree_xml::log(severety_t::INFO, ctx , msg, name);
 }
 
 

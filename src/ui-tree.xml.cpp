@@ -64,7 +64,7 @@ namespace vs{
 #endif
 
 
-void ui_xml_tree::log(int severety, const void* _ctx, const char* str, ...){
+void ui_tree_xml::log(int severety, const void* _ctx, const char* str, ...){
   static const char* severity_table[] = {
     "\033[34;1m[INFO]\033[0m     : ",
     "\033[32;1m[OK]\033[0m       : ",
@@ -87,7 +87,7 @@ void ui_xml_tree::log(int severety, const void* _ctx, const char* str, ...){
 
 //General XML loader for apps and components.
 //TODO: The caller node is a design flaw. We need to be given the list of props and slots. Not the full node which might not even exist.
-int ui_xml_tree::load(const char* file, type_t type, const pugi::xml_node* caller_node, ui_base* caller_ui_node, const scoped_rpath_t* caller_path, const policies_t& base_policies)
+int ui_tree_xml::load(const char* file, type_t type, const pugi::xml_node* caller_node, ui_base* caller_ui_node, const scoped_rpath_t* caller_path, const policies_t& base_policies)
 {
   //TODO: As part of this process, policies should be aligned with what defined in the base config, 
   //and not just one single set of options, so that we can pattern match paths.
@@ -171,14 +171,14 @@ int ui_xml_tree::load(const char* file, type_t type, const pugi::xml_node* calle
   return 0;
 }
 
-ui_xml_tree::~ui_xml_tree(){if(root!=nullptr)delete root;}
+ui_tree_xml::~ui_tree_xml(){if(root!=nullptr)delete root;}
 
-void ui_xml_tree::cleanup(){
+void ui_tree_xml::cleanup(){
   this->doc.reset();
 }
 
 
-int ui_xml_tree::build(){
+int ui_tree_xml::build(){
   
   const auto& xml_root = doc.child((type==type_t::APP)?strings.APP_TAG:strings.COMPONENT_TAG);
   if(xml_root.empty()){
@@ -205,7 +205,7 @@ int ui_xml_tree::build(){
   return 0;
 }
 
-void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
+void ui_tree_xml::_build(const pugi::xml_node& root, ui_base* root_ui){
   //std::cout<<root.name()<<root.text()<<root.value()<<'\n';
   //USE
   if(strcmp(root.name(),strings.USE_TAG)==0){
@@ -215,7 +215,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
     }
     else{
       log(severety_t::INFO,root,"Loading component %s", src.as_string()); //TODO: How is it possible that this shows file:// in place of the actual one?
-      ui_xml_tree component_tree; 
+      ui_tree_xml component_tree; 
       if(component_tree.load(src.as_string(),type_t::COMPONENT,&root,root_ui,&local, policies)!=0){
         log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", src);
       }
@@ -327,7 +327,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
   else if(imports.contains(root.name())){
     auto it = imports.find(root.name());
     log(severety_t::INFO,root,"Loading component %s", it->second.c_str()); //TODO: How is it possible that this shows file:// in place of the actual one?
-    ui_xml_tree component_tree; 
+    ui_tree_xml component_tree; 
     if(component_tree.load(it->second.c_str(),type_t::COMPONENT,&root,root_ui,&local, policies)!=0){
       log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", it->second.c_str());
     }
@@ -352,7 +352,7 @@ void ui_xml_tree::_build(const pugi::xml_node& root, ui_base* root_ui){
   return;
 }
 
-void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, ui_base* current) {
+void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, ui_base* current) {
 
   for (auto &root : root.children()) {
 
@@ -481,7 +481,7 @@ void ui_xml_tree::_build_base_widget_extended_attr(const pugi::xml_node &root, u
 
 
   template <std::derived_from<ui_base> T>
-  T *ui_xml_tree::build_base_widget(const pugi::xml_node &root, ui_base* root_ui) {
+  T *ui_tree_xml::build_base_widget(const pugi::xml_node &root, ui_base* root_ui) {
     auto *current = new T(root_ui);
     nodes.push_back(current);
 

@@ -4,10 +4,10 @@
     Glue logic exposed to the final application to avoid exposing too many libraries.
 */
 
-class ui_xml_tree;
+class ui_tree_xml;
 namespace vs{
 struct app_loader{
-    ui_xml_tree* root;
+    ui_tree_xml* root;
 
     app_loader(const char* profile, const char* path);
     ~app_loader();
