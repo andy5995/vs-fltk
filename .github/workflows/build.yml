@@ -89,7 +89,7 @@ jobs:
           libpng \
           meson \
           ninja
-        echo 'PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> $GITHUB_ENV
+        echo "PATH=/opt/homebrew/opt/llvm/bin:$PATH" >> $GITHUB_ENV
 
     - name: Configure and build
       run: |
