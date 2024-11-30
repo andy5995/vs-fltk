@@ -89,6 +89,8 @@ jobs:
           libpng \
           meson \
           ninja
+        cd /opt/homebrew/opt/llvm/bin
+        ln -s clang++ clang++-19
         PATH=/opt/homebrew/opt/llvm/bin:$PATH
         echo "PATH=$PATH" >> $GITHUB_ENV
 
