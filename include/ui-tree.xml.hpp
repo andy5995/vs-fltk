@@ -26,18 +26,13 @@ private:
 #   endif
 
     const pugi::xml_node *caller_node = nullptr;
-    ui_base* caller_ui_node=nullptr;
-    ui_base* root = nullptr;
+
 
     pugi::xml_document doc;         //Handle of the xml parser
-    policies_t policies;            //Computed policies for this tree
-    scoped_rpath_t local;            //Full path for the location of this component.
-    scoped_rpath_t fullname;            //Full path for the location of this component.
 
     std::map<std::string,std::string> imports;
 
 
-    size_t local_unique_counter = 0;
 
 public:
     void set_namespace(namespaces_t n, const char* prefix){

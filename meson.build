@@ -199,7 +199,7 @@ vs_fltk = shared_library(
         './src/ui-tree.cnative.cpp',
         './src/ui-tree.dylib.cpp',
 
-        './src/ui-tree.symbols.cpp',
+        './src/ui-field.types.cpp',
 
         './src/pipelines/tcc-c.cpp',
         './src/pipelines/tcc-cello.cpp',

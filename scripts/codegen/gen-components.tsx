@@ -16,25 +16,25 @@ import { render, JSXXML } from 'jsx-xml'
 
 function make_type_code(type: Static<typeof type_schema>, subtype: string, code: string) {
     if (type === 'raw') return code;
-    if (type === 'flag') return `bool computed; if((ok=ui_tree::h_flag(&computed,value,that))){${code}}`
-    else if (type === 'color') return `uint32_t computed; if((ok=ui_tree::h_colour(&computed,value,that))){${code}}`
+    if (type === 'flag') return `bool computed; if((ok=field_types::h_flag(&computed,value,that))){${code}}`
+    else if (type === 'color') return `uint32_t computed; if((ok=field_types::h_colour(&computed,value,that))){${code}}`
     else if (type === 'string') return code;
-    else if (type === 'scalar-1') return `size_t computed[1]; if((ok = ui_tree::h_px(1,computed,value,that))){${code}}`
-    else if (type === 'scalar-2') return `size_t computed[2]; if((ok = ui_tree::h_px(2,computed,value,that))){${code}}`
-    else if (type === 'scalar-4') return `size_t computed[4]; if((ok = ui_tree::h_px(4,computed,value,that))){${code}}`
-    else if (type === 'enum') return `int computed  = ui_tree::${subtype}_i(value);if((ok=(computed!=-1))){${code}}`
+    else if (type === 'scalar-1') return `size_t computed[1]; if((ok = field_types::h_px(1,computed,value,that))){${code}}`
+    else if (type === 'scalar-2') return `size_t computed[2]; if((ok = field_types::h_px(2,computed,value,that))){${code}}`
+    else if (type === 'scalar-4') return `size_t computed[4]; if((ok = field_types::h_px(4,computed,value,that))){${code}}`
+    else if (type === 'enum') return `int computed  = field_types::${subtype}_i(value);if((ok=(computed!=-1))){${code}}`
 }
 
 function gen_cpp(data: Static<typeof widget_schema>) {
-    const cextends = data.extends==null?null:data.extends.split(':');
-    const cppname = `${data.ns}_${data.name?.replaceAll('.','_')}`;
+    const cextends = data.extends == null ? null : data.extends.split(':');
+    const cppname = `${data.ns}_${data.name?.replaceAll('.', '_')}`;
 
     let class_decl = data.use_main_header === null ? `
 #pragma once
 
 #include <ui.hpp>
-#include <ui-tree.hpp>
-${cextends ? `#include <components/autogen/${cextends[0]}/${cextends[1]}.hpp>\n`:``}
+#include <ui-field.types.hpp>
+${cextends ? `#include <components/autogen/${cextends[0]}/${cextends[1]}.hpp>\n` : ``}
 ${data.headers ? data.headers.map(x => `#include <${x}>\n`) : ``}
 
 namespace vs{
@@ -71,17 +71,17 @@ int ${cppname}::_apply_prop(${cppname}* that, const char* prop, const char* valu
     auto& w = that->widget();
     bool ok = true;
     if(false){}
-    ${(data.skip_props??[]).map(x=>{
-        if(x[x.length-1]=='*')return `else if (strncmp(prop, "${x}", ${x.length-1})==0){}`
+    ${(data.skip_props ?? []).map(x => {
+        if (x[x.length - 1] == '*') return `else if (strncmp(prop, "${x}", ${x.length - 1})==0){}`
         else return `else if(strcmp(prop,"${x}")==0){}`
     }).join('\n\t')}
     ${Object.entries(data.props).map(x => {
-        x[1].alias=x[1].alias??[]
+        x[1].alias = x[1].alias ?? []
         x[1].alias.push(x[0]);
         return x[1].alias.map(y => `
     ${x[1].description ? `//${x[1].description}` : ``}
     else if(strcmp(prop,"${y}")==0){
-        ${make_type_code(x[1].type, x[1].subtype ?? "", x[1].code??"")}
+        ${make_type_code(x[1].type, x[1].subtype ?? "", x[1].code ?? "")}
     }`).join('\n')
     }
     ).join('\n')
@@ -110,13 +110,13 @@ int ${cppname}:: _get_computed(${cppname} * that, const char* prop, const char**
 `;
 
     let parser_selector =
-        data.usable!=false ?
-        data.type === 'leaf' ? `mkNSLeafWidget(${data.ns}, ${data.name}, ${cppname})` :
-        data.type === 'node' ? `mkNSNodeWidget(${data.ns}, ${data.name}, ${cppname}) ` :
-        data.type === 'container' ? `mkNSContainerWidget(${data.ns}, ${data.name}, ${cppname})` :
-        data.type === 'slot' ? `mkNSSlotWidget(${data.ns}, ${data.name}, ${cppname})` :
-        data.type === 'slot-contaiener' ? `mkNSSlotContainerWidget(${data.ns}, ${data.name}, ${cppname})` : 
-        ``:``;
+        data.usable != false ?
+            data.type === 'leaf' ? `mkNSLeafWidget(${data.ns}, ${data.name}, ${cppname})` :
+                data.type === 'node' ? `mkNSNodeWidget(${data.ns}, ${data.name}, ${cppname}) ` :
+                    data.type === 'container' ? `mkNSContainerWidget(${data.ns}, ${data.name}, ${cppname})` :
+                        data.type === 'slot' ? `mkNSSlotWidget(${data.ns}, ${data.name}, ${cppname})` :
+                            data.type === 'slot-contaiener' ? `mkNSSlotContainerWidget(${data.ns}, ${data.name}, ${cppname})` :
+                                `` : ``;
     return [class_decl, class_impl, parser_selector]
 }
 

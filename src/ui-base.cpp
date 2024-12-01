@@ -288,7 +288,7 @@ int ui_base::all_tests() const{
   return 0;
 }
 
-int ui_base::use_getter(const symbol_ret_t& sym, value_t ** value){
+int ui_base::use_getter(const symbol_ret_t& sym, void ** value){
   if(sym.symbol.type!=symbol_type_t::GETTER)return -1;
 
   symbol_ret_t::get_fn fn = (symbol_ret_t::get_fn)sym.symbol.symbol;
@@ -308,7 +308,7 @@ int ui_base::use_getter(const symbol_ret_t& sym, value_t ** value){
   else {} //TODO: Add support for quickjs
   return 1;
 }
-int ui_base::use_setter(const symbol_ret_t& sym, const value_t * value){
+int ui_base::use_setter(const symbol_ret_t& sym, const void * value){
   if(sym.symbol.type!=symbol_type_t::SETTER)return -1;
 
   symbol_ret_t::set_fn fn = (symbol_ret_t::set_fn)sym.symbol.symbol;

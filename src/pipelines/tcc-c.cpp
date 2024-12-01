@@ -78,8 +78,8 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     script->add_sym("vs_apply_prop", (void *)+[](ui_base* w,const char* k, const char* v){if(w==nullptr)return -1;return w->apply_prop(k,v); });
     script->add_sym("vs_get_computed", (void *)+[](ui_base* w,const char* k, const char** v){if(w==nullptr)return -1;return w->get_computed(k,v); });
     //TODO: remove tmp strings
-    script->add_sym("vs_set", (void *)+[](ui_base* w,const char* k, const value_t* v){if(w==nullptr)return -1;std::string tmp = std::string("#s_")+k;return w->use_setter(w->resolve_symbol_local(tmp.c_str(), false), v);});
-    script->add_sym("vs_get", (void *)+[](ui_base* w,const char* k, value_t** v){if(w==nullptr)return -1;std::string tmp = std::string("#g_")+k;return w->use_getter(w->resolve_symbol_local(tmp.c_str(), false), v);});
+    script->add_sym("vs_set", (void *)+[](ui_base* w,const char* k, const void* v){if(w==nullptr)return -1;std::string tmp = std::string("#s_")+k;return w->use_setter(w->resolve_symbol_local(tmp.c_str(), false), v);});
+    script->add_sym("vs_get", (void *)+[](ui_base* w,const char* k, void** v){if(w==nullptr)return -1;std::string tmp = std::string("#g_")+k;return w->use_getter(w->resolve_symbol_local(tmp.c_str(), false), v);});
     
 
     // Fragments of stdlib

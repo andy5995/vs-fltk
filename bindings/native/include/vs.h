@@ -94,10 +94,6 @@ extern void vs_debug(const char* key, const char* value);
 #define $$debug(k,v) vs_debug(k,v)
 
 
-#define STRINGIZE(x) STRINGIZE2(x)
-#define STRINGIZE2(x) #x
-#define LINE_STRING STRINGIZE(__LINE__)
-
 #define CONCAT_(prefix, suffix) prefix##suffix
 /// Concatenate `prefix, suffix` into `prefixsuffix`
 #define CONCAT(prefix, suffix) CONCAT_(prefix, suffix)
