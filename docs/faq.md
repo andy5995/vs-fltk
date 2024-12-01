@@ -1,6 +1,6 @@
 ## General questions
 
-![Good luck with vs!](./hero-img.webp)
+![Good luck with vs!](./assets/hero-img.webp)
 
 While `vs` shares many of its technologies and ideas with modern SFC frameworks, its design is significantly more opinionated and less free.  
 This document addresses several of the perceived or actual shortcomings, and provides some of the implied rationale.
@@ -98,9 +98,9 @@ We also plan in a not-so-far-distant future to use some source XML to generate t
 
 You don't. Components based on XML have several limitations on which mutations are allowed during runtime. A basic principle of this framework is to keep arbitrary code and logic as far away as possible from the final user, and what one sees in code should perfectly match what one visually gets. Making the tree mostly immutable and restricting which operations are allowed in the embedded scripts vibes with this vision of simplicity.  
 In addition to XML components, native ones are also allowed in `vs`. Native components are written in C++ (or any language which can work with our C bindings) & built dynamically against the full library.  
-Native components cover the same features provided by the XML builder and much more. There is (will be) a library of base native components designed to cover all common scenarios where dynamic data is expected to drive UI changes, but if yours does not fit you will have to write a custom one and ensure its semantics is explicitly encoded as meta-information.  
+Native components cover the same features provided by the XML builder and much more. There is (will be) a library of base native components designed to cover all common scenarios where dynamic data is expected to drive UI changes, but if yours does not fit you will have to write a custom one and ensure its semantics is explicitly encoded as meta-information.
 
-Realistically, once `vs` gets stable enough, the standard library should be plenty for virtually any developer. 
+Realistically, once `vs` gets stable enough, the standard library should be plenty for virtually any developer.
 This way, any dynamic behaviour requiring arbitrary code execution is kept outside the XML tree, in a native codebase which is not controlled by any single developer (unless the final user decides to enable certain native components distributed by third parties). This fits with the design philosophy that there should only one good way to implement a certain feature on the UI front-end.
 
 ### What about templates?
@@ -115,14 +115,15 @@ We are also implementing our [own xml preprocessor](https://github.com/KaruroCho
 > If the XML is lost, how to I know & query the state of widgets?
 
 Not via a DOM structure. In theory FLTK provides an interface to get the current value of its properties from its own widgets, however we decided not to expose it fully.  
-Still, `vs` widgets can provide some selected *computed properties*. It should be considered that props in the XML and keys used by FLTK are not a 1-to-1 match, even though we try to keep them as close as possible when reasonable; some complex processing on the input expressions can take place both at compile time and at runtime. None of that is directly reflected in the state of a FLTK widget.
+Still, `vs` widgets can provide some selected _computed properties_. It should be considered that props in the XML and keys used by FLTK are not a 1-to-1 match, even though we try to keep them as close as possible when reasonable; some complex processing on the input expressions can take place both at compile time and at runtime. None of that is directly reflected in the state of a FLTK widget.
 
 Aside from these considerations, we can still keep state, just not explicitly within `vs` widgets.  
 There are four main approaches, each suited best for a different class of cases.
 
 #### Self mixins
+
 Each `vs` widget with a frame can specify a self mixin, which internally is just a persisted map of props.  
-Unlike props directly defined on the element itself, at runtime self mixins are persisted throughout the session.  
+Unlike props directly defined on the element itself, at runtime self mixins are persisted throughout the session.
 
 Please, be mindful that self mixins will force widgets to have their own frame even if left nameless, significantly raising their memory footprint.  
 Furthermore, mixins operate on objects serialized to strings, making the process of using them more computationally expensive.  
@@ -139,12 +140,14 @@ I would like to close with an example showing a typical pitfall in handling stat
 `component-a` will be built with its own `prop-1` and `prop-2` inherited from the self mixin. However, the content of `prop-1` is applied & lost after compilation, while `prop-2` can be queried at runtime. Mixins can be mutated at runtime as well. ~~but an explicit update request must be triggered onto a component for it to be updated & reflect such changes.~~ nope, we set it dirty and recompute all dirty things after some time no more have been adeded
 
 #### Data sources
+
 Data sources can provide and store values for props.  
-*Persistent storage* and *Secrets* are contextual data sources which are always implicitly made available and can be used with the same interface.
+_Persistent storage_ and _Secrets_ are contextual data sources which are always implicitly made available and can be used with the same interface.
 
 #### Within scripts
+
 One should not be surprised that this approach is the least desirable. If you can do differently, please do.  
-One can either have static variables in single users scripts, maps in modules, or have them linked from the back-end.  
+One can either have static variables in single users scripts, maps in modules, or have them linked from the back-end.
 
 In any case, the mechanism to access these variables is via custom `setters` and `getters`.  
 They will effectively appear as props and computed values of the widget they have been defined for and similarly accessed.
@@ -177,35 +180,39 @@ This strategy was not employed as it makes the loading process much slower for m
 ## Licensing
 
 ### Can I contribute to this project?
+
 Sure! Please be mindful of few things:
-- Make sure you understand that this project uses different licenses for different parts. 
-- You should be ok with us including your contributions under those same terms. 
-- This project is very early, and your contribution might end up in the crossfire of roadmaps changing and goals shifting. 
-- If you want to contribute major features, I would *strongly* recommend to reach out or to publish some form of written proposal. 
-- You should also accept that the CC Attribution–NoDerivs 4.0 covering most of the project will be relaxed at some point. 
+
+- Make sure you understand that this project uses different licenses for different parts.
+- You should be ok with us including your contributions under those same terms.
+- This project is very early, and your contribution might end up in the crossfire of roadmaps changing and goals shifting.
+- If you want to contribute major features, I would _strongly_ recommend to reach out or to publish some form of written proposal.
+- You should also accept that the CC Attribution–NoDerivs 4.0 covering most of the project will be relaxed at some point.
 - You will be credited, at the very least by preserving the git history of the project.
-- You are clearly able to distribute any standalone contribution you made as you wish. It is your code.  
+- You are clearly able to distribute any standalone contribution you made as you wish. It is your code.
 
 ### What about those parts covered by the no-derivatives clauses?
+
 Those clauses are just intended to protect this project in its early life, not to prevent people from contributing.  
 If your plan is not to make your own fork and distribute an alternative version of `vs`, we are totally fine with that!
 
 ### Why this strange licence?
+
 You are strange!  
-Jokes aside, I *really* don't want this project to be taken apart by sharks before it is able to run on its own legs.  
+Jokes aside, I _really_ don't want this project to be taken apart by sharks before it is able to run on its own legs.  
 Or at the very least, I am trying to make it as hard as legally possible.
 
 `vs` is extremely opinionated, and with opinions come division.  
 XML or JSON, runtime DOM or not, and of course... data sources or arbitrary fetches in embedded scripts.  
 My reluctance in adopting a less restrictive licence at this stage is well explained in the [gemini's faq](https://geminiprotocol.net/docs/faq.gmi).  
-If I had to explain it more with my own words, let's think about a cost function describing the utility of frameworks like `vs`.   
+If I had to explain it more with my own words, let's think about a cost function describing the utility of frameworks like `vs`.  
 There are many local minima in which such frameworks could end up stuck during development, be it as a necessary but temporary phase or as the unfortunate outcome of short-sighted design decisions.  
-A good *vision* is the only thing which allows a project to jump across, or at least get quickly out from the local minima of comfort-food.  
+A good _vision_ is the only thing which allows a project to jump across, or at least get quickly out from the local minima of comfort-food.  
 I am not saying my own is "right" nor immutable, just that I have few high-level objectives for this project that others might not share.  
 Allowing `vs` to be freely forked at this stage comes with the very real risk of me being thrown in a competition I never asked for, unable to provide more than shallow promises on why my intention & my objectives would be "better".  
 As I don't plan on making the development of this project a painful exercise in demagogy and convincing, I temporarily opted for a licencing model which prevents that.  
-Once this project is robust enough to survive a hostile fork, I would be very glad to relicense it under permissive terms.  
+Once this project is robust enough to survive a hostile fork, I would be very glad to relicense it under permissive terms.
 
 That being said, if you feel something in the direction of the project or the technical solutions proposed are not good, please reach out!  
 I really appreciate any structured criticism, and I am grateful of any time others might want to put into that.  
-I am not the kind of person which get stuck in their own positions just because they hold them at some point 😊. 
+I am not the kind of person which get stuck in their own positions just because they hold them at some point 😊.

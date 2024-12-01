@@ -34,7 +34,7 @@ Comparing its memory footprint with GTK or QT is not even fun.
 ## Example
 
 The obligatory "counter" [example](./examples/demo-c.xml):  
-![demo image](./docs/demo.png)
+![demo image](./docs/assets/demo.png)
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
