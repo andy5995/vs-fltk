@@ -70,3 +70,35 @@ jobs:
         bun run codegen
         bun run meson-setup.clang-release
         meson compile -C build/ vs:executable
+
+  macos:
+    runs-on: macos-14
+    env:
+      LDFLAGS: '-L/opt/homebrew/opt/llvm/lib'
+      CPPFLAGS: '-I/opt/homebrew/opt/llvm/include'
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install dependencies
+      run: |
+        curl -fsSL https://bun.sh/install | bash
+        PATH=$HOME/.bun/bin:$PATH
+        brew update
+        brew install \
+          llvm@19 \
+          freeglut \
+          libpng \
+          meson \
+          ninja
+        cd /opt/homebrew/opt/llvm/bin
+        #ln -s clang++ clang++-19
+        PATH=/opt/homebrew/opt/llvm/bin:$PATH
+        echo "PATH=$PATH" >> $GITHUB_ENV
+
+    - name: Configure and build
+      run: |
+        cmake --version
+        bun install
+        bun run codegen
+        meson setup --reconfigure build/ --buildtype=release --native-file toolchains/flatpak.ini
+        meson compile -C build/ vs:executable
+
