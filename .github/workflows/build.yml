@@ -89,6 +89,7 @@ jobs:
           libpng \
           meson \
           ninja
+        brew install --cask xquartz
         cd /opt/homebrew/opt/llvm/bin
         #ln -s clang++ clang++-19
         PATH=/opt/homebrew/opt/llvm/bin:$PATH
