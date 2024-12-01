@@ -128,14 +128,14 @@ You can read more about which features are planned in the [milestones page](./MI
 
 - Instuctions [for developers](./docs/developers/index.md)
 - Instuctions ~~[for users](./docs/intro.md) of vs~~
-- Complete ~~[specifications](./docs/developers/full-specs.md) for `vs` ~~.
+- Complete ~~~[specifications](./docs/developers/full-specs.md) for `vs`~~.
 
 ## Licences
 
 `vs` is copyrighted by [karurochari](https://github.com/KaruroChori) & [other contributors](https://github.com/KaruroChori/vs-fltk/graphs/contributors).  
 Please, check the git history to track authorship.
 
-Currently, most of this project is _source available_, under the terms of CC BY-ND. You can find out more in the [FAQ](./docs/faq.md)
+Currently, most of this project is _source available_, under the terms of CC BY-ND. You can find out more in the [FAQ](./docs/faq.md).  
 Still, any derivative work for private use, or for the sake of merging functionalities back to the main repository is allowed and encouraged.  
 I am taking PR, but contributors should understand that the project is very early, and changes in its direction might waste their time.  
 They should also be ok with their code being relicensed under more permissive terms later on, as this is the general intent behind the project once stable enough.

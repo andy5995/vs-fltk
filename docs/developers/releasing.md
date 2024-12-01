@@ -1,3 +1,5 @@
+## Todo list for release
+
 Ideally all these steps should be made automatic when a release request is triggered.  
 But for now they are not, so use this as a checklist for reference:
 

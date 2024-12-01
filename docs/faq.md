@@ -5,6 +5,12 @@
 While `vs` shares many of its technologies and ideas with modern SFC frameworks, its design is significantly more opinionated and less free.  
 This document addresses several of the perceived or actual shortcomings, and provides some of the implied rationale.
 
+### What is an SFC (Single File Component)
+
+They are special files encapsulating templates, style and logic of a self-contained UI unit.  
+They first appeared as part of long defunct proposal for native `html` components & XHTML XSLT components.  
+They are now implemented in modern frameworks like [svelte](https://svelte.dev/) or [vue](https://vuejs.org/).
+
 ### Can we have something like `<canvas>`?
 
 No. You are free to add or use a _custom native component_ if you really want. If you don't really need a full canvas, there is support still for arbitrary SVG files as part of `fltk`. But canvas-like components are not and **will never** be part of the core components shipped with `vs`. Because of that, such capabilities are not meant to be universally accessible by `vs` users.  
