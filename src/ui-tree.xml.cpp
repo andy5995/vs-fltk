@@ -188,21 +188,25 @@ int ui_tree_xml::build(){
 
   ui_base* base;
 
+  bool thin= xml_root.attribute("thin").as_bool(true);
+  bool autoprune = xml_root.attribute("auto-prune").as_bool(false);
+
   if(type==type_t::APP){
     base = (ui_base*)new ui_root_app(frame_mode_t::AUTO);
-    //TODO: Handle app.class token & page tag
-    
-    auto token = string2key256(xml_root.attribute("class-token").as_string(nullptr), cache_ctx.src_key);
-    //cache_ctx.computed_key = key256compose(token, cache_ctx.computed_key);
-    cache_ctx.page_tag = xml_root.attribute("page").as_string("");
+    {//TODO: Handle app.class token & page tag
+      auto token = string2key256(xml_root.attribute("class-token").as_string(nullptr), cache_ctx.src_key);
+      //cache_ctx.computed_key = key256compose(token, cache_ctx.computed_key);
+      cache_ctx.page_tag = xml_root.attribute("page").as_string("");
+    }
   }
-  else if(type==type_t::COMPONENT && xml_root.attribute("thin").as_bool(false)==false){
-    base = (ui_base*)new ui_root_component(frame_mode_t::AUTO);
-    //TODO: Handle app.class token & page tag
-    
-    auto token = string2key256(xml_root.attribute("class-token").as_string(nullptr), cache_ctx.src_key);
-    //cache_ctx.computed_key = key256compose(token, cache_ctx.computed_key);
-    cache_ctx.page_tag = xml_root.attribute("page").as_string("");
+  else if(type==type_t::COMPONENT && (!autoprune || !thin)){
+    base = thin?(ui_base*)new ui_root_thin_component(frame_mode_t::AUTO):(ui_base*)new ui_root_component(frame_mode_t::AUTO);
+
+    if(!thin){//TODO: Handle app.class token & page tag
+      auto token = string2key256(xml_root.attribute("class-token").as_string(nullptr), cache_ctx.src_key);
+      //cache_ctx.computed_key = key256compose(token, cache_ctx.computed_key);
+      cache_ctx.page_tag = xml_root.attribute("page").as_string("");
+    }
   }
   else base = caller_ui_node;
 

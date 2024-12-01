@@ -31,18 +31,53 @@ Both **apps** and **components** can be either specified as final `vs` xml files
 
 # Basic VS elements
 
+### basic attributes for frame-able components
+
+Except for some special entity or those which cannot have a `vs` frame, there are some attributes shared by everyone
+
+| attribute      | type      | default | description |
+| -------------- | --------- | ------- | ----------- |
+| `name`         | `string?` |         |             |
+| `mixins`       |           |         |             |
+| `frame.mode`   |           |         |             |
+| `frame.access` |           |         |             |
+| `frame.type`   |           |         |             |
+
+### basic attributes for fl:xxx
+
+TODO: Add link to automatically generated docs
+
 ## app
 
 ### attributes
 
-- `token`
-- `link-with`
+| attribute   | type         | default | description                                                                                          |
+| ----------- | ------------ | ------- | ---------------------------------------------------------------------------------------------------- |
+| `key`       | `blob(256)?` | `null`  | If set, this is the class key used by the component. It requires _fat_ components                    |
+| `tag`       | `string?`    | `null`  | If set, this is the _page-tag_ information to distinguish different pages within the same class keys |
+| `link-with` | `path?`      | `null`  | If set, the dynamic library to expose to each embedded script                                        |
 
 ## component
 
+### attributes
+
+| attribute    | type         | default | description                                                                                                    |
+| ------------ | ------------ | ------- | -------------------------------------------------------------------------------------------------------------- |
+| `thin`       | `boolean`    | `true`  | If true, this component will not allow storing app class keys, policies and path information                   |
+| `auto-prune` | `boolean`    | `false` | If true, remove this component from the tree, directly expanding its children. Incompatible with `thin: false` |
+| `key`        | `blob(256)?` | `null`  | If set, this is the class key used by the component. It requires _fat_ components                              |
+| `tag`        | `string?`    | `null`  | If set, this is the _page-tag_ information to distinguish different pages within the same class keys           |
+
 ## namespace
 
+## metadata
+
+`metadata` are is a pseudo-element which must be placed as direct children of an `app` or `component` entity.  
+Entries inside it will be parsed for documentation, attribution or to provide versioning information.
+
 ## import
+
+`import` are directives which must be placed as direct children of an `app` or `component` entity.
 
 ## use
 
@@ -80,14 +115,20 @@ Both **apps** and **components** can be either specified as final `vs` xml files
 
 ### script
 
+`script`s are pseudo-entities which must be placed as direct children of a frame-able entity. Only one for each frame-able entity can be defined.
+
 #### attributes
 
-- `lang`
-- `src`
-- `type`
-- `compact`
+| attribute | type               | default  | description                                                                                 |
+| --------- | ------------------ | -------- | ------------------------------------------------------------------------------------------- |
+| `lang`    | `string?`          | `null`   | If unset, the language will be automatically inferred from contextual information           |
+| `src`     | `path?`            | `null`   | If set, its content will only be used as fall-back and the src content will be preferred.   |
+| `type`    | _single_, _module_ | _single_ | Used to specify if it should be handled as a single user script or a shared one (TODO:link) |
+| `compact` | `boolean`          | `false`  | If set, all code is assumed to be inside the body of the default callback.                  |
 
-### mixins
+### mixin
+
+`mixin`s are pseudo-entities which must be placed as direct children of a frame-able entity. Only one for each frame-able entity can be defined.
 
 #### attributes
 
