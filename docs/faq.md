@@ -24,7 +24,7 @@ Still, that would be not less safe than just compiling and running some random c
 
 By comparison, QuickJS, Lua and especially WAMR do offer a much more sandboxed experience.  
 In the future it will be possible to set up robust policies based on domains to determine which type of scripts should be allowed if any.  
-For now there are some coarse [environment variables](./env-vars.md) that can be set fully disable certain features.
+For now, there are some coarse [environment variables](./env-vars.md) that can fully disable certain features.
 
 ### Can it be used for fully standalone applications?
 
