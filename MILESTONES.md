@@ -1,3 +1,6 @@
+General overview of upcoming features.  
+For past releases please check in [here](./docs/releases/).
+
 ## 0.1.1-alpha
 
 - [x] Complete the build process

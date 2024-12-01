@@ -122,13 +122,13 @@ Compared to other approaches, `vs` is extremely opinionated and tries to enforce
 - [ ] A robust permission system to decide what components can do based on their origin.
 - [ ] A target for single executables; compile your app down into one sharable file for systems onto which `vs` is not already distributed.
 
-You can read more about which features are planned in the [milestones page](./docs/milestones.md).
+You can read more about which features are planned in the [milestones page](./MILESTONES.md).
 
 ## Useful documentation
 
-- Instuctions [for developers](./docs/for-developers.md)
-- Instuctions ~~[for users](./docs/for-users.md) of vs~~
-- Complete ~~[specifications](./docs/specs.md)~~.
+- Instuctions [for developers](./docs/developers/index.md)
+- Instuctions ~~[for users](./docs/intro.md) of vs~~
+- Complete ~~[specifications](./docs/developers/full-specs.md) for `vs` ~~.
 
 ## Licences
 
@@ -155,7 +155,7 @@ This project is based on the following dependencies:
 ### Core features
 
 - [fltk](https://www.fltk.org/) the UI toolkit library used.
-- [fmt](https://github.com/fmtlib/fmt) to format strings and as printf replacement.
+- [fmt](https://github.com/fmtlib/fmt) to format strings and as `printf` replacement.
 - [pugixml](https://pugixml.org/) to parse xml.
 - [mio](https://github.com/vimpunk/mio) memory mapping for loading files.
 - [hashlib](https://github.com/KaruroChori/hash-library) for cryptographic functions (and not).
