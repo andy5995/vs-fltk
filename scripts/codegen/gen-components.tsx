@@ -23,6 +23,7 @@ function make_type_code(type: Static<typeof type_schema>, subtype: string, code:
     else if (type === 'scalar-2') return `size_t computed[2]; if((ok = field_types::h_px(2,computed,value,that))){${code}}`
     else if (type === 'scalar-4') return `size_t computed[4]; if((ok = field_types::h_px(4,computed,value,that))){${code}}`
     else if (type === 'enum') return `int computed  = field_types::${subtype}_i(value);if((ok=(computed!=-1))){${code}}`
+    else if (type === 'path') return `/*TODO*/`
 }
 
 function gen_cpp(data: Static<typeof widget_schema>) {
@@ -35,7 +36,7 @@ function gen_cpp(data: Static<typeof widget_schema>) {
 #include <ui.hpp>
 #include <ui-field.types.hpp>
 ${cextends ? `#include <components/autogen/${cextends[0]}/${cextends[1]}.hpp>\n` : ``}
-${data.headers ? data.headers.map(x => `#include <${x}>\n`) : ``}
+${data.headers ? data.headers.map(x => `#include <${x}>\n`).join('\n') : ``}
 
 namespace vs{
 

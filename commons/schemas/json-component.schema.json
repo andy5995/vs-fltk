@@ -145,6 +145,10 @@
                                     "type": "string"
                                 },
                                 {
+                                    "const": "path",
+                                    "type": "string"
+                                },
+                                {
                                     "const": "color",
                                     "type": "string"
                                 },
@@ -219,6 +223,10 @@
                                 },
                                 {
                                     "const": "string",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "path",
                                     "type": "string"
                                 },
                                 {

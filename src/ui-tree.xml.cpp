@@ -196,9 +196,18 @@ int ui_tree_xml::build(){
     //cache_ctx.computed_key = key256compose(token, cache_ctx.computed_key);
     cache_ctx.page_tag = xml_root.attribute("page").as_string("");
   }
+  else if(type==type_t::COMPONENT && xml_root.attribute("thin").as_bool(false)==false){
+    base = (ui_base*)new ui_root_component(frame_mode_t::AUTO);
+    //TODO: Handle app.class token & page tag
+    
+    auto token = string2key256(xml_root.attribute("class-token").as_string(nullptr), cache_ctx.src_key);
+    //cache_ctx.computed_key = key256compose(token, cache_ctx.computed_key);
+    cache_ctx.page_tag = xml_root.attribute("page").as_string("");
+  }
   else base = caller_ui_node;
 
-  _build(doc.child((type==type_t::APP)?strings.APP_TAG:strings.COMPONENT_TAG),(type==type_t::APP)?base:caller_ui_node);
+  _build(doc.child(
+    (type==type_t::APP)?strings.APP_TAG:strings.COMPONENT_TAG), base);
 
   if(type==type_t::APP)root=base;
   else root = nullptr;
@@ -317,7 +326,7 @@ void ui_tree_xml::_build(const pugi::xml_node& root, ui_base* root_ui){
     }
 
   }
-  else if (strcmp(root.name(),"component")==0){}
+  else if (strcmp(root.name(),strings.COMPONENT_TAG)==0){}
 
 #   if __has_include("./ui.xml-widgets.autogen.cpp")
 #   include "./ui.xml-widgets.autogen.cpp"
@@ -523,13 +532,10 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
 
     _build_base_widget_extended_attr(root, (ui_base *)current);
     
-
+    //TODO: Check if this has still any effect
     if(strcmp(root.parent().name(),strings.APP_TAG)==0){
       current->reparent_frame(root_ui);
     }
-
-
-
 
     //TODO: Optimize copies
     smap<std::string> props = current->compute_refresh_style(root.attribute("mixin").as_string(""));
@@ -560,7 +566,6 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
         if(strcmp(i.name(),"src")!=0)props.insert_or_assign(i.name(), i.value());
       }
     }
-
     
     for (const auto &i : root.attributes()) {
       props.insert_or_assign(i.name(), i.value());

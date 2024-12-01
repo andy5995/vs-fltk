@@ -11,38 +11,42 @@
 namespace vs{
 
 
-class ui_root_app :public ui_base{
-  protected:
-    cache::ctx_t cache_ctx;
-
+class ui_root_thin_component :public ui_base{
   public:
-    ui_root_app(frame_mode_t MODE):ui_base(nullptr){
+    ui_root_thin_component(frame_mode_t MODE):ui_base(nullptr){
       //Cannot use mk_frame as it requires recursion and the widget property to operate.
       local_frame=new frame(nullptr, MODE, this, nullptr, default_frame_type(), frame_access_t::PUBLIC);
   }
 
   virtual frame_type_t default_frame_type() override {return frame_type_t::CONTAINER;}
-  virtual const char* class_name() override{return "root";}
+  virtual const char* class_name() override{return "component.thin";}
 
   int apply_prop(const char *prop, const char *value) override{if(local_frame!=nullptr)return local_frame->call_dispatcher(prop,value);return 1;}
   int get_computed(const char *prop, const char **value) override{return 1;}
 };
 
-class ui_root_component :public ui_base{
+class ui_root_component :public ui_root_thin_component{
   protected:
+    cache::ctx_t cache_ctx;
+    policies_t policies;            //Computed policies for this tree
+    scoped_rpath_t local;            //Full path for the location of this component.
+    scoped_rpath_t fullname;            //Full path for the location of this component.
+
   public:
-    ui_root_component(frame_mode_t MODE):ui_base(nullptr){
-        //Cannot use mk_frame as it requires recursion and the widget property to operate.
-        local_frame=new frame(nullptr, MODE, this, nullptr, default_frame_type(), frame_access_t::PUBLIC);
-    }
+    ui_root_component(frame_mode_t MODE):ui_root_thin_component(MODE){}
 
-    virtual frame_type_t default_frame_type() override {return frame_type_t::CONTAINER;}
     virtual const char* class_name() override{return "component";}
-
-    int apply_prop(const char *prop, const char *value) override{if(local_frame!=nullptr)return local_frame->call_dispatcher(prop,value);return 1;}
-    int get_computed(const char *prop, const char **value) override{return 1;}
-
 };
+
+
+class ui_root_app :public ui_root_component{
+
+  public:
+    ui_root_app(frame_mode_t MODE):ui_root_component(MODE){}
+
+  virtual const char* class_name() override{return "app";}
+};
+
 
 //TODO: Add a new ui_region similar to namespace but with extra cache::ctx_t like app, to nest a new "safe" region inside.
 

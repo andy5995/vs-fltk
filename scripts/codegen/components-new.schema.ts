@@ -7,6 +7,7 @@ export const type_schema = t.Union([
     t.Literal('flag'),
     t.Literal('enum'),
     t.Literal('raw'),
+    t.Literal('path'),
     t.Literal('string'),
     t.Literal('color'),
     t.Literal('scalar-1'),

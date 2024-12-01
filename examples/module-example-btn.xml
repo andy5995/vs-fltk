@@ -1,9 +1,10 @@
-<component xmlns:fl="vs.fltk">
+<component xmlns:fl="vs.fltk" thin="true">
     <fl:button label="Banana" box="0,0,100,100">
         <script type="module" lang="c">
             <![CDATA[
             void callback(){
                 $prop("label","HELLO");
+                $log(LOG_INFO,"hello");
             }
             ]]>
         </script>

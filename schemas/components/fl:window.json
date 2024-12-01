@@ -1,13 +1,22 @@
 {
-    "$schema": "../../commons/schemas/json-component.schema.json",
-    "description": "Base element to a window",
-    "usable": true,
-    "type": "node",
-    "headers": ["FL/Fl_Window.H"],
-    "extends": "fl:base",
-    "codegen": {"extends": "ui<Fl_Window>"},
-    "props":{
+  "$schema": "../../commons/schemas/json-component.schema.json",
+  "description": "Base element to a window",
+  "usable": true,
+  "type": "node",
+  "headers": ["FL/Fl_Window.H", "FL/Fl_SVG_Image.H"],
+  "extends": "fl:base",
+  "codegen": { "extends": "ui<Fl_Window>" },
+  "props": {
+    "border": {
+      "type": "flag",
+      "description": "True if using a border around",
+      "code": "w.border(computed);"
     },
-    "computed":{ 
+    "icon": {
+      "type": "string",
+      "description": "True if using a border around",
+      "code": "w.icon(new Fl_SVG_Image(value));"
     }
+  },
+  "computed": {}
 }

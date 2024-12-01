@@ -4,9 +4,9 @@
 
 - [ ] libfltk and its subdeps are compiled into `/app/lib64`, which is not covered by paths
       Investigation got results. Basically, all cmake libraries are in `/app/lib` while those through meson are in `/app/lib64` which is not added to the search path in that image.  
-      Even outside of flatpak this problem occurs, just with different folder names. I must ensure cmake and meson behave the same.
+       Even outside of flatpak this problem occurs, just with different folder names. I must ensure cmake and meson behave the same.
 - [ ] commons are not mounted in `/usr/local/share`. I must pass the relevant vars (already supported).  
-      I must register a variable in the user with where these files are located? Or embed it during compilation? Still not sure.
+       I must register a variable in the user with where these files are located? Or embed it during compilation? Still not sure.
 - [ ] Icons, signature and few more things are still missing.
 
 ### Scripts
@@ -87,6 +87,8 @@ does not somehow. But just `./two-buttons.xml` does? Check why!
     - [x] Unable to append args to meson setup
 - [ ] Escape vs_debug (tabs).
 - [ ] Add TESTING flag in scripts to determine if some content should be run or not.
+- [ ] Add contextual information in app and component (keys, policies & paths). Remove them from ui_tree as they can be accessed via root.
+  - [ ] Once that is done, properly implement the path type for props, to resolve correctly.
 
 ### Scripting
 

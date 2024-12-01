@@ -8,7 +8,7 @@ namespace vs {
 
 struct ui_tree {
   enum class type_t{
-    NONE, APP, COMPONENT, FRAGMENT
+    NONE, APP, COMPONENT, COMPONENT_THIN, FRAGMENT
   }type;
 
   //Define the embedded mode supported.

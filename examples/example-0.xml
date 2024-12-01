@@ -5,7 +5,7 @@
         <label>It does not exist</label>
     </import>
     <mixin name="+fl:button" box.h="100" box.w="100" />
-    <debug value="Important string A"/>
+    <debug value="Important string A" />
 
     <script-global lang="c">
         <def>
@@ -45,19 +45,20 @@
             </script>
         </fl:button>
     </fl:window>
-    <fl:window box.w="640" box.h="480" name="ss">
+    <fl:window box.w="640" box.h="480" name="ss" border="false"
+        icon="./commons/assets/icons/vs.fltk.dark.svg">
         <use>
             <on-load.fail>
-                <fl:button box="0,0,50,50" label="Oh no!"/>
+                <fl:button box="0,0,50,50" label="Oh no!" />
             </on-load.fail>
         </use>
 
         <use src="./two-buttons.xml">
             <on-load.fail>
-                <fl:button box="200,250,50,50" label="Oh no!"/>
+                <fl:button box="200,250,50,50" label="Oh no!" />
             </on-load.fail>
             <inject>
-                <fl:button box="200,200,50,50" label="Oh yes!"/>
+                <fl:button box="200,200,50,50" label="Oh yes!" />
             </inject>
         </use>
 
