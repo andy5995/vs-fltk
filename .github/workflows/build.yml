@@ -90,7 +90,7 @@ jobs:
           meson \
           ninja
         cd /opt/homebrew/opt/llvm/bin
-        ln -s clang++ clang++-19
+        #ln -s clang++ clang++-19
         PATH=/opt/homebrew/opt/llvm/bin:$PATH
         echo "PATH=$PATH" >> $GITHUB_ENV
 
@@ -99,6 +99,6 @@ jobs:
         cmake --version
         bun install
         bun run codegen
-        bun run meson-setup.clang-release
+        meson setup --reconfigure build/ --buildtype=release --native-file toolchains/flatpak.ini
         meson compile -C build/ vs:executable
 
