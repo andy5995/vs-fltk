@@ -1,37 +1,43 @@
 services:
   dev:
-    image: $IMAGE
-    container_name: vs-fltk-env
-    entrypoint: $ENTRYPOINT
-    volumes:
-      - $SOURCE_ROOT:/workspace
-      - $ENTRYPOINT:$ENTRYPOINT
-      - ${PWD}/docker/main_entry.sh:/docker/main_entry.sh
+    image: "${IMAGE:-ghcr.io/karurochori/vs-fltk:build-env}"
+    container_name: "${VS_NAME:-vs-fltk-env}"
+    entrypoint: "${ENTRYPOINT:-/entry-default.sh}"
+
+    # Only variables used within the container should be here
     environment:
       HOSTUID: $HOSTUID
       HOSTGID: $HOSTGID
-      ENTRYPOINT: $ENTRYPOINT
-    working_dir: /workspace
+      WORKSPACE: $WORKSPACE
+
+    volumes:
+      - ${PWD}:${WORKSPACE}
+      # Mount the entrypoint scripts inside the container
+      - ${PWD}/docker/entry-build.sh:/entry-build.sh
+      - ${PWD}/docker/entry-default.sh:/entry-default.sh
+    working_dir: ${WORKSPACE}
     stdin_open: true # Allows interactive mode
     tty: true # Allocate a pseudo-TTY
-    restart: "no"
 
-  xgui:
-    image: $IMAGE
-    container_name: vs-fltk-gui
-    entrypoint: $ENTRYPOINT
-    volumes:
-      - $SOURCE_ROOT:/workspace
-      - $ENTRYPOINT:$ENTRYPOINT
-      - ${PWD}/docker/main_entry.sh:/docker/main_entry.sh
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+  x11dev:
+    image: "${IMAGE:-ghcr.io/karurochori/vs-fltk:build-env}"
+    container_name: "${VS_NAME:-vs-fltk-env}"
+    entrypoint: "${ENTRYPOINT:-/entry-default.sh}"
+
+    # Only variables used within the container should be here
     environment:
       HOSTUID: $HOSTUID
       HOSTGID: $HOSTGID
-      ENTRYPOINT: $ENTRYPOINT
+      WORKSPACE: $WORKSPACE
       DISPLAY: $DISPLAY
       QT_X11_NO_MITSHM: 1
-    working_dir: /workspace
+
+    volumes:
+      - ${PWD}:${WORKSPACE}
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # Mount the entrypoint scripts inside the container
+      - ${PWD}/docker/entry-build.sh:/entry-build.sh
+      - ${PWD}/docker/entry-default.sh:/entry-default.sh
+    working_dir: ${WORKSPACE}
     stdin_open: true # Allows interactive mode
     tty: true # Allocate a pseudo-TTY
-    restart: "no"

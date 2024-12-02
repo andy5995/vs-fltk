@@ -3,8 +3,6 @@
 
 set -e
 
-OLDPWD=$PWD
-
 if [ -z "$HOSTUID" ]; then
   echo "HOSTUID is not set."
   exit 1
@@ -17,4 +15,3 @@ fi
 
 usermod -u $HOSTUID builder
 groupmod -g $HOSTGID builder
-chown -R $HOSTUID:$HOSTGID /home/builder

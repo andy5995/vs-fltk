@@ -16,8 +16,6 @@ jobs:
   build-test-env-image:
     runs-on: ubuntu-latest
     env:
-      SOURCE_ROOT: ${{ github.workspace }}
-      ENTRYPOINT: ${{ github.workspace }}/docker/default-entry.sh
       DOCKER_CACHE_DEST: ${{ github.workspace }}/.docker/buildx-cache
     steps:
     - uses: actions/checkout@v4
@@ -67,6 +65,8 @@ jobs:
 
     - name: Run commands in Docker container
       run: |
-        export HOSTUID=$(id -u)
-        export HOSTGID=$(id -g)
+        export HOSTUID=$(id -u) HOSTGID=$(id -g)
         docker compose -f docker/docker-compose.yml run --rm  dev
+      env:
+        ENTRYPOINT: /entry-build.sh
+        WORKSPACE: ${{ github.workspace }}/vs-workspace
