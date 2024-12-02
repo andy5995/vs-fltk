@@ -14,9 +14,6 @@ struct ui_tree {
   //Define the embedded mode supported.
   frame_mode_t mode = frame_mode_t::AUTO;
 
-  //Container information in case this is an app or component (?)
-  cache::ctx_t cache_ctx;
-
   ui_tree* parent = nullptr;      //Set if there is an explict owner of this root, for example a viewport.
 
 

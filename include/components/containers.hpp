@@ -27,7 +27,7 @@ class ui_root_thin_component : public ui_base{
 };
 
 class ui_root_component : public ui_root_thin_component{
-  protected:
+  public: //TODO: Make it private at some point, but I need to clean up the rest of the code and set up proper friend classes first.
     app_env_t local_env;
 
   public:
