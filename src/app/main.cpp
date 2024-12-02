@@ -23,8 +23,8 @@
 using namespace vs;
 
 int run(const char* path, const char *entry, const char* profile, const char* tests=nullptr){
-  globals::policy.debug();  //To set an initial record in the debug file.
-  globals::policy.inherit(policies_t::from_env());
+  globals::env.computed_policies.debug();  //To set an initial record in the debug file.
+  globals::env.computed_policies.inherit(policies_t::from_env());
   globals::path_env = mk_env(path, entry);
 
   std::cout<<"\n--------- paths ---------\n";
@@ -52,7 +52,7 @@ int run(const char* path, const char *entry, const char* profile, const char* te
 
     //TODO implement test
     if(tests!=nullptr){
-      globals::is_testing=true;
+      globals::env.computed_policies.testing=true;
     }
 
     app_loader loader(profile,entry);

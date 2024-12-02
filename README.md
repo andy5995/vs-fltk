@@ -109,6 +109,7 @@ Compared to other approaches, `vs` is extremely opinionated and tries to enforce
   - [ ] Native custom components, externally compiled from any language
   - [ ] WASM custom components, externally compiled from any language
   - [ ] XML custom components, capable of embedding any other component
+  - [ ] Markdown as XML component, capable of embedding VS code in place of HTML.
   - [ ] A compiler to transform XML components in C code (to be natively run or compiled to WASM)
   - [ ] An XML preprocessor like XSLT to compile _templates + static data_ down to components directly on client
 - [ ] Inline code inside XML components (like JS in HTML)

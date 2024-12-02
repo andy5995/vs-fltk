@@ -52,13 +52,14 @@ struct policies_t{
 
     unsigned int verbosity:2;
     unsigned int headless:1;
+    unsigned int testing:1;
 
 
-    void all(){networking.all();scripts.all();allow_native_components=true;allow_themes=true;allow_notify=true;allow_caching=true;headless=false;verbosity=1;}
-    void none(){networking.none();scripts.none();allow_native_components=false;allow_themes=false;allow_notify=false;allow_caching=false;headless=false;verbosity=1;}
-    void trusted(){networking.trusted();scripts.trusted();allow_native_components=true;allow_themes=true;allow_notify=true;allow_caching=true;headless=false;verbosity=1;}
-    void normal(){networking.normal();scripts.normal();allow_native_components=true;allow_themes=true;allow_notify=true;allow_caching=true;headless=false;verbosity=1;}
-    void safe(){networking.safe();scripts.safe();allow_native_components=false;allow_themes=false;allow_notify=true;allow_caching=true;headless=false;verbosity=1;}
+    void all(){networking.all();scripts.all();allow_native_components=true;allow_themes=true;allow_notify=true;allow_caching=true;headless=false;testing=false;verbosity=1;}
+    void none(){networking.none();scripts.none();allow_native_components=false;allow_themes=false;allow_notify=false;allow_caching=false;headless=false;testing=false;verbosity=1;}
+    void trusted(){networking.trusted();scripts.trusted();allow_native_components=true;allow_themes=true;allow_notify=true;allow_caching=true;headless=false;testing=false;verbosity=1;}
+    void normal(){networking.normal();scripts.normal();allow_native_components=true;allow_themes=true;allow_notify=true;allow_caching=true;headless=false;testing=false;verbosity=1;}
+    void safe(){networking.safe();scripts.safe();allow_native_components=false;allow_themes=false;allow_notify=true;allow_caching=true;headless=false;testing=false;verbosity=1;}
 
     void inherit(const policies_t& parent){
         networking.inherit(parent.networking);
@@ -71,6 +72,8 @@ struct policies_t{
 
         verbosity=parent.verbosity;
         if(parent.headless)headless=true;
+        if(parent.testing)testing=true;
+
     }
 
     policies_t(){all();}

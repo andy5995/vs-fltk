@@ -72,10 +72,12 @@ typedef enum vs_frame_access_t vs_frame_access_t;
 
 enum vs_component_t{
     VS_COMPONENT_NONE,
+    VS_COMPONENT_VS,
     VS_COMPONENT_XML,
     VS_COMPONENT_WASM,
     VS_COMPONENT_LIB,
     VS_COMPONENT_CNATIVE,
+    VS_COMPONENT_MARKDOWN,
 };
 typedef enum vs_component_t vs_component_t;
 

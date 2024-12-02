@@ -1,5 +1,6 @@
 #pragma once
 
+#include "utils/app-env.hpp"
 #include <utils/env.hpp>
 #include <utils/paths.hpp>
 #include <utils/policies.hpp>
@@ -11,8 +12,12 @@
 namespace vs{
 
 namespace globals{
-extern policies_t policy;
-extern path_env_t path_env;
+
+extern app_env_t    env;        //Computed basic environment based on user config & shell env
+extern path_env_t   path_env;   //Computed paths
+
+    //extern policies_t policy;
+    
 extern js_rt_t js_rt;
 extern cache::mem_storage_t mem_storage;
 //extern cache::kv_storage_t kv_storage;
@@ -30,6 +35,6 @@ struct vs_test_debug_t{
 extern vs_test_debug_t debug;
 
 extern field_models_t value_models;
-extern bool is_testing;
+
 }
 }

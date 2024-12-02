@@ -59,7 +59,7 @@ int app_loader::test(){
 int app_loader::run(){
   globals::mem_storage.cleanup();
   root->cleanup();
-  if(!globals::policy.headless){
+  if(!globals::env.computed_policies.headless){
     auto t= Fl::run();
     delete root;
     root=nullptr;

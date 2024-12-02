@@ -1,31 +1,46 @@
 #pragma once
+#include "utils/app-env.hpp"
 #include <pugixml.hpp>
 #include <utils/paths.hpp>
 #include <globals.hpp>
+
+/*
+    The fetcher fetches, but more importatly it ensure policies are respected while doing so.
+    These checks were not implemented so far, but it has to be all rewritten from the ground up
+*/
 
 namespace vs{
 
 
 enum struct component_t{
     NONE,
+    VS,
     XML,
     WASM,
     LIB,
     CNATIVE,
+    MARKDOWN,
 };
 component_t component_t_i(const char* t);
 constexpr const char* component_t_s(component_t t);
+
+
+//Fetch any resource from any path to memory.
+std::tuple<resolve_path::reason_t::t, cache::mem_storage_t::entry_it*, component_t> fetch_any(const app_env_t& env, const char* path, resolve_path::from_t scope, bool promote=false, bool preserve=false);
 
 /*Fully fetches a component by:
 - Looking for the best match which exists
 - Save the path resolution to cache
 - Load it based on its type:
-    - XML load and store as xml document (compile it if needed, and store the template as its own xml document?)
+    - VS/XML load and store as xml document (compile it if needed, and store the template as its own xml document?)
+    - MD load and store as compiled xml document
     - WASM load in memory as binary (buffer) or a script once WASM scripts are supported?.
     - LIB skip, the library will be loaded on demand
-    - CNATIVE compile and save it as script. Technically it is not, but I am not going to compile it over and over
+    - CNATIVE compile and save it as script. Technically it is not, but I am not going to compile it over and over and script works as a container
 */
-std::tuple<resolve_path::reason_t::t, cache::mem_storage_t::entry_it*, component_t> fetch_component();
+std::tuple<resolve_path::reason_t::t, cache::mem_storage_t::entry_it*, component_t> fetch_component(const app_env_t& env, const char* path, resolve_path::from_t scope, bool promote=false, bool preserve=false);
+
+
 
 /**
  * @brief Fetch resource using its path and some contextual information (or get it if already on cache)

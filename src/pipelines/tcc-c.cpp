@@ -144,7 +144,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     if(on_compiled!=nullptr)on_compiled();
 
     auto on_static_test = (int(*)())script->get_sym("static_test");
-    if(on_static_test!=nullptr && globals::is_testing)on_static_test();
+    if(on_static_test!=nullptr && globals::env.computed_policies.testing)on_static_test();
 
     if(obj!=nullptr){
         //Apply the environment for single use scripts.

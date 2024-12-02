@@ -60,7 +60,7 @@ path_env_t mk_env(const char* arg0,const char* arg1){
   main_env.tmp_path={rpath_type_t::FS,"/tmp/"};
 
   //Finally compute path for the requested file
-  resolve_path resolver(globals::policy,main_env,main_env.cwd);
+  resolve_path resolver(globals::env.computed_policies,main_env,main_env.cwd);
   {
     auto t = resolver(resolve_path::from_t::NATIVE_CODE,arg1);
     if(t.first!=resolve_path::reason_t::OK)exit(2); //TODO: Handle case

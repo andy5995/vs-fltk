@@ -5,9 +5,9 @@
 While `vs` shares many of its technologies and ideas with modern SFC frameworks, its design is significantly more opinionated and less free.  
 This document addresses several of the perceived or actual shortcomings, and provides some of the implied rationale.
 
-### What is an SFC (Single File Component)
+### What is an SFC (Single File Component)?
 
-They are special files encapsulating templates, style and logic of a self-contained UI unit.  
+SFCs are special files encapsulating templates, style and logic of a self-contained UI unit.  
 They first appeared as part of long defunct proposal for native `html` components & XHTML XSLT components.  
 They are now implemented in modern frameworks like [svelte](https://svelte.dev/) or [vue](https://vuejs.org/).
 
@@ -43,7 +43,7 @@ Ideally yes. Broadly speaking there are three "modes" in which `vs` can operate:
 
 For now, most efforts are focused in making the first two options viable. The third one is planned for later.
 
-### How to map SFC concepts in here?
+### How to map SFC concepts to `vs`?
 
 | Concept            | Web                                | VS                                  |
 | ------------------ | ---------------------------------- | ----------------------------------- |

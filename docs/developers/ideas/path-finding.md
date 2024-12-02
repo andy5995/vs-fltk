@@ -11,6 +11,7 @@ If it fails, check for any the following in such order:
 - `name.wasm`
 - `name.so` | `name.dll` | `name.dylib`
 - `name.c`
+- `name.md`
 
 If it fails and the folder `name` exists, check for these ones:
 
@@ -19,6 +20,7 @@ If it fails and the folder `name` exists, check for these ones:
 - `name/main.wasm`
 - `name/main.so` | `name/main.dll` | `name/main.dylib`
 - `name/main.c`
+- `name/main.md`
 
 ## Loading pipelines
 
@@ -26,3 +28,4 @@ If it fails and the folder `name` exists, check for these ones:
 - `.wasm` files are handled as wasm components by wamr
 - `.so` & al. are loaded as native components
 - `.c` are compiled by tcc into native components and loaded as such
+- `.md` is loaded directly as a component

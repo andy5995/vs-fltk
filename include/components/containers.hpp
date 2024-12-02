@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ui-frame.hpp"
+#include <utils/app-env.hpp>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
@@ -11,7 +12,7 @@
 namespace vs{
 
 
-class ui_root_thin_component :public ui_base{
+class ui_root_thin_component : public ui_base{
   public:
     ui_root_thin_component(frame_mode_t MODE):ui_base(nullptr){
       //Cannot use mk_frame as it requires recursion and the widget property to operate.
@@ -25,12 +26,9 @@ class ui_root_thin_component :public ui_base{
   int get_computed(const char *prop, const char **value) override{return 1;}
 };
 
-class ui_root_component :public ui_root_thin_component{
+class ui_root_component : public ui_root_thin_component{
   protected:
-    cache::ctx_t cache_ctx;
-    policies_t policies;            //Computed policies for this tree
-    scoped_rpath_t local;            //Full path for the location of this component.
-    scoped_rpath_t fullname;            //Full path for the location of this component.
+    app_env_t local_env;
 
   public:
     ui_root_component(frame_mode_t MODE):ui_root_thin_component(MODE){}
