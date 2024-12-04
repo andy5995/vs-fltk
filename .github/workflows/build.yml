@@ -95,7 +95,7 @@ jobs:
         restore-keys: |
           brew-cache-${{ runner.os }}-
 
-    - name: Install dependencies
+    - name: Install Dependencies
       run: |
         curl -fsSL https://bun.sh/install | bash
         PATH=$HOME/.bun/bin:$PATH
