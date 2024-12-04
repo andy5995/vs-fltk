@@ -154,7 +154,7 @@ endif
 
 vs_fltk_flags += '-DPUGIXML_COMPACT'
 
-subdir('./src/components/autogen')
+subdir('./src/components')
 
 vs_fltk = shared_library(
     'vs-fltk',
@@ -175,16 +175,8 @@ vs_fltk = shared_library(
 
         './src/loader.cpp',
 
-        #TODO: move them in a split meson file
-        './src/components/containers.cpp',
-        './src/components/markdown-view.cpp',
-        './src/components/code-editor.cpp',
-        './src/components/data.xml.cpp',
-        './src/components/data.json.cpp',
-        './src/components/data.sqlite.cpp',
-        './src/components/data.csv.cpp',
-        './src/components/data.fs.cpp',
 
+        src_components,
         autogen_components,
 
         './src/ui-frame.cpp',
