@@ -149,7 +149,7 @@ namespace field_types{
 
 
   //TODO: I need to check if number conversions failed or not too.
-  bool h_px(uint T, size_t* dst, const char* expr, const ui_base* env){
+  bool h_px(unsigned int T, size_t* dst, const char* expr, const ui_base* env){
     if (T==1){
       dst[0]=std::stoi(expr);
       return true;

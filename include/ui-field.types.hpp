@@ -30,7 +30,7 @@ namespace field_types{
 
   // Helpers to compute expressions into values that Fl_Widgets can use.
 
-  bool h_px(uint T, size_t *dst, const char *expr,
+  bool h_px(unsigned int T, size_t *dst, const char *expr,
                    const ui_base *env);
   bool h_colour(uint32_t *dst, const char *expr,
                        const ui_base *env);
