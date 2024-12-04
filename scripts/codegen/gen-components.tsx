@@ -64,6 +64,7 @@ class ${cppname} : public ${data.codegen.extends}{
 `;
 
     let class_impl = `
+#include <cstdint>
 #include <components/autogen/${data.ns}/${data.name}.hpp>
 
 namespace vs{
