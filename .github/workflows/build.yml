@@ -91,7 +91,6 @@ jobs:
         path: |
           /usr/local/Cellar
           /usr/local/opt
-          /opt/homebrew/opt/
         key: brew-cache-${{ runner.os }}-${{ hashFiles('.github/workflows/Brewfile') }}
         restore-keys: |
           brew-cache-${{ runner.os }}-
