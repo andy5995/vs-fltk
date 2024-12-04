@@ -89,9 +89,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          /usr/local/Homebrew/Library/Taps  # Homebrew Taps (Intel Macs)
-          /usr/local/Cellar                # Installed dependencies (Intel Macs)
-          /opt/homebrew/Cellar             # Installed dependencies (Apple Silicon Macs)
+          /usr/local/Cellar
+          /usr/local/opt
+          /opt/homebrew/opt/
         key: brew-cache-${{ runner.os }}-${{ hashFiles('.github/workflows/Brewfile') }}
         restore-keys: |
           brew-cache-${{ runner.os }}-
