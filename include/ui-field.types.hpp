@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <ui.hpp>
 
 namespace vs{
