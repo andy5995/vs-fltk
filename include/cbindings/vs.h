@@ -1,4 +1,16 @@
 #pragma once
+/**
+ * @file vs.h
+ * @author karurochari
+ * @brief Entrypoint for the C interface of `libvs`
+ * @details `libvs` is meant to be used via its C++ interface, and only a subset 
+ *          of its functionality is exposed via these bindings.  
+ *          Basically, what is needed to handle `ui_tree`s, access to the constrained 
+ *          interface ui widgets have, resolving paths, symbols and little more.
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 /*
     vs-fltk is a library meant to be used with its C++ interface.  
     Only a subset of its functionality is exposed with proper C bindings.  
