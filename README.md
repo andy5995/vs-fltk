@@ -163,6 +163,8 @@ This project is based on the following dependencies:
 - [libuv](https://libuv.org/) for me not to care about portable code.
 - [vs.templ](https://github.com/lazy-eggplant/vs.templ) a library to parse markdown (not just to HTML).
 - [vs.robot](https://github.com/lazy-eggplant/vs.robot) a library to perform automatic actions on FLTK.
+- [vs.xml-piler](https://github.com/lazy-eggplant/vs.xml-piler) to generate the XML parser backends based on schema files and specs.
+- [sqlite](https://www.sqlite.org/) as the embedded DB to handle user profiles, caching etc.
 
 ### For embedded scripts
 
