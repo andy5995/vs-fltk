@@ -26,7 +26,7 @@ int main(){
     ret+=test_normalizer("/quick-js/ww/a", "/hello world/banana/", "./../.././quick-js/ww/a", true, false);
     ret+=test_normalizer("", "/hello world/banana/", "../../quick-js/ww/a", false, false);
     ret+=test_normalizer("", "/hello world/banana/", "./../.././quick-js/ww/a", false, false);
-    ret+=test_normalizer("/hello world/banana/ww/a", "/hello world/banana/", "quick-js/../quick-js/ww/a", false, false);
+    ret+=test_normalizer("/hello world/banana/quick-js/ww/a", "/hello world/banana/", "quick-js/../quick-js/ww/a", false, false);
     ret+=test_normalizer("/hello world/banana/ww/a", "/hello world/banana/", "quick-js/./.././ww/a", false, false);
     ret+=test_normalizer("/a/b../", "/a/", "b../", false, false);
 
