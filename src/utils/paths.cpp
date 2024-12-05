@@ -50,7 +50,7 @@ std::pair<bool, std::string> resolve_path::normalizer(const char *parent, const 
             j++;
             continue;
         }
-        else if(child[j]=='/' && j!=strlen(child)-1){
+        else if(child[j]=='/' && j!=child_len-1){
                 j++;
         }
         else{
