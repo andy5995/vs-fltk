@@ -6,50 +6,55 @@ You may build your changes by using the compose file. First create an `.env`
 file in /docker. The contents should be similar to that of `.env.example`:
 
 ```text
-HOSTUID=1000
-HOSTGID=1000
-IMAGE="ghcr.io/karurochori/vs-fltk:build-env"
-ENTRYPOINT:$PWD/docker/default-entry.sh
-SOURCE_ROOT=$PWD
+# Add your numeric user and group id
+HOSTUID=
+HOSTGID=
+
+# The directory in the container where the source root will be mounted
+WORKSPACE="/vs-workspace"
 ```
 
 Replace the values for `HOSTUID` and `HOSTGID` with your system `uid` and `gid`.  
-Then, from the source root:
+Then, from the source root, to enter the build environment:
 
 ```sh
 docker-compose -f docker/docker-compose.yml run --rm  dev
 ```
 
-This will start the container and build the app.
+From there, you can run the commands to build the app. You can use your
+regular IDE to make changes, and then test them by building within the
+container.
 
-To enter the build environment without actually building the app:
-
-```sh
-export ENTRYPOINT=$PWD/docker/shell-entry.sh
-docker-compose -f docker/docker-compose.yml run --rm  dev
-```
-
-Remember to unset `ENTRYPOINT` when you wish to use the default again.
-
-<!--
-This doesn't work unless the files are "mounted"
-To run the image without using compose:
+To start the container and build the app non-interactively:
 
 ```sh
-docker run -it --rm -v \
-  --entrypoint=$PWD/docker/default-entry.sh \
-  -v $PWD:/workspace \
-  ghcr.io/karurochori/vs-fltk:build-env
+export ENTRYPOINT=/entry-build.sh
 ```
--->
 
-All of the above methods will mount your current directory as _/workspace_
+And use the same command as shown above.
+
+Remember to unset `ENTRYPOINT` when you wish to start the container with only
+a prompt.
+
+All of the above methods will mount your current directory as _/vs-workspace_
 inside the container. Your username will be _builder_. By default, you will
 not have root privileges (which are not necessary to build and test). However,
 you can use `sudo` if you need to run `apt` or any other commands that require
 root access.
 
 ## Notes
+
+### Changing the default environmental variables
+
+If you wish to change some values or variables, you should not need to edit
+`docker-compose.yml`. You can add variables used in the compose file to your
+`.env' file or pass them on the command line at runtime. See [Environment
+variables in
+Compose](https://docs.docker.com/compose/how-tos/environment-variables/) for
+more information. And of course, open an issue if you have suggestions for
+improvements.
+
+### Working with Containers
 
 In the examples above, we've included `--rm` as an argument. This normally
 removes the container after it's exited. `docker ps -a` displays containers

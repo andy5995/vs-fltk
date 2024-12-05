@@ -5,12 +5,13 @@ ENV DEBIAN_FRONTEND=$DEBIAN_FRONTEND
 
 RUN \
     apt update && apt upgrade -y && \
+    apt install -y curl && \
+    curl -s https://archive.swiftlang.xyz/install.sh | bash && \
     apt install -y \
         build-essential \
         ca-certificates \
         clang-19 \
         cmake \
-        curl \
         freeglut3-dev \
         git \
         libpango1.0-dev \
@@ -24,8 +25,7 @@ RUN \
         sudo \
         swiftlang \
         unzip \
-        wget && \
-    update-ca-certificates -f
+        wget
 
 RUN useradd -m builder && passwd -d builder
 RUN echo "builder ALL=(ALL) ALL" >> /etc/sudoers
