@@ -31,6 +31,6 @@ int main(){
     ret+=test_normalizer("/a/b../", "/a/", "b../", false, false);
 
     std::cerr<<"ret = "<<ret<<"\n";
-    assert(ret=0);
+    assert(ret==0);
     return 0;
 }
