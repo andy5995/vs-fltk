@@ -12,7 +12,7 @@ This is just temporary limitation, as all dependencies used by this project are 
 | debian-trixie    |  risc64  |      ❓      |     ❓      |
 | freedektop-24.08 |  amd64   |     ✅\*     |    ✅\*     |
 | macos-13         |  amd64   |      ❓      |     ❓      |
-| macos-14         |  arm64   |      ❓      |     ❓      |
+| macos-14         |  arm64   |      ✅      |     ❓      |
 | win64            |  amd64   |      ❌      |     ❓      |
 
 ### Available builds on release
@@ -52,7 +52,7 @@ There are also some more or less optional dependencies:
 There is an ongoing effort to better support `vs` with a proper [lsp](https://github.com/lazy-eggplant/vs.lsp).  
 In the same repo there is also a vscode client extension.
 
-`vs` is expected to leverage this lsp directly in its embedded editor once integrated.
+`vs` is expected to leverage this LSP directly in its embedded editor once integrated.
 
 ## Docker
 
@@ -61,7 +61,7 @@ A docker image is available that contains all the build dependencies. See
 
 ## Building process
 
-> [!NOTICE]  
+> [!NOTE]  
 > This project uses meson, so there are no git submodules for the most part.
 > One exception is made for `flatpak-builder` to be usable.  
 > If you plan on using it to generate new flatpak images, please ensure submodules are also cloned with the rest of the repository.
