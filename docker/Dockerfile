@@ -14,6 +14,7 @@ RUN \
         cmake \
         freeglut3-dev \
         git \
+        libcurl4-openssl-dev \
         libpango1.0-dev \
         libpng-dev \
         libsqlite3-0 \
