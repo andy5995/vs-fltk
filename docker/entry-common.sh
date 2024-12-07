@@ -1,5 +1,5 @@
 #!/bin/bash
-# main_entry.sh
+# entry-common.sh
 
 set -e
 
@@ -15,3 +15,6 @@ fi
 
 usermod -u $HOSTUID builder
 groupmod -g $HOSTGID builder
+
+echo 'export VS_COMMONS_DIR="$WORKSPACE"/build/commons/' >> /home/builder/.profile
+echo 'export VS_LOG_LEVEL=debug' >> /home/builder/.profile
