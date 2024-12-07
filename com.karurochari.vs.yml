@@ -1,10 +1,10 @@
 id: com.karurochari.vs
 runtime: org.freedesktop.Platform
-runtime-version: '24.08'
+runtime-version: "24.08"
 sdk: org.freedesktop.Sdk
-sdk-extensions :
- - "org.freedesktop.Sdk.Extension.llvm19"
- - "org.freedesktop.Sdk.Extension.swift6" 
+sdk-extensions:
+  - "org.freedesktop.Sdk.Extension.llvm19"
+  - "org.freedesktop.Sdk.Extension.swift6"
 build-options:
   append-path: "/usr/lib/sdk/llvm19/bin:/usr/lib/sdk/swift6/bin"
   prepend-ld-library-path: "/usr/lib/sdk/llvm19/lib:/usr/lib/sdk/swift6/lib"
@@ -14,6 +14,7 @@ modules:
   - name: vs-fltk
     buildsystem: meson
     config-opts:
+      - --prefix=/usr
       - --native-file=/run/build/vs-fltk/toolchains/flatpak.ini
       - --buildtype=release
       - -Dtests=false

@@ -175,7 +175,6 @@ vs_fltk = shared_library(
 
         './src/loader.cpp',
 
-
         src_components,
         autogen_components,
 
