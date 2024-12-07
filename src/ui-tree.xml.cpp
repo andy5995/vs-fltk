@@ -153,13 +153,13 @@ int ui_tree_xml::load(const char* file, type_t type, const pugi::xml_node* calle
         }
         else{
           //TODO: register XMl tree?
-          pugi::xml_parse_result result =  doc.load_buffer(std::get<1>(buffer).data, std::get<1>(buffer).size); // doc.load_file(file);
+          pugi::xml_parse_result result =  datadoc.load_buffer(std::get<1>(buffer).data, std::get<1>(buffer).size); 
           if (!result){
               return 1;
           }
         }
 
-        templ::preprocessor processor(datadoc,doc,ns.s.c_str());
+        templ::preprocessor processor(doc,datadoc,ns.s.c_str());
         //Resolve it.
 
         auto& result  = processor.parse();

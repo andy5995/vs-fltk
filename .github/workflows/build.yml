@@ -5,23 +5,23 @@ concurrency:
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
     paths:
-    - '**'
-    - '!**.yml'
-    - '!docs/**'
-    - '!docker/**'
-    - '!**.md'
-    - '**/build.yml'
+      - "**"
+      - "!**.yml"
+      - "!docs/**"
+      - "!docker/**"
+      - "!**.md"
+      - "**/build.yml"
   pull_request:
-    branches: [ master ]
+    branches: [master]
     paths:
-    - '**'
-    - '!**.yml'
-    - '!docs/**'
-    - '!docker/**'    
-    - '!**.md'
-    - '**/build.yml'
+      - "**"
+      - "!**.yml"
+      - "!docs/**"
+      - "!docker/**"
+      - "!**.md"
+      - "**/build.yml"
 
 jobs:
   meson:
@@ -35,86 +35,86 @@ jobs:
       CC: clang-19
       CXX: clang++-19
     steps:
-    - uses: actions/checkout@v4
-    - name: Install dependencies
-      run: |
-        if [ "${{ contains(matrix.os, 'ubuntu') }}" = "true" ]; then
-          sudo apt update
-          curl -fsSL https://bun.sh/install | bash
-          echo "PATH=$HOME/.bun/bin:$PATH" >> $GITHUB_ENV
-          sudo apt update
-          sudo apt remove -y firefox
-          sudo apt upgrade -y
-          sudo apt install -y \
-            freeglut3-dev \
-            libcurl4-openssl-dev \
-            libpng-dev \
-            libsqlite3-0 \
-            python3-pip \
-            python3-setuptools
-          python3 -m pip install meson ninja
-          python3 -m pip uninstall cmake
-          python3 -m pip install cmake==3.30.5 # workaround https://github.com/mesonbuild/meson/issues/13888
-          # for clang
-          sudo apt install -y wget gpg gnupg software-properties-common
-          curl -LO https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 19 # install clang-19
-        else
-          brew update
-          brew install meson ninja
-        fi
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          if [ "${{ contains(matrix.os, 'ubuntu') }}" = "true" ]; then
+            sudo apt update
+            curl -fsSL https://bun.sh/install | bash
+            echo "PATH=$HOME/.bun/bin:$PATH" >> $GITHUB_ENV
+            sudo apt update
+            sudo apt remove -y firefox
+            sudo apt upgrade -y
+            sudo apt install -y \
+              freeglut3-dev \
+              libcurl4-openssl-dev \
+              libpng-dev \
+              libsqlite3-0 \
+              python3-pip \
+              python3-setuptools
+            python3 -m pip install meson ninja
+            python3 -m pip uninstall cmake
+            python3 -m pip install cmake==3.30.5 # workaround https://github.com/mesonbuild/meson/issues/13888
+            # for clang
+            sudo apt install -y wget gpg gnupg software-properties-common
+            curl -LO https://apt.llvm.org/llvm.sh
+            chmod +x llvm.sh
+            sudo ./llvm.sh 19 # install clang-19
+          else
+            brew update
+            brew install meson ninja
+          fi
 
-    - name: Configure and build
-      run: |
-        cmake --version
-        bun install
-        bun run codegen
-        bun run meson-setup.clang-release
-        meson compile -C build/ vs:executable
-    - name: Archive production artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: ubuntu-meson-logs
-        path: |
-          build/meson-logs/**/*
+      - name: Configure and build
+        run: |
+          cmake --version
+          bun install
+          bun run codegen
+          bun run meson-setup.clang-release
+          meson compile -C build/ vs:executable
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-meson-logs
+          path: |
+            build/meson-logs/**/*
   macos:
     runs-on: macos-14
     timeout-minutes: 8
     env:
-      LDFLAGS: '-L/opt/homebrew/opt/llvm/lib'
-      CPPFLAGS: '-I/opt/homebrew/opt/llvm/include'
+      LDFLAGS: "-L/opt/homebrew/opt/llvm/lib"
+      CPPFLAGS: "-I/opt/homebrew/opt/llvm/include"
     steps:
-    - uses: actions/checkout@v4
-    - name: Install dependencies
-      run: |
-        curl -fsSL https://bun.sh/install | bash
-        PATH=$HOME/.bun/bin:$PATH
-        brew update
-        brew install \
-          llvm@19 \
-          freeglut \
-          libpng \
-          meson \
-          ninja
-        brew install --cask xquartz
-        cd /opt/homebrew/opt/llvm/bin
-        #ln -s clang++ clang++-19
-        PATH=/opt/homebrew/opt/llvm/bin:$PATH
-        echo "PATH=$PATH" >> $GITHUB_ENV
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          PATH=$HOME/.bun/bin:$PATH
+          brew update
+          brew install \
+            llvm@19 \
+            freeglut \
+            libpng \
+            meson \
+            ninja
+          brew install --cask xquartz
+          cd /opt/homebrew/opt/llvm/bin
+          #ln -s clang++ clang++-19
+          PATH=/opt/homebrew/opt/llvm/bin:$PATH
+          echo "PATH=$PATH" >> $GITHUB_ENV
 
-    - name: Configure and build
-      run: |
-        cmake --version
-        bun install
-        bun run codegen
-        meson setup --reconfigure build/ --buildtype=release --native-file toolchains/flatpak.ini
-        # Unclear fix to be investigated
-        rm subprojects/libtcc/VERSION
-        meson compile -C build/ vs:executable
-    - name: Archive production artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: macos14-meson-logs
-        path: |
-          build/meson-logs/**/*
+      - name: Configure and build
+        run: |
+          cmake --version
+          bun install
+          bun run codegen
+          meson setup -Dforce_x11_backend=true --reconfigure build/ --buildtype=release --native-file toolchains/flatpak.ini
+          # Unclear fix to be investigated
+          rm subprojects/libtcc/VERSION
+          meson compile -C build/ vs:executable
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos14-meson-logs
+          path: |
+            build/meson-logs/**/*

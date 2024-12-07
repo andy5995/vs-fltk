@@ -30,10 +30,13 @@ opt_fltk.add_cmake_defines(
         'FLTK_BUILD_TEST': false,
         'FLTK_BUILD_OPTIONS': false,
         'FLTK_BUILD_SHARED_LIBS': true,
-        'FLTK_BACKEND_X11': true,
         'CMAKE_POSITION_INDEPENDENT_CODE': true,
     },
 )
+
+if get_option('force_x11_backend')==true
+    opt_fltk.add_cmake_defines({'FLTK_BACKEND_X11': true})
+endif
 
 libfltk_proj = cmake.subproject('libfltk', options: opt_fltk)
 libfltk_dep = libfltk_proj.dependency(['fltk-shared'])
@@ -152,7 +155,7 @@ if curl.found()
 else
 endif
 
-vs_fltk_flags += '-DPUGIXML_COMPACT'
+#vs_fltk_flags += '-DPUGIXML_COMPACT'
 
 subdir('./src/components')
 
@@ -285,8 +288,6 @@ install_subdir(
     strip_directory: true,
 )
 install_subdir('docs', install_dir: 'share/vs-fltk')
-#install_subdir('examples',install_dir:'share/vs-fltk')
-#nstall_subdir('bindings',install_dir:'share/vs-fltk')
 install_data(
     ['./LICENCE.md', './README.md', './RELEASE.md'],
     install_dir: 'share/vs-fltk/',

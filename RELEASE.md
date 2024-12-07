@@ -8,11 +8,15 @@ The main objective is to implement & test most of the pipelines needed to:
 - the generation of its flatpak image
 
 Still, `vs` is somewhat usable as a technical preview.  
-For now, the building pipeline is not well documented and it can be hard to replicate. Also, installing it on most distributions might cause issues with your past or future dependencies. Still, you should be able to try it out via flatpak and the docker image provided by @andy5995.  
+For now, the building pipeline is not well documented, and it can be hard to replicate.  
+Also, installing it on most distributions might cause issues with your past or future dependencies.  
+Still, you should be able to try it out via flatpak and the docker image provided by @andy5995.  
 I am seeking feedback, so you are very welcome to test it along!
 
 For reference, you can check what is the [intended scope](./README.md) of this project in terms of future developments and expected features.  
 The [milestone](./docs/milestones.md) page also contains some related information.
+
+### What's new?
 
 This is what has been implemented so far (and some missing feature for context):
 
@@ -57,3 +61,4 @@ This is what has been implemented so far (and some missing feature for context):
 - Install process mostly implemented in meson (the pre-build codegen step will stay in typescript).
 - Functional flatpak build
 - A docker image for development
+- Initial CI integrations

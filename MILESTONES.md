@@ -3,7 +3,7 @@ For past releases please check in [here](./docs/releases/).
 
 ## 0.1.1-alpha
 
-- [x] Complete the build process
+- [x] Complete the build/install process
 - [x] Docker image
 - [x] Flatpak building pipeline
 - [x] Prepare pipeline for github actions
@@ -14,12 +14,11 @@ For past releases please check in [here](./docs/releases/).
 - [ ] Implement flex, grid, scroll & pack via codegen.
 - [ ] Tidy up the XML caching
 - [ ] Tidy up the JS scripting interface.
-- [x] Complete the build process
-- [x] Flatpak building pipeline
+- [ ] deb package
 
 ## 0.1.5
 
-- [x] Move all components to the new codegen format
+- [x] Move all components to the codegen format
 - [x] Support for script modules
 - [ ] Full support for getters and setters
 - [x] Final implementation of the static xml builder (now external dependency)
