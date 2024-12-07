@@ -106,6 +106,12 @@ bun run vs.example
 
 ### Flatpak
 
+> [!NOTE]  
+> You need a modern version of `flatpak-builder` to be installed.  
+> Some EOL or LTS will not ship with one. Anything > 1.4 should be ok.  
+> Also, make sure your runtime is not using a cmake version in $[3.31.0,3.31.2)$.  
+> A regression later fixed prevents building cmake via meson. Tracked [here](https://github.com/KaruroChori/vs-fltk/issues/46).
+
 Flatpak is not really the ideal approach to deliver `vs` due to the intrinsic cost of having a separate runtime.  
 Also, its sandboxing & permission system might raise some issues (but also help to mitigate the current lack of safety features).  
 Still, it is good to support it at these early stages, since many libraries & build dependencies are bleeding-edge, and other forms of distribution are not as convenient.
