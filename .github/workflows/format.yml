@@ -1,4 +1,4 @@
-name: build and test
+name: Format Bot
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}-format
   cancel-in-progress: true

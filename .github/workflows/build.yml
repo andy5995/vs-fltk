@@ -1,4 +1,4 @@
-name: build and test
+name: Building & Testing
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}-build
   cancel-in-progress: true
