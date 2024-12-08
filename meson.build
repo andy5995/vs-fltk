@@ -1,7 +1,9 @@
 project(
     'vs-fltk',
     ['c', 'cpp', 'swift'],
-    version: 'v0.1.1-alpha-dev',
+    #<inject-version>
+    version: '0.1.0-alpha',
+    #</inject-version>
     meson_version: '>= 1.1',
     default_options: ['c_std=gnu23', 'cpp_std=gnu++23'],
 )
@@ -29,7 +31,7 @@ opt_fltk.add_cmake_defines(
     },
 )
 
-if get_option('force_x11_backend')==true
+if get_option('force_x11_backend') == true
     opt_fltk.add_cmake_defines({'FLTK_BACKEND_X11': true})
 endif
 
@@ -295,4 +297,5 @@ pconf.generate(
     vs_fltk,
     description: 'VS fltk library (C interface only)',
     url: 'https://github.com/KaruroChori/vs-fltk/',
+    version: meson.project_version(),
 )

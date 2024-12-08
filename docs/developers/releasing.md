@@ -5,10 +5,12 @@ But for now they are not, so use this as a checklist for reference:
 
 - [ ] Test that the flatpak distribution builds properly (locally).
 - [ ] Make sure tests are all passing with the current commit (locally).
-- [ ] Update the version number in `meson.build` and `package.json` to the next **odd** revision.
+- [ ] Update the version number in `package.json` to the next **odd** revision.
 - [ ] Clear content in `TODO.md`.
 - [ ] Make sure `RELEASE.md` is up to date. Copy it in `./docs/releases/` using the version name as filename.
-- [ ] Commit.
+- [ ] Run the full codegen step.
+- [ ] Commit & push.
+- [ ] Double check CI are good.
 - [ ] Prepare a tagged release on github. This will trigger the construction of all artifacts.
   - [ ] Packages
   - [ ] Docker images

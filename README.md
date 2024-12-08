@@ -129,7 +129,7 @@ You can read more about which features are planned in the [milestones page](./MI
 
 - Instuctions [for developers](./docs/developers/index.md)
 - Instuctions ~~[for users](./docs/intro.md) of vs~~
-- Complete ~~~[specifications](./docs/developers/full-specs.md) for `vs`~~.
+- Complete ~~[specifications](./docs/developers/full-specs.md) for `vs`~~.
 
 ## Licences
 

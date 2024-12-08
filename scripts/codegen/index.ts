@@ -21,6 +21,15 @@ inline const char* vs_version_tag="${pkg.version.split('-')[1]}";
 inline const char* vs_version(){return "${pkg.version}";}
 `)
 
+if (process.argv[2] != 'quick') {
+    //Ideally I should run `meson rewrite kwargs set project / version ${version}` but the compiler detection breaks everything.
+    const meson = await Bun.file('./meson.build').text();
+    await Bun.write('./meson.build', meson.replace(/#<inject-version>[\s\S]*#<\/inject-version>/g,
+        `#<inject-version>
+    version: '${pkg.version}',
+    #</inject-version>`
+    ))
+}
 
 // Components automatic codegen
 import "./gen-components"
