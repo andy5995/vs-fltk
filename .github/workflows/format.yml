@@ -6,7 +6,11 @@ concurrency:
 on:
   workflow_call:
 jobs:
-  fake-job:
+  fake-format-clang:
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 0
+  fake-format-meson:
     runs-on: ubuntu-latest
     steps:
       - run: exit 0
