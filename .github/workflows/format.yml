@@ -1,0 +1,9 @@
+name: build and test
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+on:
+  workflow_call:
+jobs:
+  #Add here a task for each language to be supported.

@@ -4,6 +4,7 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  workflow_call:
   push:
     branches: [master]
     paths:
@@ -24,6 +25,8 @@ on:
       - "**/build.yml"
 
 jobs:
+  format-checks:
+    uses: ./.github/workflows/format.yml
   meson:
     strategy:
       fail-fast: false
