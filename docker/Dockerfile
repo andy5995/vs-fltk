@@ -28,7 +28,7 @@ RUN \
         unzip \
         wget
 
-RUN useradd -m builder && passwd -d builder
+RUN useradd -m builder -s /bin/bash && passwd -d builder
 RUN echo "builder ALL=(ALL) ALL" >> /etc/sudoers
 WORKDIR /home/builder
 USER builder
