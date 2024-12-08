@@ -1,6 +1,6 @@
 name: Test Build-Env Docker Image
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}-docker-test
   cancel-in-progress: true
 
 on:

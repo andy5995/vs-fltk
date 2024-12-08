@@ -1,6 +1,6 @@
 name: build and test
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}-build
   cancel-in-progress: true
 
 on:
@@ -27,7 +27,7 @@ on:
 jobs:
   format-checks:
     uses: ./.github/workflows/format.yml
-  meson:
+  linux-amd64:
     strategy:
       fail-fast: false
       matrix:
@@ -81,7 +81,7 @@ jobs:
           name: ubuntu-meson-logs
           path: |
             build/meson-logs/**/*
-  macos:
+  macos-arm64:
     runs-on: macos-14
     timeout-minutes: 8
     env:

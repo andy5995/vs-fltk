@@ -1,16 +1,15 @@
 name: Build-Env Docker Image
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}-docker
   cancel-in-progress: true
 
 on:
-  workflow_call:
+  workflow_dispatch:
   push:
     branches: master
     paths:
       - "**Dockerfile"
       - "**docker.yml"
-  workflow_dispatch:
   schedule:
     - cron: "25 1 5 * *"
 
