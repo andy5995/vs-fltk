@@ -7,17 +7,13 @@ project(
     meson_version: '>= 1.1',
     default_options: ['c_std=gnu23', 'cpp_std=gnu++23'],
 )
+cmake = import('cmake')
 
 cc = meson.get_compiler('c')
 cxx = meson.get_compiler('cpp')
 
 #Used by pugi to enable compact mode. I might want to disable execptions too.
 add_global_arguments(['-DPUGIXML_COMPACT'], language: ['cpp', 'c'])
-
-meson.add_devenv({'VS_LOG_LEVEL': 'debug'})
-#TODO: Add a custom profile to devenv to avoid "polluting" or making user's one invalid.
-
-cmake = import('cmake')
 
 opt_fltk = cmake.subproject_options()
 opt_fltk.add_cmake_defines(
@@ -45,7 +41,7 @@ opt_wamr = cmake.subproject_options()
 opt_wamr.add_cmake_defines(
     {
         'WAMR_BUILD_INTERP': 1,
-        'WAMR_BUILD_PLATFORM': 'linux', #TODO: Make it generic based on target arch
+        'WAMR_BUILD_PLATFORM': target_machine.system(),
     },
 )
 
@@ -291,6 +287,10 @@ install_data(
 )
 
 #install_man()
+
+### MESON DEVENV PROFILE
+#TODO: Add a custom profile to devenv to avoid "polluting" or making user's one invalid.
+meson.add_devenv({'VS_LOG_LEVEL': 'debug'})
 
 pconf = import('pkgconfig')
 pconf.generate(
