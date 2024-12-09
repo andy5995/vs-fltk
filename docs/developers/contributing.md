@@ -91,3 +91,13 @@ Each message must specify their semantic type and log level (normal by default).
 - `panic` messages have a `silent` log level
 - `ok` and `continue` messages are usually `verbose`
 - `info`, `warning` and `log` are usually `normal`
+
+## Documentation
+
+Documentation is written in markdown. Files within `docs` will be shipped with `vs` and are expected to read by the internal markdown component.  
+As such:
+
+- They must be written in [CommonMark](https://commonmark.org/) (with some possible extensions like the block headers for notices or warnings).
+- They shall not include HTML within them. XML will be parsed as normal `vs` code.
+
+Files which are written in markdown, but are outside the `docs` can follow a more relaxed format and target github/gitlab extensions for visualization.
