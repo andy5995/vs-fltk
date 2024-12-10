@@ -3,9 +3,9 @@
 set -e
 $WORKSPACE/docker/entry-common.sh
 
-su builder -c bash << EOF
+su builder -c bash -l << EOF
   set -e
-  . ~/.profile
+  cd $WORKSPACE
   bun install
   bun run codegen
   bun run meson-setup.clang-release
