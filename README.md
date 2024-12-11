@@ -22,6 +22,8 @@ Have you ever woken up in the middle of the night, thinking:
 Well, you should eat lighter before nighttime.  
 Still, it is your lucky day, & this project might be for you!
 
+[![Building-Testing-badge]][Building-Testing-url]
+
 ## What is VS (naming review pending)
 
 VS is a front-end framework based on the concept of composable SFCs (Single File Components).  
@@ -180,3 +182,7 @@ This project is based on the following dependencies:
 - [treesitter](https://tree-sitter.github.io/tree-sitter/) to handle parsing of languages (used for some components and the self-hosted editor).
 - [md4c](https://github.com/mity/md4c) a library to parse markdown (not just to HTML).
 - [nlohmann-json](https://github.com/nlohmann/json) to parse json in some `data` directives
+
+[Building-Testing-badge]: https://github.com/KaruroChori/vs-fltk/actions/workflows/build.yml/badge.svg?branch=master
+[Building-Testing-url]: https://github.com/KaruroChori/vs-fltk/actions/workflows/build.yml
+
