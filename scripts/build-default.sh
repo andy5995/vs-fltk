@@ -14,12 +14,16 @@ set -v
 bun install
 bun run codegen
 
-if [ "$(uname)" != "Darwin" ]; then
-  bun run meson-setup.clang-release
+if [ -d "build" ]; then
+  bun run meson-build
 else
-  meson setup -Dforce_x11_backend=true --reconfigure build --buildtype=release --native-file toolchains/flatpak.ini
-  # Unclear fix to be investigated
-  rm subprojects/libtcc/VERSION
+  if [ "$(uname)" != "Darwin" ]; then
+    bun run meson-setup.clang-release
+  else
+    meson setup -Dforce_x11_backend=true --reconfigure build --buildtype=release --native-file toolchains/flatpak.ini
+    # Unclear fix to be investigated
+    rm subprojects/libtcc/VERSION
+  fi
 fi
 
 meson compile -C build vs:executable
