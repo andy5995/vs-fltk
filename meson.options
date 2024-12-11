@@ -12,5 +12,6 @@ option('use_luajit', type: 'boolean', value: true)
 
 # If present, else build it manually
 option('use_system_fltk', type: 'boolean', value: true)
+option('use_system_pugixml', type: 'boolean', value: false)
 
 option('force_x11_backend', type: 'boolean', value: false)

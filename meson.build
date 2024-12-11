@@ -11,31 +11,54 @@ cmake = import('cmake')
 
 cc = meson.get_compiler('c')
 cxx = meson.get_compiler('cpp')
+ 
+need_pugixml=false
+need_fltk=false
 
-#Used by pugi to enable compact mode. I might want to disable execptions too.
-add_global_arguments(['-DPUGIXML_COMPACT'], language: ['cpp', 'c'])
-
-opt_fltk = cmake.subproject_options()
-opt_fltk.add_cmake_defines(
-    {
-        'FLTK_BUILD_FLUID': false,
-        'FLTK_BUILD_EXAMPLES': false,
-        'FLTK_BUILD_TEST': false,
-        'FLTK_BUILD_OPTIONS': false,
-        'FLTK_BUILD_SHARED_LIBS': true,
-        'CMAKE_POSITION_INDEPENDENT_CODE': true,
-    },
-)
-
-if get_option('force_x11_backend') == true
-    opt_fltk.add_cmake_defines({'FLTK_BACKEND_X11': true})
+if get_option('use_system_pugixml')
+    pugixml_dep = dependency('pugixml', version : '>=1.14', required: false)
+    if pugixml_dep.found() == false
+        need_pugixml = true
+    endif 
+endif
+if need_pugixml or get_option('use_system_pugixml') == false
+    #Used by pugi to enable compact mode. I might want to disable execptions too.
+    add_global_arguments(['-DPUGIXML_COMPACT'], language: ['cpp', 'c'])
+    pugixml_proj = subproject('pugixml')
+    pugixml_dep = pugixml_proj.get_variable('pugixml_dep')
 endif
 
-libfltk_proj = cmake.subproject('libfltk', options: opt_fltk)
-libfltk_dep = libfltk_proj.dependency(['fltk-shared'])
-libfltk_images_dep = libfltk_proj.dependency(['fltk-images-shared'])
-libfltk_forms_dep = libfltk_proj.dependency(['fltk-forms-shared'])
-#libfltk_gl_dep = libfltk_proj.dependency(['fltk-gl'])
+if get_option('use_system_fltk')
+    libfltk_dep = dependency('fltk', version : '>=1.4', required: false)
+    libfltk_images_dep = dependency('fltk-images', version : '>=1.4', required: false)
+    libfltk_forms_dep = dependency('fltk-images', version : '>=1.4', required: false)
+    if libfltk_dep.found()==false or libfltk_images_dep.found()==false or libfltk_forms_dep.found()==false 
+        need_fltk=true
+    endif
+endif
+if need_fltk==true or get_option('use_system_fltk') == false
+    opt_fltk = cmake.subproject_options()
+    opt_fltk.add_cmake_defines(
+        {
+            'FLTK_BUILD_FLUID': false,
+            'FLTK_BUILD_EXAMPLES': false,
+            'FLTK_BUILD_TEST': false,
+            'FLTK_BUILD_OPTIONS': false,
+            'FLTK_BUILD_SHARED_LIBS': true,
+            'CMAKE_POSITION_INDEPENDENT_CODE': true,
+        },
+    )
+
+    if get_option('force_x11_backend') == true
+        opt_fltk.add_cmake_defines({'FLTK_BACKEND_X11': true})
+    endif
+
+    libfltk_proj = cmake.subproject('libfltk', options: opt_fltk)
+    libfltk_dep = libfltk_proj.dependency(['fltk-shared'])
+    libfltk_images_dep = libfltk_proj.dependency(['fltk-images-shared'])
+    libfltk_forms_dep = libfltk_proj.dependency(['fltk-forms-shared'])
+    #libfltk_gl_dep = libfltk_proj.dependency(['fltk-gl'])
+endif
 
 opt_wamr = cmake.subproject_options()
 opt_wamr.add_cmake_defines(
@@ -74,9 +97,7 @@ hashlib_dep = hashlib_proj.get_variable('hashlib_dep')
 json_proj = subproject('nlohmann_json')
 json_dep = json_proj.get_variable('nlohmann_json_dep')
 
-pugixml_proj = subproject('pugixml')
-pugixml_dep = pugixml_proj.get_variable('pugixml_dep')
-
+#TODO: Make it a system dependency
 vs_templ_proj = subproject('vs-templ')
 vs_templ_dep = vs_templ_proj.get_variable('vs_templ_dep')
 
