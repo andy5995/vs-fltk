@@ -12,11 +12,10 @@ fi
 set -v
 
 bun install
-bun run codegen
-
 if [ -d "build" ]; then
   bun run meson-build
 else
+  bun run codegen
   if [ "$(uname)" != "Darwin" ]; then
     bun run meson-setup.clang-release
   else
