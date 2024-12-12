@@ -1,15 +1,9 @@
 General overview of upcoming features.  
 For past releases please check in [here](./docs/releases/).
 
-## 0.1.1-alpha
-
-- [x] Complete the build/install process
-- [x] Docker image
-- [x] Flatpak building pipeline
-- [x] Prepare pipeline for github actions
-
 ## 0.1.3
 
+- [ ] Move all components to the revised codegen format
 - [ ] New getters and setters design (and updated schemas).
 - [ ] Implement flex, grid, scroll & pack via codegen.
 - [ ] Tidy up the XML caching
@@ -18,7 +12,6 @@ For past releases please check in [here](./docs/releases/).
 
 ## 0.1.5
 
-- [x] Move all components to the codegen format
 - [x] Support for script modules
 - [ ] Full support for getters and setters
 - [x] Final implementation of the static xml builder (now external dependency)
