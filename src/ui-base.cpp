@@ -6,7 +6,6 @@
 #include <ui-tree.hpp>
 
 #include "pipelines/quickjs-js.hpp"
-#include "quickjs.h"
 #include "ui-frame.hpp"
 #include "utils/strings.hpp"
 
@@ -348,6 +347,7 @@ int ui_base::use_callback(const symbol_ret_t& sym, ui_base * node){
     }
   }
   else if(sym.found_at->get_mode()==frame_mode_t::QUICKJS){
+    #if VS_USE_QJS
     //TODO: Add support for quickjs script modules
     pipelines::quickjs_t* script = (pipelines::quickjs_t*)sym.found_at->script.get();
     auto globalThis = JS_GetGlobalObject(script->ctx);
@@ -355,6 +355,7 @@ int ui_base::use_callback(const symbol_ret_t& sym, ui_base * node){
     JS_FreeValue(script->ctx, ret);
     JS_FreeValue(script->ctx, globalThis);
     return 0;
+    #endif
   }
   else{
     //Callback type not supported yet.

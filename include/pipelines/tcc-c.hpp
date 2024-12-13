@@ -1,5 +1,8 @@
 #pragma once
 
+#if VS_USE_TCC
+
+
 #include <memory>
 #include <ui.hpp>
 #include <utils/tcc-wrap.hpp>
@@ -36,3 +39,5 @@ inline std::shared_ptr<tcc> tcc_c_pipeline_xml(bool is_runtime, vs::ui_base* obj
 
 }
 }
+
+#endif

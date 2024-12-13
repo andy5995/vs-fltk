@@ -1,5 +1,7 @@
 #pragma once
 
+#if VS_USE_QJS
+
 #include <memory>
 #include <ui.hpp>
 #include <quickjs.h>
@@ -49,3 +51,6 @@ inline std::shared_ptr<quickjs_t> qjs_js_pipeline_xml(bool is_runtime, vs::ui_ba
 
 }
 }
+
+
+#endif

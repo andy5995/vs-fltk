@@ -437,6 +437,7 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
       if (mode == frame_mode_t::NATIVE || mode == frame_mode_t::AUTO) {          
         const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
         if (strcmp(lang, "c") == 0) {
+          #ifdef VS_USE_TCC
           auto compiler = pipelines::tcc_c_pipeline_xml(true, is_module?nullptr:current, root, compact, (link_with==nullptr)?nullptr:tmp_link.c_str());
           if(compiler!=nullptr){
             current->set_mode(frame_mode_t::NATIVE);
@@ -452,11 +453,13 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
             }
           }
           continue;
+          #endif
         }
       }
       if (mode == frame_mode_t::QUICKJS || mode == frame_mode_t::AUTO) {
         const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::QUICKJS?"js":"");
         if (strcmp(lang, "js") == 0) {
+          #ifdef VS_USE_QJS
           auto compiler = pipelines::qjs_js_pipeline_xml(true, is_module?nullptr:current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
             if(compiler!=nullptr){
               current->set_mode(frame_mode_t::QUICKJS);
@@ -472,6 +475,7 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
               }
             }
           continue;
+          #endif
         }
       }
       if (mode == frame_mode_t::LUA || mode == frame_mode_t::AUTO) {

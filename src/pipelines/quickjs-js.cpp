@@ -1,3 +1,5 @@
+#if VS_USE_QJS
+
 #include <iostream>
 #include <memory>
 
@@ -329,3 +331,5 @@ std::shared_ptr<quickjs_t> qjs_js_pipeline(bool is_runtime, vs::ui_base* obj, co
 
 }
 }
+
+#endif

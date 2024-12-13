@@ -1,3 +1,5 @@
+#if VS_USE_TCC
+
 #include "globals.hpp"
 #include "ui-frame.hpp"
 #include "ui.hpp"
@@ -249,3 +251,5 @@ std::shared_ptr<smap<symbol_t>>  tcc_c_pipeline_apply(const std::shared_ptr<tcc>
 
 }
 }
+
+#endif

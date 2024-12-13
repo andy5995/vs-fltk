@@ -8,9 +8,18 @@
 
 #include <SQLiteCpp/Database.h>
 #include <sqlite3.h>
+
+#ifdef VS_USE_QJS
 #include <quickjs.h>
+#endif 
+
+#ifdef VS_USE_TCC
 #include "subprojects/libtcc/config.h"
+#endif 
+
+#ifdef VS_USE_WAMR
 #include "subprojects/wamr/core/version.h"
+#endif 
 
 //#include <uv.h>
 #ifdef HAS_CURL
@@ -71,13 +80,21 @@ path_env_t mk_env(const char* arg0,const char* arg1){
 
 
 js_rt_t::js_rt_t(){
+  #if VS_USE_QJS
     auto tmp=JS_NewRuntime();
     //TODO define limits somewhere
     //JS_SetMemoryLimit(tmp, 80 * 1024);
     //JS_SetMaxStackSize(tmp, 10 * 1024);
     rt=tmp;
+  #endif
 }
-js_rt_t::~js_rt_t(){JS_FreeRuntime((JSRuntime*)rt);}
+
+js_rt_t::~js_rt_t(){
+  #if VS_USE_QJS
+    JS_FreeRuntime((JSRuntime*)rt);
+  #endif
+}
+
 void* js_rt_t::operator()(){return rt;}
 
 
@@ -121,18 +138,30 @@ void prepare_db(){
 
 versions_t get_versions(){
     versions_t tmp;
-#   ifdef HAS_CURL
-        tmp.curl=curl_version();
-#   else
-        tmp.curl="Not installed";
-#   endif
-    tmp.fltk=std::to_string(FL_API_VERSION);
-    tmp.libuv="---";//uv_version_string();
-    tmp.sqlite=sqlite3_libversion();
-    tmp.tcc= TCC_VERSION;
-    tmp.quickjs=JS_GetVersion();
     tmp.vs=vs_version();
-    tmp.wamr= WAMR_VERSION;
+#   ifdef HAS_CURL
+        tmp.curl = curl_version();
+#   else
+        tmp.curl = "Not installed";
+#   endif
+    tmp.fltk = std::to_string(FL_API_VERSION);
+    tmp.libuv = "Not installed";//uv_version_string();
+    tmp.sqlite = sqlite3_libversion();
+#   if VS_USE_TCC
+      tmp.tcc = TCC_VERSION;
+#   else
+      tmp.tcc = "Not installed";
+#   endif 
+#   if VS_USE_QJS
+      tmp.quickjs=JS_GetVersion();
+#   else
+      tmp.quickjs = "Not installed";
+#   endif
+#   if VS_USE_WAMR
+      tmp.wamr= WAMR_VERSION;
+#   else
+      tmp.wamr = "Not installed";
+#   endif
     return tmp;
 }
 

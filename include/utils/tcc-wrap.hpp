@@ -1,5 +1,6 @@
 #pragma once
 
+#if VS_USE_TCC
 /*
   Utility library to simplify the usage of libtcc
 */
@@ -87,3 +88,5 @@ class tcc{
         return std::move(compileA);
     }
 };
+
+#endif

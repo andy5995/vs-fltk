@@ -2,8 +2,8 @@ option('tests', type: 'boolean', value: true)
 
 option('use_curl', type: 'boolean', value: true)
 
-option('use_tcc', type: 'boolean', value: true)
-option('use_quickjs', type: 'boolean', value: true)
+option('use_tcc', type: 'boolean', value: false)
+option('use_quickjs', type: 'boolean', value: false)
 option('use_wamr', type: 'boolean', value: true)
 
 # Only one between lua and luajit should be enabled
