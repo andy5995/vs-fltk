@@ -63,7 +63,7 @@ endif
 if get_option('use_system_fltk')
     libfltk_dep = dependency('fltk', version: '>=1.4', required: false)
     libfltk_images_dep = dependency('fltk-images', version: '>=1.4', required: false)
-    libfltk_forms_dep = dependency('fltk-images', version: '>=1.4', required: false)
+    libfltk_forms_dep = dependency('fltk-forms', version: '>=1.4', required: false)
     if libfltk_dep.found() == false or libfltk_images_dep.found() == false or libfltk_forms_dep.found() == false
         need_fltk = true
     endif
