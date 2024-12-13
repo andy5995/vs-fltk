@@ -87,14 +87,14 @@ void ui_tree_xml::log(int severety, const void* _ctx, const char* str, ...){
 
 //General XML loader for apps and components.
 //TODO: The caller node is a design flaw. We need to be given the list of props and slots. Not the full node which might not even exist.
-int ui_tree_xml::load(const char* file, type_t type, const pugi::xml_node* caller_node, ui_base* caller_ui_node, const scoped_rpath_t* caller_path, const policies_t& base_policies)
+int ui_tree_xml::load(const char* file, type_t type, const pugi::xml_node* caller_node, ui_base* caller_ui_node, const scoped_rpath_t* caller_path)
 {
   //TODO: As part of this process, policies should be aligned with what defined in the base config, 
   //and not just one single set of options, so that we can pattern match paths.
-  policies.inherit(base_policies);
+  policies.inherit(globals.env.computed_policies);
 
-  resolve_path resolver(policies,globals::path_env,(caller_path==nullptr)?globals::path_env.cwd:*caller_path);
-  auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,file);
+  resolve_path resolver(policies,globals.path_env,(caller_path==nullptr)?globals.path_env.cwd:*caller_path);
+  auto buffer = fetcher(globals,resolver,resolve_path::from_t::NATIVE_CODE,file);
 
   if(std::get<0>(buffer)==resolve_path::reason_t::OK){
     this->local=std::get<2>(buffer).base_dir();
@@ -144,9 +144,9 @@ int ui_tree_xml::load(const char* file, type_t type, const pugi::xml_node* calle
         pugi::xml_document datadoc;
         auto tplt = root_data.attribute("template");  //TODO: Adapt to use the proper syntax. I cannot remember which one was it
 
-        resolve_path resolver(policies,globals::path_env,this->local);
+        resolve_path resolver(policies,globals.path_env,this->local);
 
-        auto buffer = fetcher(resolver,resolve_path::from_t::NATIVE_CODE,tplt.as_string());
+        auto buffer = fetcher(globals,resolver,resolve_path::from_t::NATIVE_CODE,tplt.as_string());
         if(std::get<0>(buffer)!=resolve_path::reason_t::OK){
           //TODO: error handling
           return 2;
@@ -230,8 +230,8 @@ void ui_tree_xml::_build(const pugi::xml_node& root, ui_base* root_ui){
     }
     else{
       log(severety_t::INFO,root,"Loading component %s", src.as_string()); //TODO: How is it possible that this shows file:// in place of the actual one?
-      ui_tree_xml component_tree; 
-      if(component_tree.load(src.as_string(),type_t::COMPONENT,&root,root_ui,&local, policies)!=0){
+      ui_tree_xml component_tree(globals); 
+      if(component_tree.load(src.as_string(),type_t::COMPONENT,&root,root_ui,&local)!=0){
         log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", src);
       }
       else{
@@ -286,7 +286,7 @@ void ui_tree_xml::_build(const pugi::xml_node& root, ui_base* root_ui){
   }
   //DEBUG
   else if(strcmp(root.name(),strings.DEBUG_TAG)==0){
-    globals::debug(root.attribute("key").as_string("<NULL>"), root.attribute("value").as_string("<NULL>"));
+    globals.debug(root.attribute("key").as_string("<NULL>"), root.attribute("value").as_string("<NULL>"));
     return;
   }
   //VIEWPORT
@@ -342,8 +342,8 @@ void ui_tree_xml::_build(const pugi::xml_node& root, ui_base* root_ui){
   else if(imports.contains(root.name())){
     auto it = imports.find(root.name());
     log(severety_t::INFO,root,"Loading component %s", it->second.c_str()); //TODO: How is it possible that this shows file:// in place of the actual one?
-    ui_tree_xml component_tree; 
-    if(component_tree.load(it->second.c_str(),type_t::COMPONENT,&root,root_ui,&local, policies)!=0){
+    ui_tree_xml component_tree(globals); 
+    if(component_tree.load(it->second.c_str(),type_t::COMPONENT,&root,root_ui,&local)!=0){
       log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", it->second.c_str());
     }
     else{
@@ -405,7 +405,7 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
         is_module=true;
         auto filename = this->fullname.as_string();
 
-        auto found = globals::mem_storage.get({filename.c_str(),this->local_unique_counter+1,cache::resource_t::SCRIPT});
+        auto found = globals.mem_storage.get({filename.c_str(),this->local_unique_counter+1,cache::resource_t::SCRIPT});
         if(found!=nullptr){
           current->set_mode(((cache::script_t*)found->ref.get())->mode);
           current->attach_script(((cache::script_t*)found->ref.get())->script,is_module);
@@ -423,7 +423,7 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
       auto link_with = doc.first_child().attribute("link-with").as_string(nullptr);
       std::string tmp_link;
       if(link_with!=nullptr){
-        resolve_path resolver(policies,globals::path_env,local);
+        resolve_path resolver(policies,globals.path_env,local);
         auto computed_path = resolver(resolve_path::from_t::NATIVE_CODE,link_with);
         if(computed_path.first==resolve_path::reason_t::OK){
           //TODO: For now I am assuming it is on the fs. I should resolve it to tmp if remote for example
@@ -438,7 +438,7 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
         const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::NATIVE?"c":"");
         if (strcmp(lang, "c") == 0) {
           #ifdef VS_USE_TCC
-          auto compiler = pipelines::tcc_c_pipeline_xml(true, is_module?nullptr:current, root, compact, (link_with==nullptr)?nullptr:tmp_link.c_str());
+          auto compiler = pipelines::tcc_c_pipeline_xml(globals,true, is_module?nullptr:current, root, compact, (link_with==nullptr)?nullptr:tmp_link.c_str());
           if(compiler!=nullptr){
             current->set_mode(frame_mode_t::NATIVE);
             current->attach_script(compiler,is_module);
@@ -448,7 +448,7 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
               auto tmp = std::make_shared<cache::script_t>(cache::script_t{
                 compiler, symbols, frame_mode_t::NATIVE
               });
-              globals::mem_storage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
+              globals.mem_storage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
               local_unique_counter++;
             }
           }
@@ -460,7 +460,7 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
         const auto &lang = root.attribute("lang").as_string(mode==frame_mode_t::QUICKJS?"js":"");
         if (strcmp(lang, "js") == 0) {
           #ifdef VS_USE_QJS
-          auto compiler = pipelines::qjs_js_pipeline_xml(true, is_module?nullptr:current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
+          auto compiler = pipelines::qjs_js_pipeline_xml(globals,true, is_module?nullptr:current, root, (link_with==nullptr)?nullptr:tmp_link.c_str());
             if(compiler!=nullptr){
               current->set_mode(frame_mode_t::QUICKJS);
               current->attach_script(compiler,is_module);
@@ -470,7 +470,7 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
                 auto tmp = std::make_shared<cache::script_t>(cache::script_t{
                   compiler, symbols, frame_mode_t::QUICKJS
                 });
-                globals::mem_storage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
+                globals.mem_storage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
                 local_unique_counter++;
               }
             }

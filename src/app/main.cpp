@@ -20,42 +20,44 @@
 #include <themes/default-cute.hpp>
 #include <globals.hpp>
 
+vs::global_ctx_t globals;
+
 using namespace vs;
 
 int run(const char* path, const char *entry, const char* profile, const char* tests=nullptr){
-  globals::env.computed_policies.debug();  //To set an initial record in the debug file.
-  globals::env.computed_policies.inherit(policies_t::from_env());
-  globals::path_env = mk_env(path, entry);
+  globals.env.computed_policies.debug();  //To set an initial record in the debug file.
+  globals.env.computed_policies.inherit(policies_t::from_env());
+  globals.path_env = mk_env(globals, path, entry);
 
   std::cout<<"\n--------- paths ---------\n";
-  std::cout <<"cwd:  "<<globals::path_env.cwd.as_string()<<"\n"
-            <<"app:  "<<globals::path_env.app_path.as_string()<<"\n"
-            <<"vs:   "<<globals::path_env.root.as_string()<<"\n"
-            <<"data: "<<globals::path_env.userdata_path.as_string()<<"\n"
-            <<"repo: "<<globals::path_env.packages_path.as_string()<<"\n"
-            <<"tmp:  "<<globals::path_env.tmp_path.as_string()<<"\n";
+  std::cout <<"cwd:  "<<globals.path_env.cwd.as_string()<<"\n"
+            <<"app:  "<<globals.path_env.app_path.as_string()<<"\n"
+            <<"vs:   "<<globals.path_env.root.as_string()<<"\n"
+            <<"data: "<<globals.path_env.userdata_path.as_string()<<"\n"
+            <<"repo: "<<globals.path_env.packages_path.as_string()<<"\n"
+            <<"tmp:  "<<globals.path_env.tmp_path.as_string()<<"\n";
 
 
   try{
-    std::filesystem::create_directories(globals::path_env.userdata_path.location);
-    std::filesystem::create_directories(globals::path_env.packages_path.location);
+    std::filesystem::create_directories(globals.path_env.userdata_path.location);
+    std::filesystem::create_directories(globals.path_env.packages_path.location);
     std::string db_path;
     {
       auto t = getenv("VS_DB");
       if(t!=nullptr)db_path=t;
-      else db_path=globals::path_env.userdata_path.location+"db.sqlite";
+      else db_path=globals.path_env.userdata_path.location+"db.sqlite";
 
       if(!std::filesystem::exists(db_path)){
-        if(t==nullptr)std::filesystem::copy_file(globals::path_env.root.location+"db.sqlite",db_path);
+        if(t==nullptr)std::filesystem::copy_file(globals.path_env.root.location+"db.sqlite",db_path);
       }
     }
 
     //TODO implement test
     if(tests!=nullptr){
-      globals::env.computed_policies.testing=true;
+      globals.env.computed_policies.testing=true;
     }
 
-    app_loader loader(profile,entry);
+    app_loader loader(globals,profile,entry);
   
     //TODO implement test
     if(tests!=nullptr){

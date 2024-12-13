@@ -52,12 +52,12 @@ char* itoa(int value, char* result, int base) {
 
 //'/home/checkroom/Documents/projects/vs-fltk/subprojects/libtcc/tcc'  test.c  -I../../subprojects/libtcc/include/ -L.  -L../../subprojects/libtcc -lapp 
 
-static void vs_debug(const char* k, const char* v){globals::debug(k,v);}
+static void vs_debug(global_ctx_t& global, const char* k, const char* v){/*globals.debug(k,v);*/}
 
 #define LIB(x)  script->add_sym(#x, (void*) x)
 #define LIBT(x,t)  script->add_sym(#x, (void*) t x)
 
-std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), bool compact, const char *link_with){
+std::shared_ptr<tcc> tcc_c_pipeline(global_ctx_t& globals, bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), bool compact, const char *link_with){
     auto script = std::make_shared<tcc>();
 
     //This part is a bit of a mess.
@@ -78,8 +78,8 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
 
     script->set_out_type(tcc::memory);
 
-    script->add_sysinclude_path((globals::path_env.root.location+"./bindings/native/tcc/include").c_str());
-    script->add_include_path((globals::path_env.root.location+"./bindings/native/include").c_str());
+    script->add_sysinclude_path((globals.path_env.root.location+"./bindings/native/tcc/include").c_str());
+    script->add_include_path((globals.path_env.root.location+"./bindings/native/include").c_str());
     
     //script->add_lib("ld");
     //script->add_lib("tcc1");
@@ -174,7 +174,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     if(on_compiled!=nullptr)on_compiled();
 
     auto on_static_test = (int(*)())script->get_sym("static_test");
-    if(on_static_test!=nullptr && globals::env.computed_policies.testing)on_static_test();
+    if(on_static_test!=nullptr && globals.env.computed_policies.testing)on_static_test();
 
     if(obj!=nullptr){
         //Apply the environment for single use scripts.

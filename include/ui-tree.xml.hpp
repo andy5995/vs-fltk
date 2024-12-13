@@ -49,8 +49,9 @@ public:
 
     int build();
 
-    int load(const char* file, type_t type, const pugi::xml_node* caller_node=nullptr, ui_base* caller_ui_node=nullptr, const scoped_rpath_t* caller_path=nullptr, const policies_t& base_policies=globals::env.computed_policies);
+    int load(const char* file, type_t type, const pugi::xml_node* caller_node=nullptr, ui_base* caller_ui_node=nullptr, const scoped_rpath_t* caller_path=nullptr);
 
+    inline ui_tree_xml(global_ctx_t& g):ui_tree(g){}
     virtual ~ui_tree_xml();
     virtual void cleanup();
     virtual int runtime_testsuite(){if(this->root!=nullptr)return this->root->all_tests();return 0;}

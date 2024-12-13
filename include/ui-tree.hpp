@@ -1,5 +1,6 @@
 #pragma once
 
+#include "globals.hpp"
 #include "ui-frame.hpp"
 #include <ui.hpp>
 #include <cache/commons.hpp>
@@ -13,6 +14,8 @@ struct ui_tree {
 
   //Define the embedded mode supported.
   frame_mode_t mode = frame_mode_t::AUTO;
+
+  global_ctx_t& globals;
 
   ui_tree* parent = nullptr;      //Set if there is an explict owner of this root, for example a viewport.
 
@@ -46,6 +49,8 @@ struct ui_tree {
   virtual ~ui_tree();
   virtual void cleanup();
   virtual int runtime_testsuite();
+
+  inline ui_tree(global_ctx_t& g):globals(g){}
 
 };
 

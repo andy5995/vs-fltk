@@ -34,7 +34,7 @@ namespace vs{
 
 
 //TODO: For now this is linux only. I will need to be expanded to support more os
-path_env_t mk_env(const char* arg0,const char* arg1){
+path_env_t mk_env(global_ctx_t& globals, const char* arg0,const char* arg1){
   path_env_t main_env;
   static char buffer[1024];
   if(getcwd(buffer,1023)==nullptr){throw "Unable to get CWD";}
@@ -69,7 +69,7 @@ path_env_t mk_env(const char* arg0,const char* arg1){
   main_env.tmp_path={rpath_type_t::FS,"/tmp/"};
 
   //Finally compute path for the requested file
-  resolve_path resolver(globals::env.computed_policies,main_env,main_env.cwd);
+  resolve_path resolver(globals.env.computed_policies,main_env,main_env.cwd);
   {
     auto t = resolver(resolve_path::from_t::NATIVE_CODE,arg1);
     if(t.first!=resolve_path::reason_t::OK)exit(2); //TODO: Handle case
@@ -98,6 +98,16 @@ js_rt_t::~js_rt_t(){
 void* js_rt_t::operator()(){return rt;}
 
 
+vs_test_debug_t::vs_test_debug_t(){auto file=getenv("VS_DEBUG_FILE");if(file!=nullptr)fd=fopen(file,"w+");}
+vs_test_debug_t::~vs_test_debug_t(){if(fd!=nullptr)fclose(fd);}
+
+void vs_test_debug_t::operator()(const char* field, const char* value){  
+    if(fd==nullptr)return;
+    else{
+        auto now = std::chrono::system_clock::now();
+        fprintf(fd,"%s\t%s\t%ld\n",field,value,std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch()).count());
+    }
+}
 
 
 

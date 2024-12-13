@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+
 #include <utils/paths.hpp>
 
 /**
@@ -13,13 +14,24 @@
 
 namespace vs{
 
-path_env_t mk_env(const char* arg0, const char* arg1);
+
+struct global_ctx_t;
+
+path_env_t mk_env(global_ctx_t& globals, const char* arg0, const char* arg1);
 
 struct js_rt_t{
     void* rt;
     js_rt_t();
     ~js_rt_t();
     void* operator()();
+};
+
+struct vs_test_debug_t{
+    FILE* fd = nullptr;
+    vs_test_debug_t();
+    ~vs_test_debug_t();
+
+    void operator()(const char* field, const char* value);
 };
 
 /**

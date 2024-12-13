@@ -52,7 +52,7 @@ std::tuple<resolve_path::reason_t::t, cache::mem_storage_t::entry_it*, component
  * @param preserve if true, this entry should be preserved after the build process is done
  * @return std::tuple<resolve_path::reason_t::t,cache::buffer_t, scoped_rpath_t> the return code, a buffer and the new base path derived from src
  */
-std::tuple<resolve_path::reason_t::t,cache::buffer_t, scoped_rpath_t> fetcher(resolve_path& base, resolve_path::from_t scope,const char* src, bool promote=false, bool preserve=false);
+std::tuple<resolve_path::reason_t::t,cache::buffer_t, scoped_rpath_t> fetcher(global_ctx_t& globals, resolve_path& base, resolve_path::from_t scope,const char* src, bool promote=false, bool preserve=false);
 
 /**
  * @brief Fetch a resource, convert it in an xml tree and store in in cache (or get it if already there)
@@ -65,6 +65,6 @@ std::tuple<resolve_path::reason_t::t,cache::buffer_t, scoped_rpath_t> fetcher(re
  * @param preserve if true, this entry should be preserved after the build process is done
  * @return std::tuple<resolve_path::reason_t::t,cache::xml_tree_t, scoped_rpath_t> the return code, a buffer and the new base path derived from src
  */
-std::tuple<resolve_path::reason_t::t,const pugi::xml_document* , scoped_rpath_t> fetcher_xml(resolve_path& base, resolve_path::from_t scope,const char* src, bool promote=false, bool preserve=false);
+std::tuple<resolve_path::reason_t::t,const pugi::xml_document* , scoped_rpath_t> fetcher_xml(global_ctx_t& globals, resolve_path& base, resolve_path::from_t scope,const char* src, bool promote=false, bool preserve=false);
 
 }
