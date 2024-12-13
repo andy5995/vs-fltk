@@ -3,7 +3,7 @@ For past releases please check in [here](./docs/releases/).
 
 ## 0.1.3
 
-- [ ] Move all components to the revised codegen format
+- [x] Move all components to the revised codegen format
 - [ ] New getters and setters design (and updated schemas).
 - [ ] Implement flex, grid, scroll & pack via codegen.
 - [ ] Tidy up the XML caching

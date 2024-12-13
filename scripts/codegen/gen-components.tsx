@@ -15,15 +15,16 @@ import { render, JSXXML } from 'jsx-xml'
 
 
 function make_type_code(type: Static<typeof type_schema>, subtype: string, code: string) {
-    if (type === 'raw') return code;
-    if (type === 'flag') return `bool computed; if((ok=field_types::h_flag(&computed,value,that))){${code}}`
+    if (false) { }
+    else if (type === 'flag') return `bool computed; if((ok=field_types::h_flag(&computed,value,that))){${code}}`
+    else if (type === 'enum') return `int computed  = field_types::${subtype}_i(value);if((ok=(computed!=-1))){${code}}`
+    else if (type === 'raw') return code;
+    else if (type === 'path') return `/*TODO*/`
     else if (type === 'color') return `uint32_t computed; if((ok=field_types::h_colour(&computed,value,that))){${code}}`
     else if (type === 'string') return code;
     else if (type === 'scalar-1') return `size_t computed[1]; if((ok = field_types::h_px(1,computed,value,that))){${code}}`
     else if (type === 'scalar-2') return `size_t computed[2]; if((ok = field_types::h_px(2,computed,value,that))){${code}}`
     else if (type === 'scalar-4') return `size_t computed[4]; if((ok = field_types::h_px(4,computed,value,that))){${code}}`
-    else if (type === 'enum') return `int computed  = field_types::${subtype}_i(value);if((ok=(computed!=-1))){${code}}`
-    else if (type === 'path') return `/*TODO*/`
 }
 
 function gen_cpp(data: Static<typeof widget_schema>) {
@@ -73,46 +74,46 @@ int ${cppname}::_apply_prop(${cppname}* that, const char* prop, const char* valu
     auto& w = that->widget();
     bool ok = true;
     if(false){}
-    ${(data.skip_props ?? []).map(x => {
+    ${(data.skip_fields ?? []).map(x => {
         if (x[x.length - 1] == '*') return `else if (strncmp(prop, "${x}", ${x.length - 1})==0){}`
         else return `else if(strcmp(prop,"${x}")==0){}`
     }).join('\n\t')}
-    ${Object.entries(data.props).map(x => {
+    ${Object.entries(data.fields).filter(x => x[1].setter != undefined).map(x => {
         x[1].alias = x[1].alias ?? []
         x[1].alias.push(x[0]);
         return x[1].alias.map(y => `
     ${x[1].description ? `//${x[1].description}` : ``}
     else if(strcmp(prop,"${y}")==0){
-        ${make_type_code(x[1].type, x[1].subtype ?? "", x[1].code ?? "")}
+        ${make_type_code(x[1].type, x[1].subtype ?? "", x[1].setter ?? "")}
     }`).join('\n')
     }
     ).join('\n')
         }
-    ${cextends === null ? `else {return 2;}\nreturn ok?0:1;` : `if(!ok) return 1; else return ${data.codegen.props_tail ?? `${cextends[0]}_${cextends[1]}`}::_apply_prop((${data.codegen.props_tail ?? `${cextends[0]}_${cextends[1]}`}*)that,prop,value);`}
+    ${cextends === null ? `else {return 2;}\nreturn ok?0:1;` : `if(!ok) return 1; else return ${data.codegen.set_tail ?? `${cextends[0]}_${cextends[1]}`}::_apply_prop((${data.codegen.set_tail ?? `${cextends[0]}_${cextends[1]}`}*)that,prop,value);`}
 }
 
 int ${cppname}:: _get_computed(${cppname} * that, const char* prop, const char** value) {
     auto& w = that->widget();
     bool ok = true;
     if(false){}
-    ${Object.entries(data.computed).map(x => {
+    ${Object.entries(data.fields).filter(x => x[1].getter != undefined).map(x => {
             x[1].alias?.push(x[0]);
             return x[1].alias?.map(y => `
     ${x[1].description ? `//${x[1].description}` : ``}
     else if(strcmp(prop,"${y}")==0){
-        ${x[1].code}
+        ${x[1].getter}
     }`).join('\n')
         }
         ).join('\n')
         }
-    ${cextends === null ? `else {return 2;}\nreturn ok?0:1;` : `if(!ok) return 1; else return ${data.codegen.props_tail ?? `${cextends[0]}_${cextends[1]}`}::_get_computed((${data.codegen.props_tail ?? `${cextends[0]}_${cextends[1]}`}*)that,prop,value);`}
+    ${cextends === null ? `else {return 2;}\nreturn ok?0:1;` : `if(!ok) return 1; else return ${data.codegen.get_tail ?? `${cextends[0]}_${cextends[1]}`}::_get_computed((${data.codegen.get_tail ?? `${cextends[0]}_${cextends[1]}`}*)that,prop,value);`}
 }
     
 }
 `;
 
     let parser_selector =
-        data.usable != false ?
+        data.exposed != false ?
             data.type === 'leaf' ? `mkNSLeafWidget(${data.ns}, ${data.name}, ${cppname})` :
                 data.type === 'node' ? `mkNSNodeWidget(${data.ns}, ${data.name}, ${cppname}) ` :
                     data.type === 'container' ? `mkNSContainerWidget(${data.ns}, ${data.name}, ${cppname})` :
@@ -130,8 +131,14 @@ function gen_xsd(data: Static<typeof widget_schema>) { }
 function gen_xml_editor(data: Static<typeof widget_schema>) {
     return <component ns={data.ns} name={data.name} type={data.type} extends={data.extends} >
         <description>{data.description ?? "No description provided"}</description>
-        <props>{Object.entries(data.props).map(x => <item name={x[0]} alias={x[1].alias} type={x[1].type}>{x[1].description ?? 'No description provided'}</item>)}</props>
-        <computed>{Object.entries(data.computed).map(x => <item name={x[0]} alias={x[1].alias} type={x[1].type}>{x[1].description ?? 'No description provided'}</item>)}</computed>
+        <fields>{Object.entries(data.fields).map(x =>
+            <item
+                name={x[0]} alias={x[1].alias}
+                type={x[1].type} subtype={x[1].subtype}
+                semantic={x[1].semantic}
+                is-prop={x[1].setter != null} is-computed={x[1].getter != null}
+            >{x[1].description ?? 'No description provided'}</item>)}
+        </fields>
     </component>
 }
 
@@ -145,6 +152,9 @@ await $`mkdir -p ./include/components/autogen/`
 
 await $`rm -rf ./commons/schemas/components/`
 await $`mkdir -p ./commons/schemas/components/`
+
+//Save the schema, so that our json files can all be validated in the editor while writing them.
+await Bun.write('./commons/schemas/json-component.schema.json', JSON.stringify(widget_schema, null, 4))
 
 const glob = new Glob("./schemas/components/**/*.json");
 
@@ -204,9 +214,6 @@ await Bun.write('./src/ui.xml-widgets.autogen.cpp', parser_entries.join('\n'))
 await Bun.write('./include/cbindings/components.autogen.h', '')
 //TODO
 await Bun.write('./src/cbindings/components.autogen.cpp', '')
-
-//Save the schema, so that our json files can all be validated in the editor while writing them.
-await Bun.write('./commons/schemas/json-component.schema.json', JSON.stringify(widget_schema, null, 4))
 
 if (process.argv[2] != 'quick') {
     await Bun.write('./src/components/autogen/meson.build', `autogen_components = [${cpp_files.map(x => `'${x}'`)}]`)
