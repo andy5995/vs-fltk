@@ -63,7 +63,10 @@ endif
 if get_option('use_system_fltk')
     libfltk_dep = dependency('fltk', version: '>=1.4', required: false)
     if not libfltk_dep.found()
-      libfltk_dep = cc.find_library('fltk', required: false)
+      fltk_config = find_program('fltk-config')
+      fltk_cflags = run_command(fltk_config, '--cflags', check: true).stdout().strip()
+      fltk_libs = run_command(fltk_config, '--ldflags', '--use-gl', check: true).stdout().strip().split(' ')
+      libfltk_dep = declare_dependency(compile_args: fltk_cflags, link_args: fltk_libs)
     endif
     libfltk_images_dep = dependency('fltk-images', version: '>=1.4', required: false)
     libfltk_forms_dep = dependency('fltk-images', version: '>=1.4', required: false)
