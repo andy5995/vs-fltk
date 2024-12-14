@@ -20,5 +20,35 @@ jobs:
     permissions:
       contents: write
     steps:
-      - run: exit 0
-      #TODO https://github.com/quickjs-ng/quickjs/blob/master/.github/workflows/release.yml or https://github.com/saghul/txiki.js/blob/master/.github/workflows/release.yml for reference?
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          curl -fsSL https://bun.sh/install | bash
+          echo "PATH=$HOME/.bun/bin:$PATH" >> $GITHUB_ENV
+          sudo apt update
+          sudo apt remove -y firefox
+          sudo apt upgrade -y
+          sudo apt install -y \
+            freeglut3-dev \
+            libcurl4-openssl-dev \
+            libpng-dev \
+            libsqlite3-0 \
+            python3-pip \
+            python3-setuptools
+          python3 -m pip install meson ninja
+          python3 -m pip uninstall cmake
+          python3 -m pip install cmake==3.30.5 # workaround https://github.com/mesonbuild/meson/issues/13888
+
+      - name: Configure and build
+        run: |
+          cmake --version
+          bun install
+          bun run codegen
+          bun run meson-setup.release
+          meson dist -C build/ --allow-dirty --no-tests --include-subprojects
+      - name: Add artifact
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ./build/meson-dist/**/*
