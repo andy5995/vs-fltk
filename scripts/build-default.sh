@@ -9,7 +9,7 @@ if [ ! -f "src/app/main.cpp" ]; then
   echo "This script must be run from the source root."
   exit 1
 fi
-
+cmake --version
 set -v
 if [ "CI" != "true" ]; then
   # Update subprojects no more than every 7 days, or force with '-f'
