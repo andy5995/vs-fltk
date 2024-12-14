@@ -25,3 +25,5 @@ This is what has been implemented so far (and some missing feature for context):
 - [ ] Updated code-gen
 
 - [ ] Updated core features
+  - [x] Removed most of the globals
+  - [x] Reworked `ui_tree` interface to be more generic and not only viable for xml trees.
