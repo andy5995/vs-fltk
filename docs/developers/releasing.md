@@ -3,7 +3,6 @@
 Ideally all these steps should be made automatic when a release request is triggered.  
 But for now they are not, so use this as a checklist for reference:
 
-- [ ] Test that the flatpak distribution builds properly (locally).
 - [ ] Make sure tests are all passing with the current commit (locally).
 - [ ] Update the version number in `package.json` to the next **odd** revision.
 - [ ] Clear content in `TODO.md`.
