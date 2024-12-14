@@ -186,6 +186,12 @@ if get_option('use_networking_curl')
 endif
 
 #TODO: support networking_simple
+if get_option('use_networking_simple')
+    libhttp_proj = subproject('libhttp')
+    libhttp_dep = libhttp_proj.get_variable('libhttp_dep')
+
+    vs_fltk_deps += libhttp_dep
+endif
 
 include_dirs = include_directories(['./include'])
 
