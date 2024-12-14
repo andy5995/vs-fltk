@@ -105,3 +105,6 @@ extern void vs_debug(const char* key, const char* value);
 #define $plotter(x)   void* __EXPORT_DRW_##x = x;
 #define $field        vs_field_t MAKE_UNIQUE_VARIABLE_NAME(__EXPORT_FIELD_)= 
 #define $fn(x)        void* __EXPORT_UKN_##x = x;
+
+//Extra functions
+char* itoa(int value, char* result, int base);

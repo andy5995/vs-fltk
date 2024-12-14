@@ -1,7 +1,7 @@
 {
   "name": "vs-fltk",
   "description": "Build system for `vs`, a sfc framework for native UI frontends",
-  "version": "0.1.1-alpha",
+  "version": "0.1.2-alpha",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "bun ./scripts/codegen/index.ts",

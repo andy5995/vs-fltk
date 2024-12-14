@@ -1,5 +1,6 @@
 #pragma once
 
+#include "globals.hpp"
 #include "ui-frame.hpp"
 #include <ui.hpp>
 #include <cache/commons.hpp>
@@ -14,15 +15,15 @@ struct ui_tree {
   //Define the embedded mode supported.
   frame_mode_t mode = frame_mode_t::AUTO;
 
-  ui_tree* parent = nullptr;      //Set if there is an explict owner of this root, for example a viewport.
+  global_ctx_t& globals;            //Just for book-keeping
 
-
+  ui_tree* parent = nullptr;        //Set if there is an explict owner of this root, for example a viewport/app.
   ui_base* caller_ui_node=nullptr;  //Element from a parent tree calling me
   ui_base* root = nullptr;          //Base element of this tree
 
-  policies_t policies;            //Computed policies for this tree
-  scoped_rpath_t local;            //Full path for the location of this component.
-  scoped_rpath_t fullname;            //Full path for the location of this component.
+  policies_t policies;              //Computed policies for this tree
+  scoped_rpath_t local;             //Full path for the location of this component.
+  scoped_rpath_t fullname;          //Full path for the location of this component.
   size_t local_unique_counter = 0;
 
   // Globals
@@ -46,6 +47,8 @@ struct ui_tree {
   virtual ~ui_tree();
   virtual void cleanup();
   virtual int runtime_testsuite();
+
+  inline ui_tree(global_ctx_t& g, ui_tree* parent, ui_base* caller_ui_node):globals(g){this->parent=parent;this->caller_ui_node=caller_ui_node;}
 
 };
 

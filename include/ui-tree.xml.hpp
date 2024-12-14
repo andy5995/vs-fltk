@@ -25,7 +25,7 @@ private:
         ns_strings strings;
 #   endif
 
-    const pugi::xml_node *caller_node = nullptr;
+    const pugi::xml_node *caller_xml_node = nullptr;
 
 
     pugi::xml_document doc;         //Handle of the xml parser
@@ -49,8 +49,9 @@ public:
 
     int build();
 
-    int load(const char* file, type_t type, const pugi::xml_node* caller_node=nullptr, ui_base* caller_ui_node=nullptr, const scoped_rpath_t* caller_path=nullptr, const policies_t& base_policies=globals::env.computed_policies);
+    int load(const char* file, type_t type);
 
+    inline ui_tree_xml(global_ctx_t& g, ui_tree* parent, ui_base* caller_ui_node, const pugi::xml_node* caller_xml_node):ui_tree(g,parent,caller_ui_node){this->caller_xml_node=caller_xml_node;}
     virtual ~ui_tree_xml();
     virtual void cleanup();
     virtual int runtime_testsuite(){if(this->root!=nullptr)return this->root->all_tests();return 0;}

@@ -2,7 +2,7 @@ project(
     'vs-fltk',
     ['c', 'cpp', 'swift'],
     #<inject-version>
-    version: '0.1.1-alpha',
+    version: '0.1.2-alpha',
     #</inject-version>
     meson_version: '>= 1.1',
     default_options: ['c_std=gnu23', 'cpp_std=gnu++23'],
@@ -11,15 +11,47 @@ cmake = import('cmake')
 
 cc = meson.get_compiler('c')
 cxx = meson.get_compiler('cpp')
- 
-need_pugixml=false
-need_fltk=false
+
+need_pugixml = false
+need_fltk = false
+
+# Full dependency list for vs_fltk
+
+vs_fltk_deps = []
+
+# Process options
+
+if get_option('use_tcc')
+    add_global_arguments(['-DVS_USE_TCC'], language: ['cpp', 'c'])
+endif
+
+if get_option('use_quickjs')
+    add_global_arguments(['-DVS_USE_QJS'], language: ['cpp', 'c'])
+endif
+
+if get_option('use_wamr')
+    add_global_arguments(['-DVS_USE_WAMR'], language: ['cpp', 'c'])
+endif
+
+if get_option('use_lua') and get_option('use_luajit')
+    error(
+        'Only lua or luajit can be used. At least one must be disabled from the options',
+    )
+endif
+
+if get_option('use_lua')
+    add_global_arguments(['-DVS_USE_LUA'], language: ['cpp', 'c'])
+endif
+
+if get_option('use_luajit')
+    add_global_arguments(['-DVS_USE_LUAJIT'], language: ['cpp', 'c'])
+endif
 
 if get_option('use_system_pugixml')
-    pugixml_dep = dependency('pugixml', version : '>=1.14', required: false)
+    pugixml_dep = dependency('pugixml', version: '>=1.14', required: false)
     if pugixml_dep.found() == false
         need_pugixml = true
-    endif 
+    endif
 endif
 if need_pugixml or get_option('use_system_pugixml') == false
     #Used by pugi to enable compact mode. I might want to disable execptions too.
@@ -29,14 +61,14 @@ if need_pugixml or get_option('use_system_pugixml') == false
 endif
 
 if get_option('use_system_fltk')
-    libfltk_dep = dependency('fltk', version : '>=1.4', required: false)
-    libfltk_images_dep = dependency('fltk-images', version : '>=1.4', required: false)
-    libfltk_forms_dep = dependency('fltk-images', version : '>=1.4', required: false)
-    if libfltk_dep.found()==false or libfltk_images_dep.found()==false or libfltk_forms_dep.found()==false 
-        need_fltk=true
+    libfltk_dep = dependency('fltk', version: '>=1.4', required: false)
+    libfltk_images_dep = dependency('fltk-images', version: '>=1.4', required: false)
+    libfltk_forms_dep = dependency('fltk-forms', version: '>=1.4', required: false)
+    if libfltk_dep.found() == false or libfltk_images_dep.found() == false or libfltk_forms_dep.found() == false
+        need_fltk = true
     endif
 endif
-if need_fltk==true or get_option('use_system_fltk') == false
+if need_fltk == true or get_option('use_system_fltk') == false
     opt_fltk = cmake.subproject_options()
     opt_fltk.add_cmake_defines(
         {
@@ -60,26 +92,42 @@ if need_fltk==true or get_option('use_system_fltk') == false
     #libfltk_gl_dep = libfltk_proj.dependency(['fltk-gl'])
 endif
 
-opt_wamr = cmake.subproject_options()
-opt_wamr.add_cmake_defines(
-    {
-        'WAMR_BUILD_INTERP': 1,
-        'WAMR_BUILD_PLATFORM': target_machine.system(),
-    },
-)
+if get_option('use_wamr')
+    opt_wamr = cmake.subproject_options()
+    opt_wamr.add_cmake_defines(
+        {
+            'WAMR_BUILD_INTERP': 1,
+            'WAMR_BUILD_PLATFORM': target_machine.system(),
+        },
+    )
+    wamr_proj = cmake.subproject('wamr', options: opt_wamr)
+    wamr_dep = wamr_proj.dependency('wamr')
 
-wamr_proj = cmake.subproject('wamr', options: opt_wamr)
-wamr_dep = wamr_proj.dependency('wamr')
+    vs_fltk_deps += wamr_dep
 
-opt_quickjs = cmake.subproject_options()
-opt_quickjs.add_cmake_defines(
-    {
-        'CMAKE_POSITION_INDEPENDENT_CODE': true,
-    },
-)
+endif
 
-quickjs_proj = cmake.subproject('quickjs', options: opt_quickjs)
-quickjs_dep = quickjs_proj.dependency('qjs')
+if get_option('use_quickjs')
+    opt_quickjs = cmake.subproject_options()
+    opt_quickjs.add_cmake_defines(
+        {
+            'CMAKE_POSITION_INDEPENDENT_CODE': true,
+        },
+    )
+
+    quickjs_proj = cmake.subproject('quickjs', options: opt_quickjs)
+    quickjs_dep = quickjs_proj.dependency('qjs')
+
+    vs_fltk_deps += quickjs_dep
+
+endif
+
+if get_option('use_tcc')
+    libtcc_proj = subproject('libtcc')
+    libtcc_dep = libtcc_proj.get_variable('libtcc_dep')
+
+    vs_fltk_deps += libtcc_dep
+endif
 
 md4c_proj = cmake.subproject('md4c')
 md4c_dep = md4c_proj.dependency('md4c')
@@ -103,9 +151,6 @@ vs_templ_dep = vs_templ_proj.get_variable('vs_templ_dep')
 
 treesitter_proj = subproject('tree-sitter')
 treesitter_dep = treesitter_proj.get_variable('tree_sitter_dep')
-
-libtcc_proj = subproject('libtcc')
-libtcc_dep = libtcc_proj.get_variable('libtcc_dep')
 
 #uv_proj = subproject('libuv')
 #uv_dep = uv_proj.get_variable('libuv_dep')
@@ -132,14 +177,27 @@ sqlite_dep = dependency(
     default_options: 'default_library=static',
 )
 
-#TODO handle the case in which libcurl does not exist. Missing is fine, just no https/http prefix for paths.
-curl = dependency('libcurl', required: false)
+if get_option('use_networking_curl') and get_option('use_networking_simple')
+    error('Only one networking solution can be selected between curl and simple')
+endif
+
+if get_option('use_networking_curl')
+    curl = dependency('libcurl', required: false)
+endif
+
+#TODO: support networking_simple
+if get_option('use_networking_simple')
+    libhttp_proj = subproject('libhttp')
+    libhttp_dep = libhttp_proj.get_variable('libhttp_dep')
+
+    vs_fltk_deps += libhttp_dep
+endif
 
 include_dirs = include_directories(['./include'])
 
 # Prepare `vs`
 
-vs_fltk_deps = [
+vs_fltk_deps += [
     libfltk_dep,
     libfltk_images_dep,
     libfltk_forms_dep,
@@ -152,8 +210,6 @@ vs_fltk_deps = [
     #uv_dep,    The one provided with the system if present should be fine for our tasks
     hashlib_dep,
 
-    libtcc_dep,
-    quickjs_dep,
     sqlite_dep,
     sqlitecpp_dep,
 

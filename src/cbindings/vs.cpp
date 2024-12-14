@@ -11,7 +11,7 @@ void vs_hello_world(){
     std::cout<<doc.root().first_child().name()<<"\n";
 }
 
-void vs_debug(const char* k, const char* v){vs::globals::debug(k,v);}
+void vs_debug(const char* k, const char* v){/*vs::globals::debug(k,v);*/}
 
 
 struct vs_symbol_t vs_symbol_null = {VS_SYMBOL_MODE_AUTO,VS_SYMBOL_TYPE_VOID,NULL};

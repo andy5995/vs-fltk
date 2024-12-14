@@ -2,22 +2,17 @@
   "$schema": "../../commons/schemas/json-component.schema.json",
   "description": "Blabla bla",
   "type": "leaf",
+  "exposed": true,
   "headers": ["FL/Fl_Button.H"],
   "codegen": {
     "extends": "ui<Fl_Button>"
   },
   "extends": "fl:base",
-  "props": {
+  "fields": {
     "somethig": {
       "type": "string",
-      "code": "",
-      "alias": ["alias-a", "alias-b"]
-    }
-  },
-  "computed": {
-    "computed-a": {
-      "type": "string",
-      "code": "",
+      "setter": "",
+      "getter": "",
       "alias": ["alias-a", "alias-b"]
     }
   }

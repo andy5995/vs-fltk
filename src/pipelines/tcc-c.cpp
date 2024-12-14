@@ -1,3 +1,5 @@
+#if VS_USE_TCC
+
 #include "globals.hpp"
 #include "ui-frame.hpp"
 #include "ui.hpp"
@@ -22,14 +24,40 @@ void tcc_log_symbol_func_xml(const pugi::xml_node& ctx, const char * msg, const 
     ui_tree_xml::log(severety_t::INFO, ctx , msg, name);
 }
 
+char* itoa(int value, char* result, int base) {
+    // check that the base if valid
+    if (base < 2 || base > 36) { *result = '\0'; return result; }
+
+    char* ptr = result, *ptr1 = result, tmp_char;
+    int tmp_value;
+
+    do {
+        tmp_value = value;
+        value /= base;
+        *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
+    } while ( value );
+
+    // Apply negative sign
+    if (tmp_value < 0) *ptr++ = '-';
+    *ptr-- = '\0';
+  
+    // Reverse the string
+    while(ptr1 < ptr) {
+        tmp_char = *ptr;
+        *ptr--= *ptr1;
+        *ptr1++ = tmp_char;
+    }
+    return result;
+}
+
 //'/home/checkroom/Documents/projects/vs-fltk/subprojects/libtcc/tcc'  test.c  -I../../subprojects/libtcc/include/ -L.  -L../../subprojects/libtcc -lapp 
 
-static void vs_debug(const char* k, const char* v){globals::debug(k,v);}
+static void vs_debug(global_ctx_t& global, const char* k, const char* v){/*globals.debug(k,v);*/}
 
 #define LIB(x)  script->add_sym(#x, (void*) x)
 #define LIBT(x,t)  script->add_sym(#x, (void*) t x)
 
-std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), bool compact, const char *link_with){
+std::shared_ptr<tcc> tcc_c_pipeline(global_ctx_t& globals, bool is_runtime, vs::ui_base* obj, const char* src, void* ctx, void(*error_fn)(void*,const char*), bool compact, const char *link_with){
     auto script = std::make_shared<tcc>();
 
     //This part is a bit of a mess.
@@ -50,8 +78,8 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
 
     script->set_out_type(tcc::memory);
 
-    script->add_sysinclude_path((globals::path_env.root.location+"./bindings/native/tcc/include").c_str());
-    script->add_include_path((globals::path_env.root.location+"./bindings/native/include").c_str());
+    script->add_sysinclude_path((globals.path_env.root.location+"./bindings/native/tcc/include").c_str());
+    script->add_include_path((globals.path_env.root.location+"./bindings/native/include").c_str());
     
     //script->add_lib("ld");
     //script->add_lib("tcc1");
@@ -81,6 +109,8 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     script->add_sym("vs_set", (void *)+[](ui_base* w,const char* k, const void* v){if(w==nullptr)return -1;std::string tmp = std::string("#s_")+k;return w->use_setter(w->resolve_symbol_local(tmp.c_str(), false), v);});
     script->add_sym("vs_get", (void *)+[](ui_base* w,const char* k, void** v){if(w==nullptr)return -1;std::string tmp = std::string("#g_")+k;return w->use_getter(w->resolve_symbol_local(tmp.c_str(), false), v);});
     
+    //Runtime functions
+    script->add_sym("itoa", (void *)itoa);
 
     // Fragments of stdlib
     // --- cstring
@@ -144,7 +174,7 @@ std::shared_ptr<tcc> tcc_c_pipeline(bool is_runtime, vs::ui_base* obj, const cha
     if(on_compiled!=nullptr)on_compiled();
 
     auto on_static_test = (int(*)())script->get_sym("static_test");
-    if(on_static_test!=nullptr && globals::env.computed_policies.testing)on_static_test();
+    if(on_static_test!=nullptr && globals.env.computed_policies.testing)on_static_test();
 
     if(obj!=nullptr){
         //Apply the environment for single use scripts.
@@ -221,3 +251,5 @@ std::shared_ptr<smap<symbol_t>>  tcc_c_pipeline_apply(const std::shared_ptr<tcc>
 
 }
 }
+
+#endif
