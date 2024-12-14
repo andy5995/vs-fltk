@@ -54,7 +54,7 @@ jobs:
           bun run meson-setup.clang-release
           meson dist -C build/ --allow-dirty --no-tests --include-subprojects
       - name: Add artifact
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             ./build/meson-dist/**/*
