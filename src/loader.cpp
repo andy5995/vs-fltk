@@ -37,7 +37,7 @@ app_loader::app_loader(global_ctx_t& globals, const char *profile, const char *p
     doc.load_string(embedded_profile);
   }
 
-  root = new ui_tree_xml(globals);
+  root = new ui_tree_xml(globals,nullptr,nullptr,nullptr);
   if (root->load(path, ui_tree::type_t::APP) != 0) {
     throw "Unable to process file";
   } else {

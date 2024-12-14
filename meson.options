@@ -1,6 +1,7 @@
 option('tests', type: 'boolean', value: true)
 
-option('use_curl', type: 'boolean', value: true)
+option('use_networking_curl', type: 'boolean', value: true)
+option('use_networking_simple', type: 'boolean', value: false)
 
 option('use_tcc', type: 'boolean', value: true)
 option('use_quickjs', type: 'boolean', value: true)

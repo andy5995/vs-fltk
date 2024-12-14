@@ -177,10 +177,15 @@ sqlite_dep = dependency(
     default_options: 'default_library=static',
 )
 
-#TODO handle the case in which libcurl does not exist. Missing is fine, just no https/http prefix for paths.
-if get_option('use_curl')
+if get_option('use_networking_curl') and get_option('use_networking_simple')
+    error('Only one networking solution can be selected between curl and simple')
+endif
+
+if get_option('use_networking_curl')
     curl = dependency('libcurl', required: false)
 endif
+
+#TODO: support networking_simple
 
 include_dirs = include_directories(['./include'])
 

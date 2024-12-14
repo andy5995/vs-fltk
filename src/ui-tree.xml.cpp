@@ -87,13 +87,14 @@ void ui_tree_xml::log(int severety, const void* _ctx, const char* str, ...){
 
 //General XML loader for apps and components.
 //TODO: The caller node is a design flaw. We need to be given the list of props and slots. Not the full node which might not even exist.
-int ui_tree_xml::load(const char* file, type_t type, const pugi::xml_node* caller_node, ui_base* caller_ui_node, const scoped_rpath_t* caller_path)
+int ui_tree_xml::load(const char* file, type_t type)
 {
   //TODO: As part of this process, policies should be aligned with what defined in the base config, 
   //and not just one single set of options, so that we can pattern match paths.
   policies.inherit(globals.env.computed_policies);
+  if(parent!=nullptr)policies.inherit(parent->policies);
 
-  resolve_path resolver(policies,globals.path_env,(caller_path==nullptr)?globals.path_env.cwd:*caller_path);
+  resolve_path resolver(policies,globals.path_env,(parent==nullptr)?globals.path_env.cwd:parent->local);
   auto buffer = fetcher(globals,resolver,resolve_path::from_t::NATIVE_CODE,file);
 
   if(std::get<0>(buffer)==resolve_path::reason_t::OK){
@@ -102,8 +103,6 @@ int ui_tree_xml::load(const char* file, type_t type, const pugi::xml_node* calle
   }
 
   this->type = type;
-  this->caller_node=caller_node;
-  this->caller_ui_node=caller_ui_node;
   vs_log(severety_t::INFO, nullptr, "Requested loading of file `%s`", std::get<2>(buffer).as_string().data());
 
   //TODO: Move this to cache later on, but for now just dump the result into a buffer
@@ -230,8 +229,8 @@ void ui_tree_xml::_build(const pugi::xml_node& root, ui_base* root_ui){
     }
     else{
       log(severety_t::INFO,root,"Loading component %s", src.as_string()); //TODO: How is it possible that this shows file:// in place of the actual one?
-      ui_tree_xml component_tree(globals); 
-      if(component_tree.load(src.as_string(),type_t::COMPONENT,&root,root_ui,&local)!=0){
+      ui_tree_xml component_tree(globals,this,root_ui,&root); 
+      if(component_tree.load(src.as_string(),type_t::COMPONENT)!=0){
         log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", src);
       }
       else{
@@ -267,8 +266,8 @@ void ui_tree_xml::_build(const pugi::xml_node& root, ui_base* root_ui){
     //Copy the content provided by the parent in place of the slot, or render its content if the parent has none.
     const auto& name = root.attribute("tag").as_string("default");
     //The default slot.
-    if(this->caller_node!=nullptr){
-      const auto& match = this->caller_node->find_child([&name](const pugi::xml_node& node){
+    if(this->caller_xml_node!=nullptr){
+      const auto& match = this->caller_xml_node->find_child([&name](const pugi::xml_node& node){
         return (strcmp(node.name(),"inject")==0) && (strcmp(node.attribute("tag").as_string("default"),name)==0);
         });
         
@@ -342,8 +341,8 @@ void ui_tree_xml::_build(const pugi::xml_node& root, ui_base* root_ui){
   else if(imports.contains(root.name())){
     auto it = imports.find(root.name());
     log(severety_t::INFO,root,"Loading component %s", it->second.c_str()); //TODO: How is it possible that this shows file:// in place of the actual one?
-    ui_tree_xml component_tree(globals); 
-    if(component_tree.load(it->second.c_str(),type_t::COMPONENT,&root,root_ui,&local)!=0){
+    ui_tree_xml component_tree(globals,this,root_ui,&root); 
+    if(component_tree.load(it->second.c_str(),type_t::COMPONENT)!=0){
       log(severety_t::INFO,root,"Loading failed, file cannot be opened %s", it->second.c_str());
     }
     else{
@@ -571,7 +570,7 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
 
     //For components add to its direct children the attributes coming from above
     if(strcmp(root.parent().name(),strings.COMPONENT_TAG)==0){
-      for (const auto &i : this->caller_node->attributes()) {
+      for (const auto &i : this->caller_xml_node->attributes()) {
         //Exclude src as it was consumed in here.
         if(strcmp(i.name(),"src")!=0)props.insert_or_assign(i.name(), i.value());
       }
