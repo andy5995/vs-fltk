@@ -2,6 +2,67 @@
 
 namespace vs{
 
+std::pair<bool,component_t> next_component_attempt(std::pair<bool,component_t> current){
+    /*static constexpr std::pair<bool,component_t> next[] = {
+        {true, component_t::VS},
+        {true,component_t::XML},
+        {true,component_t::WASM},
+        {true,component_t::LIB},
+        {true,component_t::CNATIVE},
+        {false, component_t::VS},
+        {false,component_t::XML},
+        {false,component_t::WASM},
+        {false,component_t::LIB},
+        {false,component_t::CNATIVE},
+        {true,component_t::MARKDOWN},
+        {false,component_t::MARKDOWN},
+        {false,component_t::NONE},
+    };*/
+    if(current.second<component_t::CNATIVE)return {current.first,(component_t)((int)current.second+1)};
+    else if (current.first==true && current.second==component_t::CNATIVE)return {false,component_t::VS};
+    else if(current.first==false && current.second==component_t::CNATIVE)return {true,component_t::MARKDOWN};
+    else if (current.first==true && current.second==component_t::MARKDOWN)return {false,component_t::MARKDOWN};
+    else if(current.first==false && current.second==component_t::MARKDOWN)return {false,component_t::NONE};
+
+    return {false, component_t::NONE};
+}
+
+component_t component_t_i(const char* t){
+    if(false);
+    else if(strcmp(t,".vs")==1)return component_t::VS;
+    else if(strcmp(t,".xml")==1)return component_t::XML;
+    else if(strcmp(t,".wasm")==1)return component_t::WASM;
+#   if defined(__linux__)
+    else if(strcmp(t,".so")==1)return component_t::LIB;
+#   elif defined(_WIN32) || defined(_WIN64)
+    else if(strcmp(t,".dll")==1)return component_t::LIB;
+#   elif defined(__APPLE__)
+    else if(strcmp(t,".dylib")==1)return component_t::LIB;
+#   endif
+    else if(strcmp(t,".c")==1)return component_t::CNATIVE;
+    else if(strcmp(t,".md")==1)return component_t::MARKDOWN;
+    else return component_t::NONE;
+}
+
+constexpr const char* component_t_s(component_t t){
+    if(t==component_t::NONE)return nullptr;
+    else if(t==component_t::VS)return ".vs";
+    else if(t==component_t::XML)return ".xml";
+    else if(t==component_t::WASM)return ".wasm";
+    else if(t==component_t::LIB){
+#   if defined(__linux__)
+        return ".so";
+#   elif defined(_WIN32) || defined(_WIN64)
+        return ".dll";
+#   elif defined(__APPLE__)
+        return ".dylib";
+#   endif
+    }
+    else if(t==component_t::CNATIVE)return ".c";
+    else if(t==component_t::MARKDOWN)return ".md";
+    else return nullptr;
+}
+
 void scoped_vpath_t::from_string(const char* src){
         vprefix(vpath_type_t::THIS)
         else vprefix(vpath_type_t::DATA)

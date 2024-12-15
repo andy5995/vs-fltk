@@ -12,17 +12,7 @@
 namespace vs{
 
 
-enum struct component_t{
-    NONE,
-    VS,
-    XML,
-    WASM,
-    LIB,
-    CNATIVE,
-    MARKDOWN,
-};
-component_t component_t_i(const char* t);
-constexpr const char* component_t_s(component_t t);
+
 
 
 //Fetch any resource from any path to memory.

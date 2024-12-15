@@ -3,12 +3,12 @@
  * @file paths.hpp
  * @author karurochari
  * @brief Utilities to handle virtual and real paths in a safe and portable way.
- * 
+ * @details This library DOES NOT fetch nor verify those files actually exists, but error codes are provided so that they can be used in cascade.
+ *          The only checks performed are about policies, to ensure that path in that context was usable.
  * @copyright Copyright (c) 2024
  * 
  */
 
-#include <cstdint>
 #include <cstring>
 #include <string>
 #include <utils/policies.hpp>
@@ -21,12 +21,31 @@ namespace vs{
 #define rprefix(b) if(strncmp((src),rpath_type_t::as_string(b),std::char_traits<char>::length(rpath_type_t::as_string(b)))==0){type=b;location=src+std::char_traits<char>::length(rpath_type_t::as_string(b));}
 
 
+enum struct component_t{
+    NONE,
+    VS,
+    XML,
+    WASM,
+    LIB,
+    CNATIVE,
+    MARKDOWN,
+};
+component_t component_t_i(const char* t);
+constexpr const char* component_t_s(component_t t);
+
+/**
+ * @brief In case of a file inclusion without extension, like `this://component`, this function tells which one to look for next.
+ * 
+ * @return std::pair<bool,component_t> boolean true if a file, false if a file inside the folder.
+ */
+std::pair<bool,component_t> next_component_attempt(std::pair<bool,component_t>);
+
 struct vpath_type_t{
     enum t{
         NONE,
-        THIS,FS,HTTP,HTTPS,GEMINI,TMP,DATA,REPO,APP,VS,CWD,  //Real paths
-        SOCKET,                                 //External endpoint
-        STORAGE,SESSION                         //Cache loopbacks
+        THIS,FS,HTTP,HTTPS,GEMINI,TMP,DATA,REPO,APP,VS,CWD,     //Real paths
+        SOCKET,                                                 //External endpoint
+        STORAGE,SESSION                                         //Cache loopbacks
     };
 
     static inline constexpr const char* prefixes[] = {
