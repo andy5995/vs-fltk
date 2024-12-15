@@ -237,6 +237,7 @@ vs_fltk = shared_library(
         './src/cache/res-storage.cpp',
         './src/cache/secrets.cpp',
 
+        './src/utils/resources.cpp',
         './src/utils/paths.cpp',
         './src/utils/strings.cpp',
         './src/utils/env.cpp',

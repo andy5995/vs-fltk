@@ -16,7 +16,7 @@ namespace vs{
 
 
 //Fetch any resource from any path to memory.
-std::tuple<resolve_path::reason_t::t, cache::mem_storage_t::entry_it*, component_t> fetch_any(const app_env_t& env, const char* path, resolve_path::from_t scope, bool promote=false, bool preserve=false);
+std::tuple<resolve_path::reason_t::t, cache::mem_storage_t::entry_it*, res::component_t> fetch_any(const app_env_t& env, const char* path, resolve_path::from_t scope, bool promote=false, bool preserve=false);
 
 /*Fully fetches a component by:
 - Looking for the best match which exists
@@ -28,7 +28,7 @@ std::tuple<resolve_path::reason_t::t, cache::mem_storage_t::entry_it*, component
     - LIB skip, the library will be loaded on demand
     - CNATIVE compile and save it as script. Technically it is not, but I am not going to compile it over and over and script works as a container
 */
-std::tuple<resolve_path::reason_t::t, cache::mem_storage_t::entry_it*, component_t> fetch_component(const app_env_t& env, const char* path, resolve_path::from_t scope, bool promote=false, bool preserve=false);
+std::tuple<resolve_path::reason_t::t, cache::mem_storage_t::entry_it*, res::component_t> fetch_component(const app_env_t& env, const char* path, resolve_path::from_t scope, bool promote=false, bool preserve=false);
 
 
 

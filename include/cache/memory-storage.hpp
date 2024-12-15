@@ -18,7 +18,7 @@
 #include <variant>
 
 #include "commons.hpp"
-#include "utils/paths.hpp"
+#include "utils/resources.hpp"
 
 namespace vs{
 namespace cache{
@@ -61,7 +61,7 @@ namespace cache{
 class mem_storage_t{
     public: 
         struct entry_t{
-            typedef std::variant<vs::component_t, vs::script_t> format_t;
+            typedef std::variant<vs::res::component_t, vs::res::script_t> format_t;
             std::shared_ptr<void> ref;
             format_t format;
         };
