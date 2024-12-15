@@ -24,6 +24,8 @@
 #include <globals.hpp>
 #include <fetcher.hpp>
 
+#include <utils/paths.hpp>
+
 #if __has_include("components/autogen/index.hpp")
 #include <components/autogen/index.hpp>
 #endif
@@ -447,7 +449,7 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
               auto tmp = std::make_shared<cache::script_t>(cache::script_t{
                 compiler, symbols, frame_mode_t::NATIVE
               });
-              globals.mem_storage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
+              globals.mem_storage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp, script_t::C);
               local_unique_counter++;
             }
           }
@@ -469,7 +471,7 @@ void ui_tree_xml::_build_base_widget_extended_attr(const pugi::xml_node &root, u
                 auto tmp = std::make_shared<cache::script_t>(cache::script_t{
                   compiler, symbols, frame_mode_t::QUICKJS
                 });
-                globals.mem_storage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp);
+                globals.mem_storage.fetch_from_shared({this->fullname.as_string().c_str(),local_unique_counter+1,cache::resource_t::SCRIPT,false,false}, tmp, script_t::JS);
                 local_unique_counter++;
               }
             }

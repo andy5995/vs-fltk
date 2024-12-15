@@ -11,12 +11,15 @@ But for now they are not, so use this as a checklist for reference:
 - [ ] Commit & push.
 - [ ] Double check CI are good.
 - [ ] Prepare a tagged release on github. This will trigger the construction of all artifacts.
-  - [ ] Packages
   - [ ] Docker images
-  - [ ] Flatpak
   - [ ] Full source archive including subprojects to fix their version
 
 After release:
 
 - [ ] Update the version number in `meson.build` and `package.json` to the next **even** revision.
 - [ ] Clear content in `RELEASE.md`
+- [ ] Manually trigger a release for distribution on the other repository by tagging a new version under the same number.
+      This will generate:
+  - Deb packages
+  - Flatpak
+  - et cetera

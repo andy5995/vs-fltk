@@ -15,8 +15,10 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <variant>
 
 #include "commons.hpp"
+#include "utils/paths.hpp"
 
 namespace vs{
 namespace cache{
@@ -59,7 +61,9 @@ namespace cache{
 class mem_storage_t{
     public: 
         struct entry_t{
+            typedef std::variant<vs::component_t, vs::script_t> format_t;
             std::shared_ptr<void> ref;
+            format_t format;
         };
         typedef std::unordered_map<mem_key_t, entry_t>::const_iterator entry_it;
     private:
@@ -72,16 +76,16 @@ class mem_storage_t{
     public:
         //Add a memory entry from various sources. Interpreting it is a task for the consumer later on, based on the resource type tag.
 
-        entry_it fetch_from_buffer(const mem_key_t& path, std::span<uint8_t const> str);
-        entry_it fetch_from_cstring(const mem_key_t& path, std::string_view str);
-        entry_it fetch_from_fs(const mem_key_t& path);
+        entry_it fetch_from_buffer(const mem_key_t& path, std::span<uint8_t const> str, entry_t::format_t format);
+        entry_it fetch_from_cstring(const mem_key_t& path, std::string_view str, entry_t::format_t  format);
+        entry_it fetch_from_fs(const mem_key_t& path, entry_t::format_t  format);
 #       ifdef HAS_CURL
-            entry_it fetch_from_http(const mem_key_t& path);
-            entry_it fetch_from_https(const mem_key_t& path);
-            entry_it fetch_from_gemini(const mem_key_t& path);
+            entry_it fetch_from_http(const mem_key_t& path, entry_t::format_t  format);
+            entry_it fetch_from_https(const mem_key_t& path, entry_t::format_t  format);
+            entry_it fetch_from_gemini(const mem_key_t& path, entry_t::format_t  format);
 #       endif
-        entry_it fetch_from_res_storage(const mem_key_t& path);
-        entry_it fetch_from_shared(const mem_key_t& key, const std::shared_ptr<void>& src);
+        entry_it fetch_from_res_storage(const mem_key_t& path, entry_t::format_t  format);
+        entry_it fetch_from_shared(const mem_key_t& key, const std::shared_ptr<void>& src, entry_t::format_t format);
 
 
         void drop(const mem_key_t&);

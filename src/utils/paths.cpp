@@ -45,26 +45,6 @@ component_t component_t_i(const char* t){
     else return component_t::NONE;
 }
 
-constexpr const char* component_t_s(component_t t){
-    if(t==component_t::NONE)return nullptr;
-    else if(t==component_t::VS)return ".vs";
-    else if(t==component_t::XML)return ".xml";
-    else if(t==component_t::WASM)return ".wasm";
-    else if(t==component_t::RISCV)return ".riscv";
-    else if(t==component_t::LIB){
-#   if defined(__linux__)
-        return ".so";
-#   elif defined(_WIN32) || defined(_WIN64)
-        return ".dll";
-#   elif defined(__APPLE__)
-        return ".dylib";
-#   endif
-    }
-    else if(t==component_t::CNATIVE)return ".c";
-    else if(t==component_t::MARKDOWN)return ".md";
-    else return nullptr;
-}
-
 void scoped_vpath_t::from_string(const char* src){
         vprefix(vpath_type_t::THIS)
         else vprefix(vpath_type_t::DATA)

@@ -17,7 +17,7 @@ namespace vs{
 namespace cache{
 
 
-mem_storage_t::entry_it  mem_storage_t::fetch_from_buffer(const mem_key_t& path, std::span<uint8_t const> str){
+mem_storage_t::entry_it  mem_storage_t::fetch_from_buffer(const mem_key_t& path, std::span<uint8_t const> str, entry_t::format_t  format){
     uint8_t* buffer = new uint8_t[str.size()];
     memcpy(buffer,str.data(),str.size());
     auto w =std::shared_ptr<buffer_t>(new buffer_t{buffer,str.size()}, +[](buffer_t* p){delete[] p->data;delete p;});
@@ -27,7 +27,7 @@ mem_storage_t::entry_it  mem_storage_t::fetch_from_buffer(const mem_key_t& path,
     else return entries.end();
 }
 
-mem_storage_t::entry_it  mem_storage_t::fetch_from_cstring(const mem_key_t& path, std::string_view str){
+mem_storage_t::entry_it  mem_storage_t::fetch_from_cstring(const mem_key_t& path, std::string_view str, entry_t::format_t  format){
     uint8_t* buffer = new uint8_t[str.size()+1];
     memcpy(buffer,str.data(),str.size());
     buffer[str.size()]=0;
@@ -38,7 +38,7 @@ mem_storage_t::entry_it  mem_storage_t::fetch_from_cstring(const mem_key_t& path
     else return entries.end();
 }
 
-mem_storage_t::entry_it  mem_storage_t::fetch_from_fs(const mem_key_t& path){
+mem_storage_t::entry_it  mem_storage_t::fetch_from_fs(const mem_key_t& path, entry_t::format_t  format){
     uint8_t* buffer = nullptr;
     size_t fsize = 0;
     {
@@ -59,14 +59,14 @@ mem_storage_t::entry_it  mem_storage_t::fetch_from_fs(const mem_key_t& path){
     }
     //Special destructor that must also destroy the buffer itself once done.
     auto w =std::shared_ptr<buffer_t>(new buffer_t{buffer,fsize+1}, +[](buffer_t* p){delete[] p->data;delete p;});
-    auto it = entries.emplace(path, w);
+    auto it = entries.emplace(path, entry_t{w,format});
     if(it.second==true)return it.first;
     else return entries.end();
 }
 
 #ifdef HAS_CURL
 
-mem_storage_t::entry_it mem_storage_t::fetch_from_http(const mem_key_t& path){
+mem_storage_t::entry_it mem_storage_t::fetch_from_http(const mem_key_t& path, entry_t::format_t  format){
     CURL *curl;
     CURLcode res;
 
@@ -107,7 +107,7 @@ mem_storage_t::entry_it mem_storage_t::fetch_from_http(const mem_key_t& path){
     return entries.end();
 }
 
- mem_storage_t::entry_it mem_storage_t::fetch_from_https(const mem_key_t& path){
+ mem_storage_t::entry_it mem_storage_t::fetch_from_https(const mem_key_t& path, entry_t::format_t  format){
     CURL *curl;
     CURLcode res;
 
@@ -153,18 +153,18 @@ mem_storage_t::entry_it mem_storage_t::fetch_from_http(const mem_key_t& path){
     return entries.end();
 }
 
- mem_storage_t::entry_it mem_storage_t::fetch_from_gemini(const mem_key_t& path){
+ mem_storage_t::entry_it mem_storage_t::fetch_from_gemini(const mem_key_t& path, entry_t::format_t  format){
     //Gemini cannot be based on cURL. It requires a custom implementation based on some SSL library and sockets.
     return entries.end();
 }
 #endif
 
- mem_storage_t::entry_it mem_storage_t::fetch_from_res_storage(const mem_key_t& path){
+ mem_storage_t::entry_it mem_storage_t::fetch_from_res_storage(const mem_key_t& path, entry_t::format_t  format){
     //TODO: I need to have SQLITE integrate first.
     return entries.end();
 }
 
- mem_storage_t::entry_it mem_storage_t::fetch_from_shared(const mem_key_t& key, const std::shared_ptr<void>& src){
+ mem_storage_t::entry_it mem_storage_t::fetch_from_shared(const mem_key_t& key, const std::shared_ptr<void>& src, entry_t::format_t format){
     mem_key_t k = {key.location,key.local_id};
     auto it = entries.emplace(k,src);
     if(it.second==true)return it.first;
