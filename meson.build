@@ -61,11 +61,13 @@ if need_pugixml or get_option('use_system_pugixml') == false
 endif
 
 if get_option('use_system_fltk')
-    libfltk_dep = dependency('fltk', version: '>=1.4', required: false)
-    libfltk_images_dep = dependency('fltk-images', version: '>=1.4', required: false)
-    libfltk_forms_dep = dependency('fltk-forms', version: '>=1.4', required: false)
-    if libfltk_dep.found() == false or libfltk_images_dep.found() == false or libfltk_forms_dep.found() == false
-        need_fltk = true
+    libfltk_dep = dependency('FLTK', version: '>=1.4.0', modules: ['fltk::fltk', 'fltk::images', 'fltk::forms'], required: false)
+    if libfltk_dep.found() == false
+        #For MacOS14 assuming a brew dependency because there is something broken in there.
+        libfltk_dep = dependency('fltk', required: false)
+        if libfltk_dep.found() == false
+            need_fltk = true
+        endif
     endif
 endif
 if need_fltk == true or get_option('use_system_fltk') == false
@@ -86,9 +88,7 @@ if need_fltk == true or get_option('use_system_fltk') == false
     endif
 
     libfltk_proj = cmake.subproject('libfltk', options: opt_fltk)
-    libfltk_dep = libfltk_proj.dependency(['fltk-shared'])
-    libfltk_images_dep = libfltk_proj.dependency(['fltk-images-shared'])
-    libfltk_forms_dep = libfltk_proj.dependency(['fltk-forms-shared'])
+    libfltk_dep = [ libfltk_proj.dependency(['fltk-shared']),  libfltk_proj.dependency(['fltk-images-shared']), libfltk_proj.dependency(['fltk-forms-shared'])]
     #libfltk_gl_dep = libfltk_proj.dependency(['fltk-gl'])
 endif
 
@@ -199,8 +199,6 @@ include_dirs = include_directories(['./include'])
 
 vs_fltk_deps += [
     libfltk_dep,
-    libfltk_images_dep,
-    libfltk_forms_dep,
 
     pugixml_dep,
     json_dep,

@@ -85,7 +85,8 @@ jobs:
             freeglut \
             libpng \
             meson \
-            ninja
+            ninja \
+            fltk
           brew install --cask xquartz
           cd /opt/homebrew/opt/llvm/bin
           #ln -s clang++ clang++-19

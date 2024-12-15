@@ -2,7 +2,7 @@
 #include "FL/Fl.H"
 #include "FL/Fl_SVG_Image.H"
 #include "FL/fl_draw.H"
-#include "nanosvg/nanosvg.h"
+//#include "nanosvg/nanosvg.h"
 #include <cstdint>
 #include <format>
 #include <string>
@@ -11,28 +11,28 @@ namespace vs{
 
 namespace theme_cute{
 void up_box(int x, int y, int w, int h, Fl_Color c){
-        std::string s = std::format("<svg viewBox='0 0 {} {}'>\
+    /*    std::string s = std::format("<svg viewBox='0 0 {} {}'>\
   <rect x='1%' y='1%' stroke-width='2' rx='10%' width='96%' height='96%' stroke='rgb({}, {}, {})' fill='none' />\
 </svg>",w, h, c&(0xff<<24),c&(0xff<<16),c&(0xff<<8));
 
     Fl_SVG_Image img (">",s.c_str());
-    img.draw(x,y,w,h);
+    img.draw(x,y,w,h);*/
     //fl_draw_box(Fl_Boxtype::FL_FLAT_BOX, x, y,  w, h, c);
-    /*    let col1 = c.to_rgb();
-    let col = Color::color_average(c, Color::Background, 0.8).to_rgb();
-    draw::draw_rbox(x, y, w, h, 5, true, Color::from_rgb(col.0, col.1, col.2));*/
+    //    let col1 = c.to_rgb();
+    //let col = Color::color_average(c, Color::Background, 0.8).to_rgb();
+    //draw::draw_rbox(x, y, w, h, 5, true, Color::from_rgb(col.0, col.1, col.2));
 }
 
 void diamondup_box(int x, int y, int w, int h, Fl_Color c){
-        std::string s = std::format("<svg viewBox='0 0 {} {}'>\
+    /*    std::string s = std::format("<svg viewBox='0 0 {} {}'>\
   <rect x='1%' y='1%' stroke-width='2' rx='10%' width='96%' height='96%' stroke='rgb({}, {}, {})' fill='none' />\
 </svg>",w, h, c&(0xff<<24),c&(0xff<<16),c&(0xff<<8));
 
     Fl_SVG_Image img (">>",s.c_str());
-    img.draw(x,y,w,h);
-    /*    let col1 = c.to_rgb();
-    let col = Color::color_average(c, Color::Background, 0.8).to_rgb();
-    draw::draw_rbox(x, y, w, h, 5, true, Color::from_rgb(col.0, col.1, col.2));*/
+    img.draw(x,y,w,h);*/
+    //    let col1 = c.to_rgb();
+    //let col = Color::color_average(c, Color::Background, 0.8).to_rgb();
+    //draw::draw_rbox(x, y, w, h, 5, true, Color::from_rgb(col.0, col.1, col.2));
         //fl_draw_box(Fl_Boxtype::FL_FLAT_BOX, x, y,  w, h, c);
 
 }
@@ -97,7 +97,7 @@ constexpr uint8_t colors[][3] = {
 }*/
 void apply(){
     //for(int i =0;i<sizeof(colors)/3;i++)Fl::set_color(i,colors[i][0],colors[i][1],colors[i][2]);
-    /**/
+    /*
     Fl::set_boxtype(FL_UP_BOX, up_box, 2, 2, 4, 4);
     Fl::set_boxtype(FL_DIAMOND_UP_BOX, diamondup_box, 2, 2, 4, 4);
 
@@ -105,7 +105,7 @@ void apply(){
     Fl::set_boxtype(FL_DIAMOND_DOWN_BOX, diamondup_box, 2, 2, 4, 4);
 
     Fl::set_boxtype(FL_ROUND_DOWN_BOX, diamondup_box, 2, 2, 4, 4);
-    Fl::set_boxtype(FL_BORDER_BOX, diamondup_box, 2, 2, 4, 4);
+    Fl::set_boxtype(FL_BORDER_BOX, diamondup_box, 2, 2, 4, 4);*/
 }
 
 }
