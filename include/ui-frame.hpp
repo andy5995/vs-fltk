@@ -53,6 +53,7 @@ enum class symbol_mode_t{
   WASM,
   EXTERNAL,
   LUA,
+  RISCV,
 };
 
 struct symbol_t{

@@ -45,7 +45,8 @@ enum vs_symbol_mode_t{
   VS_SYMBOL_MODE_QUICKJS, 
   VS_SYMBOL_MODE_WASM,
   VS_SYMBOL_MODE_EXTERNAL,
-  VS_SYMBOL_MODE_LUA
+  VS_SYMBOL_MODE_LUA,
+  VS_SYMBOL_MODE_RISCV
 };
 typedef enum vs_symbol_mode_t vs_symbol_mode_t;
 

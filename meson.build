@@ -262,6 +262,7 @@ vs_fltk = shared_library(
         './src/ui-tree.wasm.cpp',
         './src/ui-tree.cnative.cpp',
         './src/ui-tree.dylib.cpp',
+        './src/ui-tree.riscv.cpp',
 
         './src/ui-field.types.cpp',
 

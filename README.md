@@ -120,6 +120,7 @@ Compared to other approaches, `vs` is extremely opinionated and tries to enforce
   - [ ] JS powered by [QuickJS](https://github.com/quickjs-ng).
   - [ ] Lua, either based on the reference implementation or LuaJIT.
   - [ ] WASM to run any language which can be compiled to this target & their compilers.
+  - [ ] A RISCV simulator to run components from any language supporting this architecture.
 - [ ] Distribution of components via http/https and [gemini](https://geminiprotocol.net/).
 - [ ] A self-hosted visual editor to design, code and test new components (something like [gambas](https://gambas.sourceforge.net/en/main.html) or [fluid](https://www.fltk.org/doc-1.4/fluid.html)).
 - [ ] A robust permission system to decide what components can do based on their origin.
@@ -161,7 +162,7 @@ This project is based on the following dependencies:
 - [fmt](https://github.com/fmtlib/fmt) to format strings and as `printf` replacement.
 - [pugixml](https://pugixml.org/) to parse xml.
 - [mio](https://github.com/vimpunk/mio) memory mapping for loading files.
-- [hashlib](https://github.com/KaruroChori/hash-library) for cryptographic functions (and not).
+- [hashlib](https://github.com/lazy-eggplant/hash-library) for cryptographic functions (and not).
 - [libuv](https://libuv.org/) for me not to care about portable code.
 - [vs.templ](https://github.com/lazy-eggplant/vs.templ) a library to parse markdown (not just to HTML).
 - [vs.robot](https://github.com/lazy-eggplant/vs.robot) a library to perform automatic actions on FLTK.
@@ -171,11 +172,12 @@ This project is based on the following dependencies:
 ### For embedded scripts
 
 - [libffi](https://github.com/libffi/libffi) to simplify symbol sharing between languages.
-- [tcc](https://github.com/KaruroChori/tcc-vs) the embeddable C compiler used for C scripts.
+- [tcc](https://github.com/lazy-eggplant/tcc-vs) the embeddable C compiler used for C scripts.
 - [cello](https://libcello.org) an unholy macro machine for C to transform it into a dynamic language.
 - [quickjs](https://github.com/quickjs-ng) the embeddable JS runtime used for JS scripts.
 - [lua](https://www.lua.org/) and [luajit](http://luajit.org/) to support Lua scripts.
-- [wamr](https://github.com/bytecodealliance/wasm-micro-runtime) the embeddable WASM runtime used for scripts, portable compiled components & compilers.
+- [wamr](https://github.com/bytecodealliance/wasm-micro-runtime) the embeddable WASM runtime used for scripts, portable compiled components & toolchains.
+- [libriscv](https://github.com/libriscv/libriscv) the embeddable riscv vm, used for scripts, portable compiled components & toolchains.
 
 ### For custom components
 
