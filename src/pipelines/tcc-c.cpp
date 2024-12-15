@@ -52,7 +52,7 @@ char* itoa(int value, char* result, int base) {
 
 //'/home/checkroom/Documents/projects/vs-fltk/subprojects/libtcc/tcc'  test.c  -I../../subprojects/libtcc/include/ -L.  -L../../subprojects/libtcc -lapp 
 
-static void vs_debug(global_ctx_t& global, const char* k, const char* v){/*globals.debug(k,v);*/}
+static void vs_debug(const char* k, const char* v){singleton::debug(k,v);}
 
 #define LIB(x)  script->add_sym(#x, (void*) x)
 #define LIBT(x,t)  script->add_sym(#x, (void*) t x)

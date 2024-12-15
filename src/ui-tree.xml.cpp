@@ -285,7 +285,7 @@ void ui_tree_xml::_build(const pugi::xml_node& root, ui_base* root_ui){
   }
   //DEBUG
   else if(strcmp(root.name(),strings.DEBUG_TAG)==0){
-    globals.debug(root.attribute("key").as_string("<NULL>"), root.attribute("value").as_string("<NULL>"));
+    vs::singleton::debug(root.attribute("key").as_string("<NULL>"), root.attribute("value").as_string("<NULL>"));
     return;
   }
   //VIEWPORT

@@ -40,9 +40,11 @@ struct global_ctx_t{
     
     js_rt_t                 js_rt;
     cache::mem_storage_t    mem_storage;
-    vs_test_debug_t         debug;
     field_models_t          value_models;
 };
 
+namespace singleton{
+extern vs_test_debug_t debug;
+}
 
 }
