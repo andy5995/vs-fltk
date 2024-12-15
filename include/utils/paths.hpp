@@ -12,6 +12,7 @@
 #include <cstring>
 #include <string>
 #include <utils/policies.hpp>
+#include <utils/arch.hpp>
 
 namespace vs{
 
@@ -26,6 +27,7 @@ enum struct component_t{
     VS,
     XML,
     WASM,
+    RISCV,
     LIB,
     CNATIVE,
     MARKDOWN,

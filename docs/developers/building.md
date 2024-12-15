@@ -1,3 +1,8 @@
+> [!IMPORTANT]  
+> It was decided to split distribution & building.  
+> Distribution will be handled [here](https://github.com/lazy-eggplant/vs.autobuilds), while everything build-related is staying here.  
+> This also includes docker images, since they are not meant for final users but developers of `vs` and its related subprojects.
+
 ## Supported platforms
 
 At the moment, only Linux is supported for building and running `vs`.  

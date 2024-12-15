@@ -232,6 +232,8 @@ Embedded scripts are
 
 ## External
 
+## RISCV
+
 # Custom components
 
 # Templating

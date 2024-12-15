@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--Please ignore this example, it is used for
+development-->
 <app type="native" link-with="this://native-app/app" xmlns:fl="vs.fltk">
     <import src="two-buttons.xml" as="TwoButtons" />
     <import src="three-buttons.xml" as="ThreeButtons">
