@@ -334,6 +334,9 @@ executable(
 
 subdir(['./experiments/'])
 
+subdir(['./metadata/'])
+
+
 if get_option('tests')
     subdir(['./test/'])
     subdir(['./benchmark/'])
