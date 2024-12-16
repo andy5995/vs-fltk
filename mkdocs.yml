@@ -1,0 +1,15 @@
+site_name: vs.fltk
+repo_url: https://github.com/karurochori/vs-fltk
+site_dir: dist/website
+docs_dir: docs
+
+theme: readthedocs
+markdown_extensions:
+  - pymdownx.tilde
+  - pymdownx.tasklist
+  - sane_lists
+  - smarty
+  - toc:
+      permalink: "#"
+plugins:
+  - search

@@ -16,7 +16,8 @@
     "test": "meson test -C build/ --suite=vs-fltk",
     "benchmark": "meson test --benchmark -C build/ --suite=vs-fltk",
     "meson-install": "DESTDIR=./dist/ meson install -C build/",
-    "flatpak-builder": "flatpak-builder --force-clean --user --install-deps-from=flathub --install dist com.karurochari.vs.yml"
+    "flatpak-builder": "flatpak-builder --force-clean --user --install-deps-from=flathub --install dist com.karurochari.vs.yml",
+    "gen-docs": "mkdir dist && doxygen &&  mkdocs build"
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",

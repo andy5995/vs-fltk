@@ -60,6 +60,13 @@ There are also some more or less optional dependencies:
 - [gnuplot](http://www.gnuplot.info/) if you want to generate plots from testing & benchmarking reports.
 - [flatpak-builder](https://docs.flatpak.org/en/latest/flatpak-builder.html) if you plan on packing and distributing a flatpak of `vs` (usually not needed, read more about it later in this document)
 
+### Additional documentation
+
+To generate the additional documentation for distribution and consumption:
+
+- [mkdocs](https://www.mkdocs.org/) and several packages for themes and extensions.
+- [doxygen](https://www.doxygen.nl/) for documentation generated from the code itself.
+
 ### IDE integrations
 
 There is an ongoing effort to better support `vs` with a proper [lsp](https://github.com/lazy-eggplant/vs.lsp).  
