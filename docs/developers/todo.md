@@ -7,7 +7,7 @@
        Even outside of flatpak this problem occurs, just with different folder names. I must ensure cmake and meson behave the same.
 - [ ] commons are not mounted in `/usr/local/share`. I must pass the relevant vars (already supported).  
        I must register a variable in the user with where these files are located? Or embed it during compilation? Still not sure.
-- [ ] Icons, signature and few more things are still missing.
+- [x] Icons, signature and few more things are still missing.
 
 ### Scripts
 

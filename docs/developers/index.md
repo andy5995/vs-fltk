@@ -4,4 +4,4 @@
 - Information about [contributing](./contributing.md) to `vs`.
 - Conventions for [versioning](./versioning.md).
 - How to publish a [new release](./releasing.md).
-- Full [specifications](./full-specs.md) of `vs`.
+- Full [specifications](./full-specs/index.md) of `vs`.

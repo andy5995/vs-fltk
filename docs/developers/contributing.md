@@ -9,6 +9,9 @@
 - **test** & **benchmark**: test suite & benchmarks for **vs** & the **vs.fltk** library.
 - **scripts** utility scripts (mostly in TS/JS) to handle code generation, the build process and some workflows.
 - **experiments** playground where new ideas or semi-standalone prototypes are tested.
+- **metadata** information for distribution (icons, manifest files etc.).
+
+## Language & format guidelines
 
 ## Variables of environment
 

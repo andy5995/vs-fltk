@@ -1,14 +1,14 @@
 > [!IMPORTANT]  
-> It was decided to split distribution & building.  
-> Distribution will be handled [here](https://github.com/lazy-eggplant/vs.autobuilds), while everything build-related is staying here.  
+> It was decided that distribution & building will be split.  
+> Distribution is to be handled [here](https://github.com/lazy-eggplant/vs.autobuilds), while everything build-related stays.  
 > This also includes docker images, since they are not meant for final users but developers of `vs` and its related subprojects.
 
 ## Supported platforms
 
-At the moment, only Linux is supported for building and running `vs`.  
-It is likely that all major CPU architectures are supported, and wider support for POSIX systems is also likely.
+At the moment, only Linux is supported for building and running `vs` as its primary target.  
+It is likely that all major CPU architectures are supported, and several POSIX systems can also be targetted.
 
-This is just temporary limitation, as all dependencies used by this project are highly portable, but my own code and the build system is probably not.
+This is just temporary limitation, as all dependencies being used by this project are highly portable, but my own code and the build system are probably not.
 
 | **Platform**     | **Arch** | **Building** | **Running** |
 | ---------------- | :------: | :----------: | :---------: |
@@ -20,12 +20,20 @@ This is just temporary limitation, as all dependencies used by this project are 
 | macos-14         |  arm64   |      ✅      |     ❓      |
 | win64            |  amd64   |      ❌      |     ❓      |
 
-### Available builds on release
+In addition to this, the building environment is also distributed via docker images.
 
-- **deb** (not yet)
-- **rpm** (not yet)
-- **flatpak** (ongoing)
-- **docker** container (ongoing)
+### Distribution
+
+There are plans to distribute both **stable** and **nightly** releases of vs. Please, be mindful that nightly releases can be extremely broken, and for safety reasons they will only be offered as flatpaks.
+
+Distribution formats which are expected to be supported at some point:
+
+- `flatpak` targetting the latest stable freedesktop environment
+- `deb` for the latest stable and experimental of debian (multiarch)
+- `aur` for arch linux and derivatives
+- `brew` for macos
+
+Installing directly via meson is very much not suggested if you don't want to break your system.
 
 ## Building requirements
 
@@ -36,10 +44,11 @@ In addition to that, this repo makes use of:
 - [meson](https://mesonbuild.com/) as its main build system. Any recent-ish version will do (unless you need `zig` to simplify cross-compiling; for that >= 1.60 is needed)
 - [bun](https://bun.sh/) as the ts/js runtime to support all the code generation tasks and some of the more complex pipelines.  
    I hate bash, and this is what replaces it.
-- [swiftc](https://www.swift.org/documentation/swift-compiler/) barely used for now, but many of the native components shipped within `vs` will be written in swift (or so I am planning). Swift 6 will be needed, but for now any version will do.
+- [swiftc](https://www.swift.org/documentation/swift-compiler/) barely used for now, but many of the native components shipped within `vs` will be written in swift (or so I am planning). Version 6 or higher is needed.
 
-For now, you will need to install [some dependencies](https://github.com/fltk/fltk/blob/master/README.Unix.txt) to support FLTK.  
-Specifically, the following are likely missing on most distributions:
+### FLTK
+
+If your system provides a modern version of `fltk>=1.4`, that will be used by default. If not present, you are likely needing few more [dependencies](https://github.com/fltk/fltk/blob/master/README.Unix.txt) depending on your distribution. On debian-like systems the followings are needed:
 
 - **libpng-dev**
 - **libglu1-mesa-dev**
@@ -47,9 +56,8 @@ Specifically, the following are likely missing on most distributions:
 
 There are also some more or less optional dependencies:
 
-- **libcurl-dev**, unless you are trying to compile a custom version without network support, which is supported.
+- **libcurl-dev**, unless you are trying to compile a custom version without network support, or http only which are supported.
 - [gnuplot](http://www.gnuplot.info/) if you want to generate plots from testing & benchmarking reports.
-- **sqlite** is needed. If not provided by your system it will be automatically downloaded and distributed alongside `vs`.
 - [flatpak-builder](https://docs.flatpak.org/en/latest/flatpak-builder.html) if you plan on packing and distributing a flatpak of `vs` (usually not needed, read more about it later in this document)
 
 ### IDE integrations
@@ -61,14 +69,14 @@ In the same repo there is also a vscode client extension.
 
 ## Docker
 
-A docker image is available that contains all the build dependencies. See
-[docker/README.md](../docker/README.md)
+A docker image is available that automatically covers all the build dependencies. See
+[docker/README.md](../docker/README.md) for further documentation.
 
 ## Building process
 
 > [!NOTE]  
 > This project uses meson, so there are no git submodules for the most part.
-> One exception is made for `flatpak-builder` to be usable.  
+> One exception is made for `flatpak-builder` to be usable, but it is being deprecated.  
 > If you plan on using it to generate new flatpak images, please ensure submodules are also cloned with the rest of the repository.
 
 Start by installing all the `bun` dependencies needed:
@@ -82,6 +90,7 @@ Then run the following NPM scripts:
 ```bash
 bun run codegen                     #Initial codegen from schemas
 bun run meson-setup.release         #Set up the meson build directory.
+bun run meson-build                 #Build everything!
 ```
 
 You might want to use `meson-setup.clang-release` to use clang-19 if found on your system, and your default compiler or choice might not support some modern functions used in this project.
@@ -105,11 +114,15 @@ bun run vs.example
 > Don't install it via `meson install ...` without a custom `DESTDIR` set, as shown by its wrapper in `package.json` script.  
 > Some library names will most surely clash with those already installed on your system, and will be overridden.  
 > Or future system updates might break `vs`.  
+> Also consider https://github.com/KaruroChori/vs-fltk/issues/3 and its impact.  
 > `vs.fltk` is using very recent versions which have not been rolled out yet in most distribution. Or even worse, custom forks.
 
 `bun run meson-install` is now implemented & tested. By default, it installs everything in `./build/dist`.
 
 ### Flatpak
+
+> [!IMPORTANT]  
+> Flatpak in this repos is being deprecated. It will be fully relocated and removed from here before v0.2.1.
 
 > [!NOTE]  
 > You need a modern version of `flatpak-builder` to be installed.  
@@ -117,7 +130,7 @@ bun run vs.example
 > Also, make sure your runtime is not using a cmake version in $[3.31.0,3.31.2)$.  
 > A regression later fixed prevents building cmake via meson. Tracked [here](https://github.com/KaruroChori/vs-fltk/issues/46).
 
-Flatpak is not really the ideal approach to deliver `vs` due to the intrinsic cost of having a separate runtime.  
+Flatpak is not really the ideal approach to deliver `vs` due to the intrinsic cost of having a separate runtime already installed on each system.  
 Also, its sandboxing & permission system might raise some issues (but also help to mitigate the current lack of safety features).  
 Still, it is good to support it at these early stages, since many libraries & build dependencies are bleeding-edge, and other forms of distribution are not as convenient.
 
