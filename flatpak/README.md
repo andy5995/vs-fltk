@@ -1,0 +1,2 @@
+Flatpak building from this repo is deprecated, and has been moved to a specific one for distribution.  
+It is preserved for now as it is easier to work from here fixing bugs in flatpak generation & nighlty builds, but it will soon be removed.
