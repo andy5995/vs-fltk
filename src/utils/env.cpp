@@ -52,7 +52,9 @@ path_env_t mk_env(global_ctx_t& globals, const char* arg0,const char* arg1){
   {
     auto t = getenv("VS_COMMONS_DIR");
     if(t!=nullptr) main_env.root={rpath_type_t::FS,resolve_path::normalizer(t,"",true, true).second};
-    else  main_env.root={rpath_type_t::FS,resolve_path::normalizer(buffer,"commons/foo.bar",true, true).second};
+    else{
+      main_env.root={rpath_type_t::FS,resolve_path::normalizer(VS_COMMONS_DIR,"",true, true).second};
+    }
   }
 
   const char *homedir = "";

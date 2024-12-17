@@ -21,6 +21,9 @@ vs_fltk_deps = []
 
 # Process options
 
+add_global_arguments(['-DVS_COMMONS_DIR="'+join_paths(get_option('prefix'),get_option('datadir'),'vs-fltk')+'/"'], language: ['cpp', 'c'])
+
+
 if get_option('use_tcc')
     add_global_arguments(['-DVS_USE_TCC'], language: ['cpp', 'c'])
 endif
@@ -80,6 +83,7 @@ if need_fltk == true or get_option('use_system_fltk') == false
             'FLTK_BUILD_OPTIONS': false,
             'FLTK_BUILD_SHARED_LIBS': true,
             'CMAKE_POSITION_INDEPENDENT_CODE': true,
+            'CMAKE_INSTALL_LIBDIR': get_option('libdir')
         },
     )
 
@@ -98,6 +102,7 @@ if get_option('use_wamr')
         {
             'WAMR_BUILD_INTERP': 1,
             'WAMR_BUILD_PLATFORM': target_machine.system(),
+            'CMAKE_INSTALL_LIBDIR': get_option('libdir')
         },
     )
     wamr_proj = cmake.subproject('wamr', options: opt_wamr)
@@ -112,6 +117,7 @@ if get_option('use_quickjs')
     opt_quickjs.add_cmake_defines(
         {
             'CMAKE_POSITION_INDEPENDENT_CODE': true,
+            'CMAKE_INSTALL_LIBDIR': get_option('libdir')
         },
     )
 
@@ -129,12 +135,17 @@ if get_option('use_tcc')
     vs_fltk_deps += libtcc_dep
 endif
 
+#TODO: 'CMAKE_INSTALL_LIBDIR': get_option('libdir')
 md4c_proj = cmake.subproject('md4c')
 md4c_dep = md4c_proj.dependency('md4c')
 
 opt_fmt = cmake.subproject_options()
 opt_fmt.add_cmake_defines(
-    {'CMAKE_POSITION_INDEPENDENT_CODE': true, 'BUILD_SHARED_LIBS': false},
+    {
+        'CMAKE_POSITION_INDEPENDENT_CODE': true,
+        'BUILD_SHARED_LIBS': false,
+        'CMAKE_INSTALL_LIBDIR': get_option('libdir')
+    },
 )
 fmt_proj = cmake.subproject('fmt', options: opt_fmt)
 fmt_dep = fmt_proj.dependency('fmt')
