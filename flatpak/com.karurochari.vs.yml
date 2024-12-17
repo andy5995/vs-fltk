@@ -39,5 +39,6 @@ finish-args:
   - --socket=pulseaudio
   # Home folder
   - --filesystem=home/.vs-fltk
+  - --filesystem=host:ro
 #cleanup:
 #  - '*'
