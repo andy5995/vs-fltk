@@ -131,8 +131,8 @@ You can read more about which features are planned in the [milestones page](./MI
 ## Useful documentation
 
 - Instuctions [for developers](./docs/developers/index.md)
-- Instuctions ~~[for users](./docs/intro.md) of vs~~
-- Complete ~~[specifications](./docs/developers/full-specs.md) for `vs`~~.
+- Instuctions ~~[for users](./docs/users/index.md) of vs~~
+- Complete ~~[specifications](./docs/full-specs/index.md) for `vs`~~.
 
 ## Licences
 
@@ -187,4 +187,3 @@ This project is based on the following dependencies:
 
 [Building-Testing-badge]: https://github.com/KaruroChori/vs-fltk/actions/workflows/build.yml/badge.svg?branch=master
 [Building-Testing-url]: https://github.com/KaruroChori/vs-fltk/actions/workflows/build.yml
-

@@ -65,6 +65,9 @@ There are also some more or less optional dependencies:
 To generate the additional documentation for distribution and consumption:
 
 - [mkdocs](https://www.mkdocs.org/) and several packages for themes and extensions.
+  - `mkdocs`
+  - `mkdocs-github-admonitions-plugin`
+  - more to be documented
 - [doxygen](https://www.doxygen.nl/) for documentation generated from the code itself.
 
 ### IDE integrations

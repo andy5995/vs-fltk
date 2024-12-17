@@ -1,4 +1,4 @@
-# Missing for release 0.1.1
+## Missing for release 0.1.1
 
 ### Flatpak issues
 
