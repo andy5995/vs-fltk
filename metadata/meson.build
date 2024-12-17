@@ -18,7 +18,7 @@ if ascli_exe.found()
 
   install_data(
     sources: ['vs.light.svg'],
-    rename: ['vs.svg'],
+    rename: ['com.karurochari.vs.svg'],
     install_dir: join_paths(get_option('datadir'), 'icons', 'hicolor', 'scalable', 'apps'),
   )
 

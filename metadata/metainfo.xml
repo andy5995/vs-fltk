@@ -16,7 +16,7 @@
 
     <launchable type="desktop-id">com.karurochari.vs.desktop</launchable>
 
-    <icon type="stock">vs</icon>
+    <icon type="stock">com.karurochari.vs</icon>
 
     <categories>
         <category>Network</category>

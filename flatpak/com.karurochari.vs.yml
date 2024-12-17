@@ -14,7 +14,9 @@ modules:
   - name: vs-fltk
     buildsystem: meson
     config-opts:
-      #- --prefix=/usr
+      # https://github.com/flatpak/freedesktop-sdk-base/commit/6adb6f49e52575956cf6aa0bbd3a1d8054735a43
+      # should have solved the issue of lib64... but somehow it is not applied?
+      - --libdir=lib
       - --native-file=/run/build/vs-fltk/toolchains/flatpak.ini
       - --buildtype=release
       - -Dtests=false
