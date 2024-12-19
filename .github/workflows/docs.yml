@@ -22,6 +22,7 @@ jobs:
         run: |
           sudo apt install -y \
             doxygen \
+            graphviz \
             python3-pip \
             python3-setuptools
           python3 -m pip install mkdocs mkdocs-github-admonitions-plugin mkdocs-get-deps pymdown-extensions
