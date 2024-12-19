@@ -28,7 +28,6 @@ jobs:
           mkdir dist
           doxygen
           mkdocs build
-          echo "<a href=\"./website\">Website</a> or <a href=\"./docs/html\">Doxygen</a>" > ./dist/index.html
           bun install -g gh-pages
       - name: Deploy
         run: |
