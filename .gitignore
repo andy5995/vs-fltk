@@ -7,6 +7,8 @@ subprojects/*
 *.autofrag.*
 /dist/*
 !/dist/website/
+/dist/website/doxygen/*
+/dist/website/docs/*
 /node_modules/
 /bun.lockb
 /private/
