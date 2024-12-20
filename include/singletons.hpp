@@ -11,17 +11,22 @@
 
 namespace vs{
 
-/**
- * @brief Global context structure
- * 
- */
-struct global_ctx_t{
-    app_env_t               env;  
-    path_env_t              path_env;
-    
-    js_rt_t                 js_rt;
-    cache::mem_storage_t    mem_storage;
-    field_models_t          value_models;
-};
+namespace singleton{
+
+#ifdef VS_USE_NETWORKING_CURL
+struct curl_t{
+    curl_t();
+    ~curl_t();
+} extern curl;
+#endif
+
+struct debug_t{
+    FILE* fd = nullptr;
+    debug_t();
+    ~debug_t();
+
+    void operator()(const char* field, const char* value);
+} extern debug;
+}
 
 }

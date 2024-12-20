@@ -286,8 +286,8 @@ vs_fltk = shared_library(
         './src/utils/policies.internal.cpp',
         './src/utils/tcc-wrap.cpp',
 
+        './src/singletons.cpp',
         './src/fetcher.cpp',
-
         './src/loader.cpp',
 
         src_components,

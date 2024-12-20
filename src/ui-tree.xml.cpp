@@ -22,6 +22,7 @@
 #include <ui-tree.xml.hpp>
 
 #include <globals.hpp>
+#include <singletons.hpp>
 #include <fetcher.hpp>
 
 #include <utils/paths.hpp>

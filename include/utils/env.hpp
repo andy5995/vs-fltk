@@ -26,14 +26,6 @@ struct js_rt_t{
     void* operator()();
 };
 
-struct vs_test_debug_t{
-    FILE* fd = nullptr;
-    vs_test_debug_t();
-    ~vs_test_debug_t();
-
-    void operator()(const char* field, const char* value);
-};
-
 /**
  * @brief In case it is not configured already, it prepares the SQLITE file and all the pre-compiled queries needed.
  * 

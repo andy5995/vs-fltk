@@ -1,22 +1,13 @@
 #include <iostream>
 
-#ifdef VS_USE_NETWORKING_CURL
-#include <curl/curl.h>
-#endif
-
-
 #include <ui-tree.hpp>
 #include <ui-tree.xml.hpp>
 #include <loader.hpp>
 
-//TODO:Remove
 
 namespace vs {
-app_loader::app_loader(global_ctx_t& globals, const char *profile, const char *path) {
-  
-#ifdef VS_USE_NETWORKING_CURL
-  curl_global_init(CURL_GLOBAL_ALL);
-#endif
+loader_t::loader_t(global_ctx_t& globals, const char *profile, const char *path) {
+
   pugi::xml_document doc;
 
   static constexpr const char *embedded_profile = R"(<root></root>)";
@@ -48,12 +39,12 @@ app_loader::app_loader(global_ctx_t& globals, const char *profile, const char *p
   }
 }
 
-int app_loader::test() {
+int loader_t::test() {
   return root->runtime_testsuite();
   // TODO
 }
 
-int app_loader::run() {
+int loader_t::run() {
   root->globals->mem_storage.cleanup();
   root->cleanup();
   if (!root->globals->env.computed_policies.headless) {
@@ -67,10 +58,7 @@ int app_loader::run() {
   }
 }
 
-app_loader::~app_loader() {
-#ifdef VS_USE_NETWORKING_CURL
-  curl_global_cleanup();
-#endif
+loader_t::~loader_t() {
   if (root != nullptr)
     delete root;
 }
