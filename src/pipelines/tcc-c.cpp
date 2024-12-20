@@ -6,7 +6,7 @@
 #include "utils/paths.hpp"
 #include <cstddef>
 
-#include <iostream>
+#include <singletons.hpp>
 #include <pipelines/tcc-c.hpp>
 #include <ui-tree.xml.hpp>
 

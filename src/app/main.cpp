@@ -57,7 +57,7 @@ int run(const char* path, const char *entry, const char* profile, const char* te
       globals.env.computed_policies.testing=true;
     }
 
-    app_loader loader(globals,profile,entry);
+    loader_t loader(globals,profile,entry);
   
     //TODO implement test
     if(tests!=nullptr){

@@ -2,7 +2,7 @@
 #include <cbindings/vs.h>
 #include <iostream>
 #include <pugixml.hpp>
-#include <globals.hpp>
+#include <singletons.hpp>
 
 void vs_hello_world(){
     std::cout<<"Hello world!\n";
