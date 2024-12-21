@@ -28,7 +28,6 @@ curl_t curl;
 debug_t debug;
 #endif 
 
-
 field_models_t field_models ={{
     [field_models_t::FLAG] = {
         +[](void* _dst, const char* src)->int{
