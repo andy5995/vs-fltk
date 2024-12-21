@@ -21,7 +21,6 @@ struct global_ctx_t{
     
     js_rt_t                 js_rt;
     cache::mem_storage_t    mem_storage;
-    field_models_t          value_models;
 };
 
 }

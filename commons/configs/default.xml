@@ -2,15 +2,25 @@
 <!-- Default profile for `vs`. This one is copied by default in your home during the first
 configuration -->
 <vs-profile display-name="" version="1.0">
-    <runtime>
-        <logging verbosity="" file=""></logging>
+    <locale>
+        <user>
+            <entry key="name" value=""/>
+        </user>
+        <languages>
+            <entry key="en-uk" value="0"/>
+            <entry key="en" value="1"/>
+        </languages>
+        <theme src="default" scheme="eggplant" mode="inherit"/>
         <initial-scene src="app://commons/hub.xml"/>
-        <base-theme src="default"/>
-        <parsing mode="fast" max-threads="8">
-        </parsing>
+    </locale>
+    <runtime>
+        <logging verbosity="" file=""/>
+        <parsing mode="fast" max-threads="8"/>
+        <base-policy>
+        </base-policy>
     </runtime>
     <policies>
-        <group name="test-1">
+        <template name="test-1">
             <allow.native></allow.native>
             <allow.quickjs></allow.quickjs>
             <allow.wasm></allow.wasm>
@@ -25,7 +35,7 @@ configuration -->
             <cache.resources></cache.resources>
 
             <theme></theme>
-        </group>
+        </template>
 
         <domain extends="test-1">
             <matches>

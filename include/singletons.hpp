@@ -27,6 +27,12 @@ struct debug_t{
 
     void operator()(const char* field, const char* value);
 } extern debug;
-}
 
+struct field_models_t{
+    field_model_t models[];
+
+    enum{
+        UNKNOWN, FLAG, ENUM, RAW, PATH, STRING, COLOR, SCALAR_1, SCALAR_2, SCALAR_4
+    };
+} extern field_models;
 }

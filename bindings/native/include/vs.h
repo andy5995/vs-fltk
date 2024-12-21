@@ -108,3 +108,17 @@ extern void vs_debug(const char* key, const char* value);
 
 //Extra functions
 char* itoa(int value, char* result, int base);
+
+enum vs_types_t{
+  TYPE_UNKNOWN,
+  TYPE_FLAG,
+  TYPE_ENUM,
+  TYPE_RAW,
+  TYPE_PATH,
+  TYPE_STRING,
+  TYPE_COLOR,
+  TYPE_SCALAR_1,
+  TYPE_SCALAR_2,
+  TYPE_SCALAR_4
+};
+typedef vs_types_t vs_types_t;

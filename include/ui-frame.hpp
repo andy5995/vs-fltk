@@ -26,14 +26,10 @@ struct field_t{
 };
 
 struct field_model_t{
-  int(*serialize)(void* obj, const char* src);
-  int(*deserialize)(const void* obj, char** src);
+  int(*deserialize)(void* obj_dst, const char* src);  //Setup obj based on data from src
+  int(*serialize)(const void* obj_src, const char** dst);   //Create a new string with the serialized information of obj inside
 };
 
-struct field_models_t{
-  std::vector<field_model_t> entries;
-  //TODO
-};
 
 enum class symbol_type_t{
   VOID, //Function not to be defined
