@@ -5,8 +5,7 @@ docs_dir: docs
 
 theme:
   name: readthedocs
-  custom_dir: ./
-  logo: commons/assets/logos/vs.light.svg
+  #logo: commons/assets/logos/vs.light.svg
 markdown_extensions:
   - admonition
   - pymdownx.tilde
