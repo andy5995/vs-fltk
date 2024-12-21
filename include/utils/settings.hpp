@@ -9,10 +9,12 @@
 
 #pragma once
 
+#include <pugixml.hpp>
+
 namespace vs{
 
 struct settings_t{
-
+    
 };
 
 }

@@ -28,5 +28,24 @@ curl_t curl;
 debug_t debug;
 #endif 
 
+
+field_models_t field_models ={{
+    [field_models_t::FLAG] = {
+        +[](void* _dst, const char* src)->int{
+            bool* dst = (bool*) _dst;
+            if(strcmp(src, "false")==0){*dst=false;return 0;}
+            else if(strcmp(src,"true")==0){*dst=true;return 0;}
+            return 1;
+        },
+        +[](const void* _src, const char**  dst)->int{
+            const bool* src = (const bool*) _src;
+            if(*src==true){auto tmp = malloc(sizeof("true"));memcpy(tmp,"true",sizeof("true"));*dst=(const char*)tmp;return 0;}
+            else if(*src==false){auto tmp = malloc(sizeof("false"));memcpy(tmp,"false",sizeof("false"));*dst=(const char*)tmp;return 0;}
+            else dst=nullptr;
+            return 1;
+        }
+    },
+}};
+
 }
 }

@@ -29,4 +29,12 @@ struct debug_t{
 } extern debug;
 }
 
+struct field_models_t{
+    field_model_t models[];
+
+    enum{
+        UNKNOWN, FLAG, ENUM, RAW, PATH, STRING, COLOR, SCALAR_1, SCALAR_2, SCALAR_4
+    };
+} extern field_models;
+
 }
