@@ -70,6 +70,7 @@ jobs:
   docs-latest:
     uses: ./.github/workflows/docs.yml
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    needs: [docs]
     with:
       subdir: latest
     permissions:
