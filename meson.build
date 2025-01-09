@@ -177,19 +177,6 @@ if get_option('use_tcc')
     vs_fltk_deps += libtcc_dep
 endif
 
-#libtcc_rv64_proj = subproject(
-#    'libtcc-riscv64',
-#    default_options: [
-#        'cross_arch=riscv64',
-#        'cross_os=linux',
-#        'override_dependency=false',
-#        'cross_prefix=riscv',
-#    ],
-#)
-#libtcc_rv64_dep = libtcc_rv64_proj.get_variable('libtcc_dep')
-
-#vs_fltk_deps += libtcc_rv64_dep
-
 #MD4C
 opt_md4c = cmake.subproject_options()
 opt_md4c.add_cmake_defines(
@@ -210,18 +197,6 @@ opt_mio.add_cmake_defines(
 mio_proj = cmake.subproject('mio', options: opt_mio)
 mio_dep = mio_proj.dependency('mio')
 
-#FMT
-opt_fmt = cmake.subproject_options()
-opt_fmt.add_cmake_defines(
-    {
-        'CMAKE_POSITION_INDEPENDENT_CODE': true,
-        'BUILD_SHARED_LIBS': false,
-        'CMAKE_INSTALL_LIBDIR': get_option('libdir'),
-    },
-)
-fmt_proj = cmake.subproject('fmt', options: opt_fmt)
-fmt_dep = fmt_proj.dependency('fmt')
-
 #HASHLIB
 hashlib_proj = subproject('hashlib')
 hashlib_dep = hashlib_proj.get_variable('hashlib_dep')
@@ -240,18 +215,6 @@ treesitter_dep = treesitter_proj.get_variable('tree_sitter_dep')
 
 #uv_proj = subproject('libuv')
 #uv_dep = uv_proj.get_variable('libuv_dep')
-
-sqlitecpp_dep = dependency('sqlitecpp', required: false)
-if not sqlitecpp_dep.found()
-    sqlitecpp_dep = cxx.find_library('SQLiteCpp', required: false)
-    if not sqlitecpp_dep.found()
-        sqlitecpp_dep = dependency(
-            'sqlitecpp',
-            fallback: ['sqlitecpp', 'sqlitecpp_dep'],
-            default_options: 'default_library=static',
-        )
-    endif
-endif
 
 sqlite_dep = dependency(
     'sqlite3',
@@ -286,13 +249,11 @@ vs_fltk_deps += [
     pugixml_dep,
     json_dep,
     vs_templ_dep,
-    fmt_dep,
     mio_dep,
     #uv_dep,    The one provided with the system if present should be fine for our tasks
     hashlib_dep,
 
     sqlite_dep,
-    sqlitecpp_dep,
 
     md4c_dep,
     treesitter_dep,
@@ -363,11 +324,6 @@ vs_fltk_dep = declare_dependency(
     include_directories: include_dirs,
     link_with: vs_fltk,
 )
-
-cello_project = subproject('cello')
-cello_dep = cello_project.get_variable('cello_dep')
-
-shared_library('vs-cello', dependencies: [cello_dep])
 
 #TODO add also a vs_codegen to introduce that step within meson instead of keeping it separate.
 #I need to run it not from the builddir but from the root.

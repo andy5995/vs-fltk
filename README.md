@@ -159,25 +159,23 @@ This project is based on the following dependencies:
 ### Core features
 
 - [fltk](https://www.fltk.org/) the UI toolkit library used.
-- [fmt](https://github.com/fmtlib/fmt) to format strings and as `printf` replacement.
 - [pugixml](https://pugixml.org/) to parse xml.
+- [vs.templ](https://github.com/lazy-eggplant/vs.templ) a library to parse markdown (not just to HTML).
+- [sqlite](https://www.sqlite.org/) as the embedded DB to handle user profiles, caching etc.
 - [mio](https://github.com/vimpunk/mio) memory mapping for loading files.
 - [hashlib](https://github.com/lazy-eggplant/hash-library) for cryptographic functions (and not).
 - [libuv](https://libuv.org/) for me not to care about portable code.
-- [vs.templ](https://github.com/lazy-eggplant/vs.templ) a library to parse markdown (not just to HTML).
 - [vs.robot](https://github.com/lazy-eggplant/vs.robot) a library to perform automatic actions on FLTK.
 - [vs.xml-piler](https://github.com/lazy-eggplant/vs.xml-piler) to generate the XML parser backends based on schema files and specs.
-- [sqlite](https://www.sqlite.org/) as the embedded DB to handle user profiles, caching etc.
 
 ### For embedded scripts
 
-- [libffi](https://github.com/libffi/libffi) to simplify symbol sharing between languages.
 - [tcc](https://github.com/lazy-eggplant/tcc-vs) the embeddable C compiler used for C scripts.
-- [cello](https://libcello.org) an unholy macro machine for C to transform it into a dynamic language.
 - [quickjs](https://github.com/quickjs-ng) the embeddable JS runtime used for JS scripts.
 - [lua](https://www.lua.org/) and [luajit](http://luajit.org/) to support Lua scripts.
-- [wamr](https://github.com/bytecodealliance/wasm-micro-runtime) the embeddable WASM runtime used for scripts, portable compiled components & toolchains.
 - [libriscv](https://github.com/libriscv/libriscv) the embeddable riscv vm, used for scripts, portable compiled components & toolchains.
+- [libffi](https://github.com/libffi/libffi) to simplify symbol sharing between languages.
+- [wamr](https://github.com/bytecodealliance/wasm-micro-runtime) the embeddable WASM runtime used for scripts, portable compiled components & toolchains.
 
 ### For custom components
 
