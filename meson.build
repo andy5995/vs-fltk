@@ -307,11 +307,11 @@ vs_fltk = shared_library(
         './src/xml2native.cpp',
 
         './src/ui-tree.cpp',
-        './src/ui-tree.xml.cpp',
-        './src/ui-tree.wasm.cpp',
-        './src/ui-tree.cnative.cpp',
-        './src/ui-tree.dylib.cpp',
-        './src/ui-tree.riscv.cpp',
+        './src/ui-tree/xml.cpp',
+        './src/ui-tree/wasm.cpp',
+        './src/ui-tree/cnative.cpp',
+        './src/ui-tree/dylib.cpp',
+        './src/ui-tree/riscv.cpp',
 
         './src/ui-fields.cpp',
 

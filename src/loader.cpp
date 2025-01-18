@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include <ui-tree.hpp>
-#include <ui-tree.xml.hpp>
+#include <ui-tree/xml.hpp>
 #include <loader.hpp>
 
 

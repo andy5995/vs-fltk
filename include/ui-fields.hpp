@@ -1,5 +1,14 @@
 #pragma once
 
+/**
+ * @file ui-fields.hpp
+ * @author karurochari
+ * @brief 
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include <cstdint>
 #include <cstdlib>
 #include <optional>
@@ -7,11 +16,12 @@
 
 namespace vs{
 
-struct field_prefix_t{
+/*struct field_prefix_t{
   size_t tag;
   void (*free)(void* ptr);
   void *base[0];   //Just to offer a base with the right offset
 };
+*/
 
 struct field_t;
 
@@ -24,7 +34,7 @@ enum struct field_ret_t{
   WRONG_TYPE=-2,
   NULL_SRC=-1,
   OK=0,
-  BAD=0
+  BAD=1
 };
 
 struct field_enums_t{
@@ -76,8 +86,11 @@ struct field_t{
   static inline constexpr void*(*lalloc)(size_t)=malloc;
 
   field_models_t::types type : sizeof(field_models_t::types)*8-10;
+  ///If true the content of this field is still considered valid, else accessing it is not right.
   uint32_t valid: 1;
+  ///If true, the embedded script must handle the cleanup of this field when out of scope. If false ownership is externally handled by the engine.
   uint32_t need_cleanup: 1;
+  //Some types (ENUM & RAW) allows for subtype information to be added.
   uint32_t subtype: 8;
 
   union storage_t{
@@ -135,7 +148,10 @@ struct field_t{
 
 };
 
-
+/**
+ * @brief Legacy namespace to be replaced by definitions in field_models/field_enums
+ * 
+ */
 namespace field_types{
   constexpr const char * fl_align_pos_s(Fl_Align v);
   Fl_Align fl_align_pos_i(const char* v);

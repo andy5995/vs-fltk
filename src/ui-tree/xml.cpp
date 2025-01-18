@@ -21,7 +21,7 @@
 #include "ui-tree.hpp"
 #include "ui-frame.hpp"
 #include <ui-frame.private.hpp>
-#include <ui-tree.xml.hpp>
+#include <ui-tree/xml.hpp>
 
 #include <globals.hpp>
 #include <singletons.hpp>
@@ -65,8 +65,8 @@
 
 namespace vs{
 
-#if __has_include("ui-tree.xml.ns.autofrag.cpp")
-#include "ui-tree.xml.ns.autofrag.cpp"
+#if __has_include("xml.ns.autofrag.cpp")
+#include "xml.ns.autofrag.cpp"
 #endif
 
 

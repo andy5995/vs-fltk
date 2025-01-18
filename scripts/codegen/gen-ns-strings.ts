@@ -57,7 +57,7 @@ ${attributes.map(x =>
 #   undef STRLEN
 }
 `
-await Bun.write('./include/ui-tree.xml.ns.autofrag.hpp', ns_strings_struct);
-await Bun.write('./src/ui-tree.xml.ns.autofrag.cpp', ns_strings_impl);
+await Bun.write('./include/ui-tree/xml.ns.autofrag.hpp', ns_strings_struct);
+await Bun.write('./src/ui-tree/xml.ns.autofrag.cpp', ns_strings_impl);
 
 //Generate ui-tree.xml.ns.autofrag.hpp and 

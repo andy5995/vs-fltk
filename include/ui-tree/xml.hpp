@@ -20,8 +20,8 @@ private:
         vs, fltk, s
     };
 
-#   if __has_include("ui-tree.xml.ns.autofrag.hpp")
-        #include "ui-tree.xml.ns.autofrag.hpp"
+#   if __has_include("ui-tree/xml.ns.autofrag.hpp")
+        #include "ui-tree/xml.ns.autofrag.hpp"
         ns_strings strings;
 #   endif
 

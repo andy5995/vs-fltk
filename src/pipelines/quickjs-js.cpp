@@ -7,7 +7,7 @@
 
 #include <ui-frame.private.hpp>
 #include <ui.hpp>
-#include <ui-tree.xml.hpp>
+#include <ui-tree/xml.hpp>
 #include <pipelines/quickjs-js.hpp>
 #include <globals.hpp>
 

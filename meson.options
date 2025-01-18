@@ -16,4 +16,5 @@ option('use_lua_jit', type: 'boolean', value: false)
 option('use_system_fltk', type: 'boolean', value: true)
 option('use_system_pugixml', type: 'boolean', value: false)
 
+# For MacOS targets when vendoring fltk, to force it using X11 and not the native stack
 option('force_x11_backend', type: 'boolean', value: false)
