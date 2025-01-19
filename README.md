@@ -12,7 +12,7 @@
 
 > [!WARNING]  
 > Safety & Security policies have not been implemented or fully tested yet.
-> Running untrusted XML files on VS can lead to [arbitrary code execution](./docs/safety-policies.md) on your machine with your user privileges.
+> Running untrusted XML files on VS can lead to [arbitrary code execution](./docs/users/safety-policies.md) on your machine with your user privileges.
 
 Hey, you there! Yes you! May I entertain you with something slightly cursed?  
 Have you ever woken up in the middle of the night, thinking:
@@ -102,37 +102,40 @@ Compared to other approaches, `vs` is extremely opinionated and tries to enforce
 
 ## Planned Features
 
-- [ ] FLTK UI elements properly mapped into XML.
-  - [ ] A set of better themes
+- [ ] FLTK UI widgets properly mapped into XML.
+  - [ ] A set of better themes as default
   - [ ] A markdown component to render it directly (replacing the ancient HTML2.0 webview FLTK offers)
-- [ ] A simple tree model to handle scoping, events and queries
-- [ ] Native support for datasets & data models
-- [ ] Custom components
+- [ ] A simple tree model to handle scope, events and queries
+- [ ] An XML templating solution, baically a preprocessor like XSLT to compile _templates + static data_ down to components directly on client
+- [ ] Native support for datasets & data models and their presentation layer
+- [ ] Custom (application specific & sharable) components
+  - [ ] XML custom components, capable of embedding any other type
+  - [ ] Markdown-based custom components, capable of embedding `vs` code in place of HTML. Good for documentation
   - [ ] Native custom components, externally compiled from any language
   - [ ] WASM custom components, externally compiled from any language
-  - [ ] XML custom components, capable of embedding any other component
-  - [ ] Markdown as XML component, capable of embedding VS code in place of HTML.
-  - [ ] A compiler to transform XML components in C code (to be natively run or compiled to WASM)
-  - [ ] An XML preprocessor like XSLT to compile _templates + static data_ down to components directly on client
-- [ ] Inline code inside XML components (like JS in HTML)
+  - [ ] A compiler to transform XML components directly into native code, so that they can run on natively, on WASM or in the riscv vm
+- [ ] Embedded code inside XML components (like JS in HTML)
   - [ ] C as a scripting language, backed by [tinycc](https://github.com/KaruroChori/tcc-vs).
-  - [ ] Other derived alternatives, like [cello](https://libcello.org) or [vala](https://vala.dev/) would also be possible.
+  - [ ] ~~Other derived alternatives, like [cello](https://libcello.org) or [vala](https://vala.dev/) would also be possible~~
   - [ ] JS powered by [QuickJS](https://github.com/quickjs-ng).
-  - [ ] Lua, either based on the reference implementation or LuaJIT.
-  - [ ] WASM to run any language which can be compiled to this target & their compilers.
-  - [ ] A RISCV simulator to run components from any language supporting this architecture.
-- [ ] Distribution of components via http/https and [gemini](https://geminiprotocol.net/).
-- [ ] A self-hosted visual editor to design, code and test new components (something like [gambas](https://gambas.sourceforge.net/en/main.html) or [fluid](https://www.fltk.org/doc-1.4/fluid.html)).
-- [ ] A robust permission system to decide what components can do based on their origin.
-- [ ] A target for single executables; compile your app down into one sharable file for systems onto which `vs` is not already distributed.
+  - [ ] Lua, either based on its reference implementation or LuaJIT.
+  - [ ] WASM to run any language which can be compiled to this target & their compilers
+  - [ ] A RISCV virtual machine to run components from any language supporting this architecture
+- [ ] Interoperability with external code:
+  - [ ] Native interoperability with external dynamic libraries
+  - [ ] Interoperability with arbitrary services/processes via unix domain sockets
+- [ ] Distribution of components via http/https and [gemini](https://geminiprotocol.net/)
+- [ ] A self-hosted visual editor to design, code and test new components (something like [gambas](https://gambas.sourceforge.net/en/main.html) or [fluid](https://www.fltk.org/doc-1.4/fluid.html))
+- [ ] A robust permission system to decide what components can do based on their origin
+- [ ] A target for single executables; compile your app down into one sharable file for systems onto which `vs` is not already distributed
 
 You can read more about which features are planned in the [milestones page](./MILESTONES.md).
 
 ## Useful documentation
 
 - Instuctions [for developers](./docs/developers/index.md)
-- Instuctions ~~[for users](./docs/users/index.md) of vs~~
-- Complete ~~[specifications](./docs/full-specs/index.md) for `vs`~~.
+- Instuctions (not yet) [for users](./docs/users/index.md) of vs
+- Complete (not yet) [specifications](./docs/full-specs/index.md) for `vs`
 
 ## Licences
 
