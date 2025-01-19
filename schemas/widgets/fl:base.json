@@ -1,5 +1,5 @@
 {
-  "$schema": "../../commons/schemas/json-component.schema.json",
+  "$schema": "../../commons/schemas/widget.schema.json",
   "description": "Base element to provide basic props/computed for all those which are derived from `fltk_widget`",
   "exposed": false,
   "type": "node",

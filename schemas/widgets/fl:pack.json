@@ -1,5 +1,5 @@
 {
-  "$schema": "../../commons/schemas/json-component.schema.json",
+  "$schema": "../../commons/schemas/widget.schema.json",
   "description": "Pack container",
   "exposed": true,
   "type": "node",

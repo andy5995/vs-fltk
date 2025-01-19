@@ -324,7 +324,7 @@ vs_fltk = shared_library(
         './src/themes/default-cute.cpp',
 
         './src/cbindings/vs.cpp',
-        './src/cbindings/components.autogen.cpp',
+        './src/cbindings/widgets.autogen.cpp',
 
         './src/globals.cpp',
     ],
@@ -391,7 +391,7 @@ endif
 install_headers(
     [
         './include/cbindings/vs.h',
-        './include/cbindings/components.autogen.h',
+        './include/cbindings/widgets.autogen.h',
         './include/cbindings/module.modulemap',
     ],
     preserve_path: false,

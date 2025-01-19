@@ -1,5 +1,5 @@
 /*
-    Code generator for code and derived specs from json schemas.
+    Code generator for code and derived specs from json schemas representing widgets.
     Use `quick` as optional arg to avoid generating the meson file again.  
     This will speed up compilation considerably and is fine as long as you have not added or removed files in the schema folder.
 */
@@ -8,7 +8,7 @@ import type { Static } from '@sinclair/typebox';
 import { $ } from 'bun'
 import { Glob } from "bun";
 import { parse } from "node:path"
-import { widget_schema, type_schema } from './widget.schema';
+import { widget_schema, type_schema } from './schemas/widget.schema';
 import { Value } from '@sinclair/typebox/value';
 
 import { render, JSXXML } from 'jsx-xml'
@@ -25,6 +25,7 @@ function make_type_code(type: Static<typeof type_schema>, subtype: string, code:
     else if (type === 'scalar-1') return `size_t computed[1]; if((ok = field_types::h_px(1,computed,value,that))){${code}}`
     else if (type === 'scalar-2') return `size_t computed[2]; if((ok = field_types::h_px(2,computed,value,that))){${code}}`
     else if (type === 'scalar-4') return `size_t computed[4]; if((ok = field_types::h_px(4,computed,value,that))){${code}}`
+    else throw "Type not yet supported, add it to `make_type_code`"
 }
 
 function gen_cpp(data: Static<typeof widget_schema>) {
@@ -154,7 +155,7 @@ await $`rm -rf ./commons/schemas/widgets/`
 await $`mkdir -p ./commons/schemas/widgets/`
 
 //Save the schema, so that our json files can all be validated in the editor while writing them.
-await Bun.write('./commons/schemas/json-component.schema.json', JSON.stringify(widget_schema, null, 4))
+await Bun.write('./commons/schemas/widget.schema.json', JSON.stringify(widget_schema, null, 4))
 
 const glob = new Glob("./schemas/widgets/**/*.json");
 

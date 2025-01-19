@@ -187,6 +187,15 @@ At the end of this process the XML is freed.
 XML files are assumed to be fully loaded in memory during processing. However, it is possible to write a streaming parser with much lower memory footprint, as long as the XML is following the strict schema shipped with this repo (it has a rigid order for some tags).  
 This strategy was not employed as it makes the loading process much slower for multithreaded systems with reasonable amounts of memory, and would only be better for low-end embedded systems where fltk is unlikely to be suitable.
 
+### Why codegen is in typescript? Why bun?
+
+The main reason is expressiveness. Primitives like `map`, `split`, `join` and string templates are extremely useful in simplifying the process.
+Trying to implement the same in C++ would have been a bit of a nightmare to be honest, even with modern features like `std::format`. There are libraries replicating a good chunk of the js standard library in C++, but at that point I would just use javascript.
+
+As for "why bun?", the main reason is convenience. It has native support to run typescript without transpilation, and a good library to read/write files which is much more compact compared to most alternatives.  
+I considered using [txiki.js](https://github.com/saghul/txiki.js) (no less because I am somewhat involved with the project), which is much more lightweight and can be easily built without extra dependencies if not shipped already on the developer's machine.  
+Still, it does not use semantic versioning (so features will break every now and then), and it cannot use typescript natively. Hence, no txiki (for now).
+
 ## Licensing
 
 ### Can I contribute to this project?

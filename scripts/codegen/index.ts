@@ -35,6 +35,7 @@ if (process.argv[2] != 'quick') {
 import "./gen-widgets"
 import "./gen-ns-strings"
 import "./gen-policies"
+import "./gen-enums"
 
-
+// database construciton
 await $`bun drizzle-kit generate && bun drizzle-kit push`;
