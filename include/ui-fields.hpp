@@ -16,13 +16,6 @@
 
 namespace vs{
 
-/*struct field_prefix_t{
-  size_t tag;
-  void (*free)(void* ptr);
-  void *base[0];   //Just to offer a base with the right offset
-};
-*/
-
 struct field_t;
 
 struct field_enum_t{
@@ -31,8 +24,10 @@ struct field_enum_t{
 };
 
 enum struct field_ret_t{
+  UNKNOWN_MODEL=-4,
+  INVALID_SRC=-3,
   WRONG_TYPE=-2,
-  NULL_SRC=-1,
+  NULL_ACCESS=-1,
   OK=0,
   BAD=1
 };
@@ -43,7 +38,7 @@ struct field_enums_t{
     inline field_enum_t operator[](int i ){
       if(i<__LAST && i>__FIRST)return enums[i];
       /*Unrecognized field model*/
-      exit(1);
+      throw "Not implemented";
     };
 
     enum types{
@@ -66,18 +61,22 @@ struct field_model_t{
 struct field_models_t{
     field_model_t models[];
 
-    inline field_model_t operator[](int i ){
-      if(i<__LAST && i>__FIRST)return models[i];
-      /*Unrecognized field model*/
-      exit(1);
-    };
-
     enum types{
-        __FIRST, FLAG, ENUM, RAW, PATH, CSTRING, STRING_VIEW, COLOR,
+        __FIRST, 
+        FLAG, 
+        ENUM, 
+        RAW, 
+        //PATH, //TODO: this was defined but never later used. I need to check in specs if this had any meaning or if it was just a mistake left in there
+        CSTRING, 
+        STRING_VIEW, 
+        COLOR,
         ISCALAR_1, ISCALAR_2, ISCALAR_3, ISCALAR_4,
         FSCALAR_1, FSCALAR_2, FSCALAR_3, FSCALAR_4,
         __LAST
     };
+
+    field_ret_t deserialize(types model, field_t* _dst, const char* src, const ui_base* env);
+    field_ret_t serialize(types model, const field_t* _src, const char**  dst, const ui_base* env);
 };
 
 struct field_t{
@@ -85,11 +84,14 @@ struct field_t{
   static inline constexpr void(*lfree)(void*)=free;
   static inline constexpr void*(*lalloc)(size_t)=malloc;
 
-  field_models_t::types type : sizeof(field_models_t::types)*8-10;
+  field_models_t::types type : sizeof(field_models_t::types)*8-11;
   ///If true the content of this field is still considered valid, else accessing it is not right.
   uint32_t valid: 1;
   ///If true, the embedded script must handle the cleanup of this field when out of scope. If false ownership is externally handled by the engine.
   uint32_t need_cleanup: 1;
+  ///Not implemented for not. Later, if set for raw or cstring it will allow elements up to 16 bytes to be stored directly in `storage`
+  uint32_t is_inline: 1;
+
   //Some types (ENUM & RAW) allows for subtype information to be added.
   uint32_t subtype: 8;
 
@@ -132,20 +134,28 @@ struct field_t{
   int store_from_field(const field_t *src, bool weak = false);
 
   /**
-   * @brief 
-   * 
-   * @param src the source field to use to copy data from
-   * @param weak if data should be copied weakly.
-   * @return int 0 if all fine, else error codes
-   */
-  int store_from_data(storage_t data, bool weak = false);
-
-  /**
    * @brief Destroy the field object
    * If set for cleanup and of compatible type, raw, cstring or stringview content will be freed.
    */
   ~field_t();
 
+  /**
+   * @brief Reset content of the field. To be used for deletions or before setting.
+   * 
+   */
+  void reset();
+
+  /**
+   * @brief From a weak to a strong field. Copy data from parent.
+   * 
+   */
+  void copy();
+
+  field_ret_t from_string(const char* str, const ui_base *env=nullptr);
+  field_ret_t to_string(const char** str, const ui_base *env=nullptr);
+
+  //void from_string(std::string_view str);
+  //void to_string(std::string_view& str);
 };
 
 /**

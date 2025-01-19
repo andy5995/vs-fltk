@@ -363,8 +363,8 @@ void ui_tree_xml::_build(const pugi::xml_node& root, ui_base* root_ui){
   }
   else if (strcmp(root.name(),strings.COMPONENT_TAG)==0){}
 
-#   if __has_include("./ui.xml-widgets.autogen.cpp")
-#   include "./ui.xml-widgets.autogen.cpp"
+#   if __has_include("./xml-widgets.autogen.cpp")
+#   include "./xml-widgets.autogen.cpp"
 #   endif
 
 

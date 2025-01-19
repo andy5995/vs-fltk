@@ -4,13 +4,17 @@ For past releases please check in [here](./docs/releases/).
 ## 0.1.3
 
 - [x] Move all components to the revised codegen format
-- [ ] Initial settings implementation
 - [ ] New getters and setters design (and updated schemas).
-- [ ] Tidy up the XML caching
 - [x] flatpak distribution
 - [x] docs generation
+- [x] "complete" template system
 
 ## 0.1.5
+
+- [ ] Initial settings implementation
+- [ ] Tidy up the XML caching
+
+## 0.1.7
 
 - [x] Support for script modules
 - [ ] Tidy up the JS scripting interface.
@@ -18,7 +22,7 @@ For past releases please check in [here](./docs/releases/).
 - [x] Support basic policies via env flags & settings
 - [ ] Implement flex, grid, scroll & pack via codegen.
 
-## 0.1.7
+## 0.1.9
 
 - [x] Final implementation of the static xml builder (now external dependency)
 - [ ] Full infrastructure for benchmarking & tests implemented

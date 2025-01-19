@@ -4,6 +4,26 @@
 
 namespace vs{
 
+
+  inline field_ret_t field_models_t::deserialize(types model, field_t* _dst, const char* src, const ui_base* env){
+    if(src==nullptr)return field_ret_t::NULL_ACCESS;
+    if(_dst->type!=model)return field_ret_t::WRONG_TYPE;  //TODO eval this one
+
+    if(model<__LAST && model>__FIRST){
+      _dst->reset();
+      return models[model].deserialize(_dst,src,env);
+    }
+    return field_ret_t::UNKNOWN_MODEL;
+  }
+  inline field_ret_t field_models_t::serialize(types model, const field_t* _src, const char**  dst, const ui_base* env){
+    if(dst==nullptr)return field_ret_t::NULL_ACCESS;
+    if(_src->type!=model)return field_ret_t::WRONG_TYPE;
+    if(_src->valid==false)return field_ret_t::INVALID_SRC;
+
+    if(model<__LAST && model>__FIRST)return models[model].serialize(_src,dst,env);
+    return field_ret_t::UNKNOWN_MODEL;
+  }
+
 /**
  * @brief Global structure for the enumeration types supported and exposed by vs
  * 
@@ -19,30 +39,21 @@ field_enums_t field_enums = {
 field_models_t field_models ={{
     [field_models_t::FLAG] = {
       +[](field_t* _dst, const char* src, const ui_base* env)->field_ret_t{
-          if(src==nullptr)return field_ret_t::NULL_SRC;
-          if(_dst->type!=field_models_t::FLAG)return field_ret_t::WRONG_TYPE;
-
           bool* dst = &_dst->storage.FLAG;
           if(strcmp(src, "false")==0){*dst=false;return field_ret_t::OK;}
           else if(strcmp(src,"true")==0){*dst=true;return field_ret_t::OK;}
           return field_ret_t::BAD;
       },
       +[](const field_t* _src, const char**  dst, const ui_base* env)->field_ret_t{
-          if(dst==nullptr)return field_ret_t::NULL_SRC;
-          if(_src->type!=field_models_t::FLAG)return field_ret_t::WRONG_TYPE;
-
           const bool* src = &_src->storage.FLAG;
-          if(*src==true){auto tmp = malloc(sizeof("true"));memcpy(tmp,"true",sizeof("true"));*dst=(const char*)tmp;return field_ret_t::OK;}
-          else if(*src==false){auto tmp = malloc(sizeof("false"));memcpy(tmp,"false",sizeof("false"));*dst=(const char*)tmp;return field_ret_t::OK;}
-          else dst=nullptr;
+          if(*src==true){auto tmp = field_t::lalloc(sizeof("true"));memcpy(tmp,"true",sizeof("true"));*dst=(const char*)tmp;return field_ret_t::OK;}
+          else if(*src==false){auto tmp = field_t::lalloc(sizeof("false"));memcpy(tmp,"false",sizeof("false"));*dst=(const char*)tmp;return field_ret_t::OK;}
+          else *dst=nullptr;
           return field_ret_t::BAD;
       }
     },
     [field_models_t::COLOR] = {
       +[](field_t* _dst, const char* src, const ui_base* env)->field_ret_t{
-          if(src==nullptr)return field_ret_t::NULL_SRC;
-          if(_dst->type!=field_models_t::COLOR)return field_ret_t::WRONG_TYPE;
-
           uint8_t* dst = _dst->storage.COLOR;
           if(src[0]=='#'){
             uint32_t tmp = std::stoi(src+1,nullptr,16);
@@ -61,14 +72,31 @@ field_models_t field_models ={{
           return field_ret_t::OK;
       },
       +[](const field_t* _src, const char**  dst, const ui_base* env)->field_ret_t{
-          if(dst==nullptr)return field_ret_t::NULL_SRC;
-          if(_src->type!=field_models_t::COLOR)return field_ret_t::WRONG_TYPE;
-
           const uint8_t* src = _src->storage.COLOR;
           //TODO
           return field_ret_t::BAD;
       }
-    }
+    },
+    [field_models_t::CSTRING] = {
+      +[](field_t* _dst, const char* src, const ui_base* env)->field_ret_t{
+          const char** dst = &_dst->storage.CSTRING;
+          //Cannot be weak.
+          _dst->need_cleanup=true;  
+          size_t len = strlen(src);
+          *dst=(const char*)field_t::lalloc(len+1);
+          //if(*dst==nullptr)return field_ret_t::BAD;
+          memcpy((void*)*dst,src,len+1);return field_ret_t::OK;
+      },
+      +[](const field_t* _src, const char**  dst, const ui_base* env)->field_ret_t{
+          const char* src = _src->storage.CSTRING;
+          size_t len = strlen(src);
+          auto tmp = field_t::lalloc(len+1);
+          //if(tmp==nullptr)return field_ret_t::BAD;
+          memcpy(tmp,src,len+1);
+          *dst=(const char*)tmp;
+          return field_ret_t::OK;
+      }
+    },
 }};
 
 
@@ -79,22 +107,29 @@ field_models_t field_models ={{
     memset(&storage,0,sizeof(storage)); //Maybe I should do something different for floats?
   }
 
-  field_t::~field_t(){
-    if(need_cleanup){
-      assert( type==field_models_t::CSTRING || type==field_models_t::RAW ||type==field_models_t::STRING_VIEW);
+  void field_t::reset(){
+    if(need_cleanup && (type==field_models_t::CSTRING || type==field_models_t::RAW ||type==field_models_t::STRING_VIEW)){
       if(this->storage.RAW!=nullptr)lfree(this->storage.RAW);
       need_cleanup=false;
-      this->storage.RAW = nullptr;
     }
+    memset(&storage,0,sizeof(storage)); //Maybe I should do something different for floats?
     valid=false;
   }
 
-  int field_t::store_from_field(const field_t *src, bool weak){
-    //TODO:
-    return 1;
+  void field_t::copy(){
+    if(need_cleanup && (type==field_models_t::CSTRING || type==field_models_t::STRING_VIEW)){
+      //TODO: implement
+      //if(this->storage.RAW!=nullptr)lfree(this->storage.RAW);
+      //need_cleanup = false;
+      exit(1);
+    }
   }
 
-  int field_t::store_from_data(storage_t data, bool weak){
+  field_t::~field_t(){
+    reset();
+  }
+
+  int field_t::store_from_field(const field_t *src, bool weak){
     //TODO:
     return 1;
   }
@@ -279,6 +314,15 @@ namespace field_types{
     return false;
   }
 
+}
+
+
+field_ret_t field_t::from_string(const char* str, const ui_base *env){
+  return field_models.deserialize(this->type, this, str, env);
+}
+
+field_ret_t field_t::to_string(const char** str, const ui_base *env){
+  return field_models.serialize(this->type, this, str, env);
 }
 
 }

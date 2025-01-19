@@ -5,10 +5,9 @@ However, there have been many improvements, bug fixes and architectural changes 
 
 The main objectives for this release are:
 
-- To improve the build system, moving the generation of distributable formats in a separate repo.
+- To improve the build system, moving the generation of distributable formats in a separate repo and resolving several issues with the flatpak construction.
 - Revise the code-generation of widgets.
 - Better serialization/de-serialization of XML props & revised getters/setters
-- To offer a wider range of fltk widgets in the runtime.
 - Documentation efforts, not just in the docs themselves but also in distribution. We now have docs generation from code and markdown.
 - A complete implementation of the XML templating backend, which was [split in its own project](https://github.com/lazy-eggplant/vs.templ).  
   `vs.templ` is now feature complete, or at least much more so than its parent project.
@@ -24,9 +23,6 @@ This is what has been implemented so far (some missing feature are reported just
   - [ ] install script can be now be safely used
   - [x] specific features of `vs` can be excluded from building.
   - [x] CI is now faster.
-- [ ] New widgets & improvements
-  - [ ] flex
-  - [ ] grid
 - [ ] Updated code-gen
   - [x] Use the new schema
 - [ ] Updated core features
@@ -39,7 +35,7 @@ This is what has been implemented so far (some missing feature are reported just
   - [x] Landing page for the project
   - [x] `doxygen` for C++ code
   - [x] `mkdocs` to distribute the main documentation
-- [ ] New documentation:
+- [ ] New documentation covering:
   - [ ] settings
   - [ ] paths/virtual paths
-  - [ ] some basic information to use vs
+  - [ ] some basic information on how to use `vs`

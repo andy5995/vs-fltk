@@ -155,8 +155,8 @@ It is also possible to mark specific objects as `semantic`. Those will be report
   - [x] Stage 2 Full interface for ui tree operations
   - [x] UI base support of module scripts
   - [x] UI base support of getters/setters.
-- [ ] Add an alternative backend like Cello
-- [ ] Add an alternative backend like Vala (?)
+- [ ] ~~Add an alternative backend like Cello~~
+- [ ] ~~Add an alternative backend like Vala (?)~~
 
 All done for now
 
@@ -185,12 +185,8 @@ https://wasmer.io/taybenlor/runno-clang
 
 ## LUA
 
-- [ ] Add Lua & LuaJIT to the repo
-- [ ] Add baseline support for Lua embedded scripts.
-
-# Documentation
-
-- [x] Provide actual examples.
+- [x] Add Lua & LuaJIT to the repo
+- [x] Add baseline support for Lua embedded scripts.
 
 # Unclassified
 
