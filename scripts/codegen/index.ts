@@ -31,8 +31,8 @@ if (process.argv[2] != 'quick') {
     ))
 }
 
-// Components automatic codegen
-import "./gen-components"
+// automatic codegen
+import "./gen-widgets"
 import "./gen-ns-strings"
 import "./gen-policies"
 

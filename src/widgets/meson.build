@@ -1,4 +1,4 @@
-src_components = files(
+src_widgets = files(
     [
         'containers.cpp',
         'markdown-view.cpp',

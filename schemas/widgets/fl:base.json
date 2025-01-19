@@ -8,12 +8,12 @@
   "skip_fields": ["name", "frame.*", "xmlns", "xmlns:*"],
   "fields": {
     "mixin": {
-      "type": "string",
+      "type": "cstr",
       "description": "Apply mixins to this object",
       "setter": "that->refresh_style(value);"
     },
     "label": {
-      "type": "string",
+      "type": "cstr",
       "alias": ["label.txt"],
       "setter": "w.copy_label(value);"
     },
@@ -68,7 +68,7 @@
       "setter": "w.vertical_label_margin(computed[0]);"
     },
     "tooltip": {
-      "type": "string",
+      "type": "cstr",
       "alias": ["tooltip.txt"],
       "setter": "w.copy_tooltip(value);"
     },

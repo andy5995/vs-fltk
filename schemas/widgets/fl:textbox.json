@@ -10,7 +10,7 @@
   "extends": "fl:base",
   "fields": {
     "somethig": {
-      "type": "string",
+      "type": "cstr",
       "setter": "",
       "getter": "",
       "alias": ["alias-a", "alias-b"]

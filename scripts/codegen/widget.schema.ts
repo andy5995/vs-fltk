@@ -8,11 +8,17 @@ export const type_schema = t.Union([
     t.Literal('enum'),
     t.Literal('raw'),
     t.Literal('path'),
-    t.Literal('string'),
+    t.Literal('cstr'),
+    t.Literal('str'),
     t.Literal('color'),
     t.Literal('scalar-1'),
     t.Literal('scalar-2'),
-    t.Literal('scalar-4')
+    t.Literal('scalar-3'),
+    t.Literal('scalar-4'),
+    t.Literal('fscalar-1'),
+    t.Literal('fscalar-2'),
+    t.Literal('fscalar-3'),
+    t.Literal('fscalar-4')
 ], { description: 'type', default: 'string' });
 
 const entries_schema = t.Record(t.String(), t.Object({

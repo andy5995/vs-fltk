@@ -163,7 +163,11 @@
                                     "type": "string"
                                 },
                                 {
-                                    "const": "string",
+                                    "const": "cstr",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "str",
                                     "type": "string"
                                 },
                                 {
@@ -179,7 +183,27 @@
                                     "type": "string"
                                 },
                                 {
+                                    "const": "scalar-3",
+                                    "type": "string"
+                                },
+                                {
                                     "const": "scalar-4",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "fscalar-1",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "fscalar-2",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "fscalar-3",
+                                    "type": "string"
+                                },
+                                {
+                                    "const": "fscalar-4",
                                     "type": "string"
                                 }
                             ]

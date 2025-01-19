@@ -1,6 +1,5 @@
 #if VS_USE_QJS
 
-#include <iostream>
 #include <memory>
 
 #include <quickjs.h>

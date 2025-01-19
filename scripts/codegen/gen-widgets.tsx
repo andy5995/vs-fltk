@@ -8,7 +8,7 @@ import type { Static } from '@sinclair/typebox';
 import { $ } from 'bun'
 import { Glob } from "bun";
 import { parse } from "node:path"
-import { widget_schema, type_schema } from './components.schema';
+import { widget_schema, type_schema } from './widget.schema';
 import { Value } from '@sinclair/typebox/value';
 
 import { render, JSXXML } from 'jsx-xml'
@@ -21,7 +21,7 @@ function make_type_code(type: Static<typeof type_schema>, subtype: string, code:
     else if (type === 'raw') return code;
     else if (type === 'path') return `/*TODO*/`
     else if (type === 'color') return `uint32_t computed; if((ok=field_types::h_colour(&computed,value,that))){${code}}`
-    else if (type === 'string') return code;
+    else if (type === 'cstr') return code;
     else if (type === 'scalar-1') return `size_t computed[1]; if((ok = field_types::h_px(1,computed,value,that))){${code}}`
     else if (type === 'scalar-2') return `size_t computed[2]; if((ok = field_types::h_px(2,computed,value,that))){${code}}`
     else if (type === 'scalar-4') return `size_t computed[4]; if((ok = field_types::h_px(4,computed,value,that))){${code}}`
@@ -36,7 +36,7 @@ function gen_cpp(data: Static<typeof widget_schema>) {
 
 #include <ui.hpp>
 #include <ui-fields.hpp>
-${cextends ? `#include <components/autogen/${cextends[0]}/${cextends[1]}.hpp>\n` : ``}
+${cextends ? `#include <widgets/autogen/${cextends[0]}/${cextends[1]}.hpp>\n` : ``}
 ${data.headers ? data.headers.map(x => `#include <${x}>\n`).join('\n') : ``}
 
 namespace vs{
@@ -66,7 +66,7 @@ class ${cppname} : public ${data.codegen.extends}{
 
     let class_impl = `
 #include <cstdint>
-#include <components/autogen/${data.ns}/${data.name}.hpp>
+#include <widgets/autogen/${data.ns}/${data.name}.hpp>
 
 namespace vs{
 
@@ -143,20 +143,20 @@ function gen_xml_editor(data: Static<typeof widget_schema>) {
 }
 
 if (process.argv[2] != 'quick') {
-    await $`rm -rf ./src/components/autogen/`
+    await $`rm -rf ./src/widgets/autogen/`
 }
-await $`mkdir -p ./src/components/autogen/`
+await $`mkdir -p ./src/widgets/autogen/`
 
-await $`rm -rf ./include/components/autogen/`
-await $`mkdir -p ./include/components/autogen/`
+await $`rm -rf ./include/widgets/autogen/`
+await $`mkdir -p ./include/widgets/autogen/`
 
-await $`rm -rf ./commons/schemas/components/`
-await $`mkdir -p ./commons/schemas/components/`
+await $`rm -rf ./commons/schemas/widgets/`
+await $`mkdir -p ./commons/schemas/widgets/`
 
 //Save the schema, so that our json files can all be validated in the editor while writing them.
 await Bun.write('./commons/schemas/json-component.schema.json', JSON.stringify(widget_schema, null, 4))
 
-const glob = new Glob("./schemas/components/**/*.json");
+const glob = new Glob("./schemas/widgets/**/*.json");
 
 
 const cpp_files = []
@@ -177,24 +177,24 @@ for await (const file of glob.scan(".")) {
         tmp.name ??= namepieces[1]
 
         //Cpp code
-        cpp_files.push(`./src/components/autogen/${tmp.ns}/${tmp.name}.cpp`)
-        h_files.push(`components/autogen/${tmp.ns}/${tmp.name}.hpp`)
+        cpp_files.push(`./src/widgets/autogen/${tmp.ns}/${tmp.name}.cpp`)
+        h_files.push(`widgets/autogen/${tmp.ns}/${tmp.name}.hpp`)
         {
             const ret = gen_cpp(tmp);
 
-            await $`mkdir -p ./include/components/autogen/${tmp.ns}/`
-            await Bun.write(`./include/components/autogen/${tmp.ns}/${tmp.name}.hpp`, ret[0])
+            await $`mkdir -p ./include/widgets/autogen/${tmp.ns}/`
+            await Bun.write(`./include/widgets/autogen/${tmp.ns}/${tmp.name}.hpp`, ret[0])
 
-            await $`mkdir -p ./src/components/autogen/${tmp.ns}/`
-            await Bun.write(`./src/components/autogen/${tmp.ns}/${tmp.name}.cpp`, ret[1])
+            await $`mkdir -p ./src/widgets/autogen/${tmp.ns}/`
+            await Bun.write(`./src/widgets/autogen/${tmp.ns}/${tmp.name}.cpp`, ret[1])
             parser_entries.push(ret[2])
         }
 
         //XML Model for the Editor
         {
             const ret = gen_xml_editor(tmp);
-            await $`mkdir -p ./commons/schemas/components/${tmp.ns}/`
-            await Bun.write(`./commons/schemas/components/${tmp.ns}/${tmp.name}.xml`, render(ret))
+            await $`mkdir -p ./commons/schemas/widgets/${tmp.ns}/`
+            await Bun.write(`./commons/schemas/widgets/${tmp.ns}/${tmp.name}.xml`, render(ret))
         }
 
         //XML Schema for aid when writing code
@@ -207,14 +207,14 @@ for await (const file of glob.scan(".")) {
     }
 }
 
-await Bun.write('./include/components/autogen/index.hpp', h_files.map(x => `#include <${x}>`).join('\n'))
+await Bun.write('./include/widgets/autogen/index.hpp', h_files.map(x => `#include <${x}>`).join('\n'))
 await Bun.write('./src/ui-tree/xml-widgets.autogen.cpp', parser_entries.join('\n'))
 
 //TODO
-await Bun.write('./include/cbindings/components.autogen.h', '')
+await Bun.write('./include/cbindings/widgets.autogen.h', '')
 //TODO
-await Bun.write('./src/cbindings/components.autogen.cpp', '')
+await Bun.write('./src/cbindings/widgets.autogen.cpp', '')
 
 if (process.argv[2] != 'quick') {
-    await Bun.write('./src/components/autogen/meson.build', `autogen_components = [${cpp_files.map(x => `'${x}'`)}]`)
+    await Bun.write('./src/widgets/autogen/meson.build', `autogen_widgets = [${cpp_files.map(x => `'${x}'`)}]`)
 }

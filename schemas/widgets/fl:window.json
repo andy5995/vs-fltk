@@ -13,7 +13,7 @@
       "setter": "w.border(computed);"
     },
     "icon": {
-      "type": "string",
+      "type": "cstr",
       "description": "True if using a border around",
       "setter": "w.icon(new Fl_SVG_Image(value));"
     }

@@ -4,7 +4,7 @@
 
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
-#include <components/containers.hpp>
+#include <widgets/containers.hpp>
 
 #include <vs-templ.hpp>
 
@@ -30,8 +30,8 @@
 #include <utils/paths.hpp>
 
 
-#if __has_include("components/autogen/index.hpp")
-#include <components/autogen/index.hpp>
+#if __has_include("widgets/autogen/index.hpp")
+#include <widgets/autogen/index.hpp>
 #endif
 
 

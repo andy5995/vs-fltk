@@ -276,7 +276,7 @@ vs_fltk_deps += [
     treesitter_dep,
 ]
 
-subdir('./src/components')
+subdir('./src/widgets')
 
 vs_fltk = shared_library(
     'vs-fltk',
@@ -297,8 +297,8 @@ vs_fltk = shared_library(
         './src/fetcher.cpp',
         './src/loader.cpp',
 
-        src_components,
-        autogen_components,
+        src_widgets,
+        autogen_widgets,
 
         './src/ui-frame.cpp',
         './src/ui.cpp',
