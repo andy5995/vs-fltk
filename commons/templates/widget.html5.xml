@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Template to generate an HTML view from the widget specifications. Used to SSG the docs -->
+<html xmlns:s="vs.templ">
+    <head>
+        <title> Documentation for widget `<s:value src="/component~ns" />:<s:value
+                src="/component~name" />` </title>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="color-scheme" content="light dark" />
+    </head>
+    <body>
+        <main class="container">
+
+            <h1><s:value src="/component~ns" />:<s:value src="/component~name" /></h1>
+            <p>
+                <s:value src="/component/description~!txt" />
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Field name</th>
+                        <th>Description</th>
+                        <th>setter</th>
+                        <th>getter</th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <s:for in="/component/fields" sort-by="$~name" order-by=".asc">
+                        <s:item>
+                            <tr>
+                                <td>
+                                    <s:value src="$~type" />
+                                </td>
+                                <td>
+                                    <s:value src="$~name" />
+                                </td>
+                                <td>
+                                    <s:value src="$~!txt" />
+                                </td>
+                                <td>
+                                    <input type="checkbox"
+                                        s:enable.checked=": `$~is-prop` as.bool" disabled="" />
+                                </td>
+                                <td>
+                                    <input type="checkbox"
+                                        s:enable.checked=": `$~is-computed` as.bool" disabled="" />
+                                </td>
+                            </tr>
+                        </s:item>
+                    </s:for>
+                </tbody>
+
+                <tfoot>
+                </tfoot>
+            </table>
+        </main>
+    </body>
+</html>

@@ -50,10 +50,13 @@ Builds distributed from this repository are based on the default options unless 
 ## Building requirements
 
 You will need a proper Linux environment, with a modern C++ toolchain installed.  
-Specifically, I suggest `clang-19` or higher, as this repo is using modern C23 features like `#embed` to make everyone's (my) life a bit easier.
+Specifically, I suggest `clang-19` or higher, as this repo is using modern C23 features like `#embed` to make everyone's (my) life a bit easier.  
+Also, this project will make use of features from older standards which have not been integrated in the C++ runtime up [until very recently](https://github.com/lazy-eggplant/vs.templ/issues/17).  
+This might require very modern versions of your toolchains.
+
 In addition to that, this repo makes use of:
 
-- [meson](https://mesonbuild.com/) as its main build system. Any recent-ish version will do (unless you want `zig` to simplify cross-compiling; for that, >= 1.60 is needed)
+- [meson](https://mesonbuild.com/) as its main build system (alternatives like muon/samurai should be also usable but untested). Any recent-ish version will do (unless you want `zig` to simplify cross-compiling; for that, >= 1.60 is needed)
 - [bun](https://bun.sh/) as the ts/js runtime to support all the code generation tasks and some of the more complex pipelines.  
    I hate bash, and this is what replaces it for any complex task.
 - [swiftc](https://www.swift.org/documentation/swift-compiler/) barely used for now, but many of the native components shipped within `vs` will be written in swift (or so I am planning). Version 6 or higher is needed.
