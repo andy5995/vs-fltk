@@ -51,11 +51,9 @@ if [ -d "build" ]; then
 else
   bun run codegen
   if [ "$(uname)" != "Darwin" ]; then
-    bun run meson-setup.clang-release
+    meson setup --prefix=/usr -Db_lto=true -Db_thinlto_cache=true -Db_lto_mode=thin --reconfigure build/ --buildtype=release --native-file platforms/ci-ubuntu.ini
   else
-    meson setup -Dforce_x11_backend=false --reconfigure build --buildtype=release --native-file platforms/flatpak.ini
-    # Unclear fix to be investigated
-    rm subprojects/libtcc/VERSION
+    meson setup -Dforce_x11_backend=false -Db_lto=true -Db_thinlto_cache=true -Db_lto_mode=thin --reconfigure build --buildtype=release --native-file platforms/ci-macos.ini
   fi
 fi
 

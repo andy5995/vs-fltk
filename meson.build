@@ -5,7 +5,10 @@ project(
     version: '0.1.2-alpha',
     #</inject-version>
     meson_version: '>= 1.1',
-    default_options: ['c_std=gnu23', 'cpp_std=gnu++23'],
+    default_options: [
+        'c_std=gnu23',
+        'cpp_std=gnu++23',
+    ],
 )
 cmake = import('cmake')
 

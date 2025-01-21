@@ -1,14 +1,13 @@
 #include <ui-frame.hpp>
 #include <cbindings/vs.h>
-#include <iostream>
 #include <pugixml.hpp>
 #include <singletons.hpp>
 
 void vs_hello_world(){
-    std::cout<<"Hello world!\n";
+    //std::cout<<"Hello world!\n";
     pugi::xml_document doc;
     doc.load_string("<app><h1></h1></app>");
-    std::cout<<doc.root().first_child().name()<<"\n";
+    //std::cout<<doc.root().first_child().name()<<"\n";
 }
 
 void vs_debug(const char* k, const char* v){vs::singleton::debug(k,v);}

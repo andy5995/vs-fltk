@@ -1,8 +1,6 @@
 #include "utils/paths.hpp"
 #include <cache/memory-storage.hpp>
-#include <iostream>
 #include <memory>
-#include <new>
 #include <sys/types.h>
 #include <unordered_map>
 
