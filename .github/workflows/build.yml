@@ -87,7 +87,8 @@ jobs:
             meson \
             ninja \
             fltk \
-            lua
+            lua \
+            libsodium
           brew install --cask xquartz
           cd /opt/homebrew/opt/llvm/bin
           #ln -s clang++ clang++-19

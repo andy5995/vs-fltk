@@ -1,0 +1,21 @@
+[wrap-git]
+url = https://github.com/jedisct1/libsodium
+revision = 1.0.20-RELEASE
+depth = 1
+patch_directory = libsodium
+method = meson
+
+[provide]
+libsodium = libsodium_dep
+
+
+#[wrap-file]
+#source_url = https://download.libsodium.org/libsodium/releases/libsodium-1.0.20.tar.gz
+#source_filename = libsodium-1.0.20.tar.gz
+#source_hash = ebb65ef6ca439333c2bb41a0c1990587288da07f6c7fd07cb3a18cc18d30ce19
+#patch_directory = libsodium
+#method = meson
+#lead_directory_missing = false#
+#
+#[provide]
+#libsodium = libsodium_dep

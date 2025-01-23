@@ -211,6 +211,9 @@ json_dep = json_proj.get_variable('nlohmann_json_dep')
 #VS.TEMPL
 vs_templ_dep = dependency('vs-templ', version: '>=0.3.15', fallback: ['vs-templ', 'vs_templ_dep'])
 
+#LIBSODIUM
+libsodium_dep = dependency('libsodium', version: '>=1.0.20')
+
 #TREESITTER
 treesitter_proj = subproject('tree-sitter')
 treesitter_dep = treesitter_proj.get_variable('tree_sitter_dep')
