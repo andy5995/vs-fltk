@@ -43,11 +43,11 @@
                                 </td>
                                 <td>
                                     <input type="checkbox"
-                                        s:enable.checked=": `$~is-prop` as.bool" disabled="" />
+                                        s:when.checked=": `$~is-prop` as.bool" disabled="" />
                                 </td>
                                 <td>
                                     <input type="checkbox"
-                                        s:enable.checked=": `$~is-computed` as.bool" disabled="" />
+                                        s:when.checked=": `$~is-computed` as.bool" disabled="" />
                                 </td>
                             </tr>
                         </s:item>

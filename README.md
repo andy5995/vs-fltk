@@ -162,29 +162,34 @@ This project is based on the following dependencies:
 ### Core features
 
 - [fltk](https://www.fltk.org/) the UI toolkit library used.
-- [pugixml](https://pugixml.org/) to parse xml.
-- [vs.templ](https://github.com/lazy-eggplant/vs.templ) a library to parse markdown (not just to HTML).
+- [vs.templ](https://github.com/lazy-eggplant/vs.templ) a template engine for XML.
+- [vs.yapm](https://github.com/lazy-eggplant/vs.yapm) yet another packet manager.
+- [vs.xml-piler](https://github.com/lazy-eggplant/vs.xml-piler) to generate the XML parser backends based on schema files and specs.
+
+### Infrastructure
+
+- [pugixml](https://pugixml.org/) to parse XML.
 - [sqlite](https://www.sqlite.org/) as the embedded DB to handle user profiles, caching etc.
 - [mio](https://github.com/vimpunk/mio) memory mapping for loading files.
 - [hashlib](https://github.com/lazy-eggplant/hash-library) for cryptographic functions (and not).
 - [libuv](https://libuv.org/) for me not to care about portable code.
-- [vs.robot](https://github.com/lazy-eggplant/vs.robot) a library to perform automatic actions on FLTK.
-- [vs.xml-piler](https://github.com/lazy-eggplant/vs.xml-piler) to generate the XML parser backends based on schema files and specs.
+- [libffi](https://github.com/libffi/libffi) to simplify symbol sharing between languages.
+- [libsodium](https://doc.libsodium.org/) for crypto stuff.
 
 ### For embedded scripts
 
 - [tcc](https://github.com/lazy-eggplant/tcc-vs) the embeddable C compiler used for C scripts.
 - [quickjs](https://github.com/quickjs-ng) the embeddable JS runtime used for JS scripts.
 - [lua](https://www.lua.org/) and [luajit](http://luajit.org/) to support Lua scripts.
-- [libriscv](https://github.com/libriscv/libriscv) the embeddable riscv vm, used for scripts, portable compiled components & toolchains.
-- [libffi](https://github.com/libffi/libffi) to simplify symbol sharing between languages.
+- [libriscv](https://github.com/libriscv/libriscv) the embeddable RISCV virtual machine, used for scripts, portable compiled components & toolchains.
 - [wamr](https://github.com/bytecodealliance/wasm-micro-runtime) the embeddable WASM runtime used for scripts, portable compiled components & toolchains.
 
 ### For custom components
 
 - [treesitter](https://tree-sitter.github.io/tree-sitter/) to handle parsing of languages (used for some components and the self-hosted editor).
 - [md4c](https://github.com/mity/md4c) a library to parse markdown (not just to HTML).
-- [nlohmann-json](https://github.com/nlohmann/json) to parse json in some `data` directives
+- [nlohmann-json](https://github.com/nlohmann/json) to parse JSON in some `data` directives
+- [vs.robot](https://github.com/lazy-eggplant/vs.robot) a library to perform automatic actions on FLTK.
 
 [Building-Testing-badge]: https://github.com/KaruroChori/vs-fltk/actions/workflows/build.yml/badge.svg?branch=master
 [Building-Testing-url]: https://github.com/KaruroChori/vs-fltk/actions/workflows/build.yml

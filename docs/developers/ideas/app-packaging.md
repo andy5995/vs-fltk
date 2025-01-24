@@ -5,9 +5,10 @@ Even less so if the plan is to distribute them as single executables at some poi
 So...
 
 ```xml
-<package circuit="vs.fltk" name="..." type="app" version=""> <!-- types can be app/lib/patch/data for now -->
+<package framework="vs.fltk" name="..." origin="url" type="app" version=""> <!-- types can be app/lib/patch/data for now -->
+    <!-- Strings for internationalization -->
     <i18n src="..." default="en-uk">
-        <!--This part is very limited and only related to the file itself. It is not i18n for the underlying app-->
+        <!--This part is very limited and only related to this specific file-->
         <entry tag="..." desc="...">
             <locale lang="en" country="uk">...</locale>
         </entry>
@@ -28,6 +29,9 @@ So...
         </links>
         <signature authority="..." value="..."/>
         <package-id>...</package-id>
+        <icon></icon>
+        <description></description>
+        <repo ref="..."/>
     </metadata>
 
     <link-with>

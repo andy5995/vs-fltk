@@ -4,6 +4,7 @@
     "component",
     "static-data",
     "import",
+    "i18n",
     "use",
     "slot",
     "viewport",

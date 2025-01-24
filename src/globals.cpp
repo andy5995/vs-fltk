@@ -17,7 +17,7 @@
 #include "subprojects/wamr/core/version.h"
 #endif 
 
-#ifdef VS_USE_VM_RISCV
+#ifdef VS_USE_RISCV_VM
 #include <libriscv_settings.h>
 
 #define STRINGIFY_(x) #x
@@ -145,7 +145,7 @@ versions_t get_versions(){
 #   else
       tmp.wamr = "Not installed";
 #   endif
-#   if VS_USE_VM_RISCV
+#   if VS_USE_RISCV_VM
       tmp.libriscv= riscv_version();
 #   else
       tmp.libriscv = "Not installed";

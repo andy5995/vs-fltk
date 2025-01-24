@@ -6,7 +6,7 @@ option('use_networking_simple', type: 'boolean', value: false)
 option('use_tcc', type: 'boolean', value: true)
 option('use_quickjs', type: 'boolean', value: true)
 option('use_wamr', type: 'boolean', value: false)
-option('use_vm_riscv', type: 'boolean', value: true)
+option('use_riscv_vm', type: 'boolean', value: true)
 
 # Only one between lua and luajit should be enabled
 option('use_lua_base', type: 'boolean', value: true)

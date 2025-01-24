@@ -3,3 +3,4 @@
 - [ ] Add code generation of enums. Writing all that code is not the way, and it forces them to be resolved as a linear dispatcher.
 - [ ] Replace the usage of the old serialization interface in codegen to match the new one.
 - [ ] https://www.reddit.com/r/cpp/comments/wo5lvw/template_code_bloat_how_to_measure_and_what_does/
+- [ ] Add i18n child to component (unique) to support localized strings

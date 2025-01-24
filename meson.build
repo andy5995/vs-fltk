@@ -39,8 +39,8 @@ if get_option('use_wamr')
     vs_fltk_flags += '-DVS_USE_WAMR'
 endif
 
-if get_option('use_vm_riscv')
-    vs_fltk_flags += '-DVS_USE_VM_RISCV'
+if get_option('use_riscv_vm')
+    vs_fltk_flags += '-DVS_USE_RISCV_VM'
 endif
 
 if get_option('use_lua_base') and get_option('use_lua_jit')
@@ -142,7 +142,7 @@ if get_option('use_wamr')
 
 endif
 
-if get_option('use_vm_riscv')
+if get_option('use_riscv_vm')
     opt_riscv = cmake.subproject_options()
     opt_riscv.add_cmake_defines(
         {
@@ -209,7 +209,7 @@ json_proj = subproject('nlohmann_json')
 json_dep = json_proj.get_variable('nlohmann_json_dep')
 
 #VS.TEMPL
-vs_templ_dep = dependency('vs-templ', version: '>=0.3.15', fallback: ['vs-templ', 'vs_templ_dep'])
+vs_templ_dep = dependency('vs-templ', version: '>=0.4.3', fallback: ['vs-templ', 'vs_templ_dep'])
 
 #LIBSODIUM
 libsodium_dep = dependency('libsodium', version: '>=1.0.20')
@@ -217,9 +217,6 @@ libsodium_dep = dependency('libsodium', version: '>=1.0.20')
 #TREESITTER
 treesitter_proj = subproject('tree-sitter')
 treesitter_dep = treesitter_proj.get_variable('tree_sitter_dep')
-
-#uv_proj = subproject('libuv')
-#uv_dep = uv_proj.get_variable('libuv_dep')
 
 sqlite_dep = dependency(
     'sqlite3',
@@ -273,7 +270,6 @@ vs_fltk_deps += [
     json_dep,
     vs_templ_dep,
     mio_dep,
-    #uv_dep,    The one provided with the system if present should be fine for our tasks
     hashlib_dep,
 
     sqlite_dep,

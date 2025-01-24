@@ -280,8 +280,7 @@ void ui_tree_xml::_build(const pugi::xml_node& root, ui_base* root_ui){
     return;
   }
   //IMPORT
-  //TODO: restrict to direct children of the base app/component
-  else if(strcmp(root.name(),strings.IMPORT_TAG)==0){
+  else if((strcmp(root.parent().name(),"app")==0 || strcmp(root.parent().name(),"component")==0) && strcmp(root.name(),strings.IMPORT_TAG)==0){
     const auto& src = root.attribute("src").as_string(nullptr);
     const auto& as = root.attribute("as").as_string(nullptr);
 
@@ -290,6 +289,10 @@ void ui_tree_xml::_build(const pugi::xml_node& root, ui_base* root_ui){
         this->imports.emplace(as,src);
       }
     }
+  }    
+  //I18N
+  else if((strcmp(root.parent().name(),"app")==0 || strcmp(root.parent().name(),"component")==0) && strcmp(root.name(),strings.I18N_TAG)==0){
+    //TODO: implement i18n tag by attaching values to the component
   }    
   //SLOT
   else if(strcmp(root.name(),strings.SLOT_TAG)==0){
