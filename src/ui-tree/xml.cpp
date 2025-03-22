@@ -90,6 +90,8 @@ void ui_tree_xml::log(int severety, const void* _ctx, const char* str, ...){
   fflush(log_device);
 }
 
+//TODO: Temporary fix as this was removed from vs-templ while cliening up its public interface. I will have to clean and consolidate these a bit.
+static inline bool cexpr_strneqv(const char* s, const char* c){return strncmp(s, c, std::char_traits<char>::length(c))==0;}
 
 //General XML loader for apps and components.
 //TODO: The caller node is a design flaw. We need to be given the list of props and slots. Not the full node which might not even exist.
@@ -127,7 +129,7 @@ int ui_tree_xml::load(const char* file, type_t type)
 
   //Detect namespaces defined on the root of the component
   for(auto& prop : doc.root().first_child().attributes()){
-    if(templ::cexpr_strneqv(prop.name(), "xmlns:")){
+    if(cexpr_strneqv(prop.name(), "xmlns:")){
       if(strcmp(prop.value(),"vs.fltk")==0){this->set_namespace(namespaces_t::fltk, prop.name()+6);}
       else if(strcmp(prop.value(),"vs.templ")==0){this->set_namespace(namespaces_t::s, prop.name()+6);}
       else if(strcmp(prop.value(),"vs.core")==0){this->set_namespace(namespaces_t::vs, prop.name()+6);}
@@ -164,7 +166,7 @@ int ui_tree_xml::load(const char* file, type_t type)
           }
         }
 
-        templ::preprocessor processor(doc,datadoc,ns.s.c_str());
+        templ::preprocessor processor({doc,datadoc,ns.s.c_str()});
         //Resolve it.
 
         auto& result  = processor.parse();
