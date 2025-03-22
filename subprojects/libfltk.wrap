@@ -1,5 +1,5 @@
 [wrap-git]
 url = https://github.com/fltk/fltk.git
-revision = HEAD
+revision = release-1.4.2
 depth = 1
 method = cmake
