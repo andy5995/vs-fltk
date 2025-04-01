@@ -1,0 +1,26 @@
+/*.wrap
+#TODO: Add script which generates this manually to ignore entries added by meson itself
+!/cello.wrap
+!/fast_float.wrap
+!/hashlib.wrap
+!/libffi.wrap
+!/libhttp.wrap
+!/libriscv.wrap
+!/libsodium.wrap
+!/libtcc.wrap
+!/libuv.wrap
+!/lua.wrap
+!/luajit.wrap
+!/magic_enum.wrap
+!/md4c.wrap
+!/mio.wrap
+!/nanobench.wrap
+!/natsort.wrap
+!/nlohmann_json.wrap
+!/pugixml.wrap
+!/quickjs.wrap
+!/spdlog.wrap
+!/sqlite3.wrap
+!/tree-sitter.wrap
+!/vs-templ.wrap
+!/wamr.wrap

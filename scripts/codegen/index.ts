@@ -37,5 +37,5 @@ import "./gen-ns-strings"
 import "./gen-policies"
 import "./gen-enums"
 
-// database construciton
+// database construction
 await $`bun drizzle-kit generate && bun drizzle-kit push`;
