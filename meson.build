@@ -1,7 +1,7 @@
 project(
     'vs-fltk',
     ['c', 'cpp'],
-    version: files('version.txt'),
+    version: files('VERSION'),
     meson_version: '>= 1.1',
     default_options: [
         'c_std=gnu23',
@@ -19,7 +19,19 @@ conf.set('VSFLTK_VERSION_MAJOR', major_version)
 conf.set('VSFLTK_VERSION_MINOR', minor_version)
 conf.set('VSFLTK_VERSION_REV', rev_version)
 conf.set_quoted('VSFLTK_VERSION', major_version + '.' + minor_version + '.' + rev_version)
-config_h = configure_file(output : 'config.h', configuration : conf)
+
+configure_file(output: 'config.hpp', configuration: conf)
+
+#TODO: It is likely we will move the lower `use_xxx` options to flags in this configuration file instead of injecting them via compiler. Or at least to duplicate this information.
+
+cfgfile = custom_target('make-config',
+  input : './build/config.hpp',
+  output : ['config.hpp.fake-meson'],
+  command : ['cp', '@INPUT0@', '../include/config.hpp'],
+  capture : true,
+  install : false,
+  build_always_stale: true
+)
 
 cmake = import('cmake')
 
@@ -168,15 +180,12 @@ if get_option('use_riscv_vm')
 
 endif
 
-
-
 if get_option('use_quickjs')
     quickjs_proj = subproject('quickjs')
     quickjs_dep = quickjs_proj.get_variable('qjs_dep')
 
     vs_fltk_deps += quickjs_dep
 endif
-
 
 if get_option('use_tcc')
     libtcc_proj = subproject('libtcc')
@@ -340,6 +349,7 @@ vs_fltk = shared_library(
     override_options: ['c_std=gnu23', 'cpp_std=gnu++23'],
     cpp_args: vs_fltk_flags,
     c_args: vs_fltk_flags,
+    link_depends: [cfgfile],
     install: true,
 )
 

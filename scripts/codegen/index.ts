@@ -13,9 +13,10 @@ import { $ } from "bun"
 */
 import pkg from "@/package.json"
 
-const version = (await Bun.file('./version.txt').text()).trim();
+const version = (await Bun.file('./VERSION').text()).trim();
 console.log(`Version is ${version}`);
 
+// This code is now duplicated in the meson file, at some point deprecate this one in favour of the other by adding a simple wrapper.
 // Split into [major, minor, rev] and optional [tag]
 const [versionPart, tag = ''] = version.split('-');
 const [major, minor, rev] = versionPart.split('.');
