@@ -12,24 +12,22 @@ import { $ } from "bun"
     The json file is considered as authoritative for all metadata which is related to this project.
 */
 import pkg from "@/package.json"
-await Bun.write("./include/version.hpp",
-    `#pragma once
-constexpr int vs_version_major=${pkg.version.split('-')[0].split('.')[0]};
-constexpr int vs_version_minor=${pkg.version.split('-')[0].split('.')[1]};
-constexpr int vs_version_rev=${pkg.version.split('-')[0].split('.')[2]};
-inline const char* vs_version_tag="${pkg.version.split('-')[1]}";
-inline const char* vs_version(){return "${pkg.version}";}
-`)
 
-if (process.argv[2] != 'quick') {
-    //Ideally I should run `meson rewrite kwargs set project / version ${version}` but the compiler detection breaks everything.
-    const meson = await Bun.file('./meson.build').text();
-    await Bun.write('./meson.build', meson.replace(/#<inject-version>[\s\S]*#<\/inject-version>/g,
-        `#<inject-version>
-    version: '${pkg.version}',
-    #</inject-version>`
-    ))
-}
+const version = (await Bun.file('./version.txt').text()).trim();
+console.log(`Version is ${version}`);
+
+// Split into [major, minor, rev] and optional [tag]
+const [versionPart, tag = ''] = version.split('-');
+const [major, minor, rev] = versionPart.split('.');
+
+await Bun.write("./include/version.hpp",
+`#pragma once
+constexpr int vs_version_major=${major};
+constexpr int vs_version_minor=${minor};
+constexpr int vs_version_rev=${rev};
+inline const char* vs_version_tag="${tag}";
+inline const char* vs_version(){return "${version}";}
+`);
 
 // automatic codegen
 import "./gen-widgets"
