@@ -25,12 +25,12 @@ configure_file(output: 'config.hpp', configuration: conf)
 #TODO: It is likely we will move the lower `use_xxx` options to flags in this configuration file instead of injecting them via compiler. Or at least to duplicate this information.
 
 cfgfile = custom_target('make-config',
-  input : './build/config.hpp',
+  input : join_paths(meson.current_build_dir(), 'config.hpp'),
   output : ['config.hpp.fake-meson'],
-  command : ['cp', '@INPUT0@', '../include/config.hpp'],
+  command : ['sh', '-c', 'rm -f ../include/config.hpp && ln -s @INPUT0@ ../include/config.hpp'],
   capture : true,
   install : false,
-  build_always_stale: true
+  build_by_default: true
 )
 
 cmake = import('cmake')
